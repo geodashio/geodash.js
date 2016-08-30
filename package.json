@@ -1,0 +1,34 @@
+{
+  "name": "geodash.js",
+  "version": "0.0.1",
+  "description": "Low-level Javascript API for GeoDash",
+  "keywords": [
+    "map",
+    "mapping",
+    "geodash"
+  ],
+  "homepage": "http://geodash.io/",
+  "scripts": {
+    "build:js": "browserify src/index.js --outfile dist/geodash.js",
+    "uglify": "cat dist/geodash.js | uglifyjs > dist/geodash.min.js",
+    "build": "mkdir dist; npm run build:js && npm run uglify",
+    "jshint": "jshint src/*.js",
+    "tests": "npm run jshint"
+  },
+  "main": "dist/geodash.min.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geodashio/geodash.js"
+  },
+  "license": "BSD-3-Clause",
+  "author": "GeoDash Developers",
+  "bugs": {
+    "url": "https://github.com/geodashio/geodash.js/issues"
+  },
+  "devDependencies": {
+    "browserify": "*",
+    "browserify-shim": "*",
+    "uglify-js": "*",
+    "jshint": "*"
+  }
+}

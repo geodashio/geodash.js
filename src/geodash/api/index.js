@@ -1,0 +1,31 @@
+'use strict';
+//var getScope = require("./getScope");
+module.exports = {
+  buildScope: require("./buildScope"),
+  flatten: require("./flatten"),
+  getBaseLayer: require("./getBaseLayer"),
+  getDashboardConfig: require("./getDashboardConfig"),
+  getEndpoint: require("./getEndpoint"),
+  getFeatureLayer: require("./getFeatureLayer"),
+  getLayer: require("./getLayer"),
+  getOption: require("./getOption"),
+  getPage: require("./getPage"),
+  getScope: require("./getScope"),
+  hasBaseLayer: require("./hasBaseLayer"),
+  hasFeatureLayer: require("./hasFeatureLayer"),
+  hasLayer: require("./hasLayer"),
+  intend: require("./intend"),
+  listBaseLayers: require("./listBaseLayers"),
+  listFeatureLayers: require("./listFeatureLayers"),
+  normalize_feature: require("./normalize_feature"),
+  opt_b: require("./opt_b"),
+  opt_i: require("./opt_i"),
+  opt_j: require("./opt_j"),
+  opt_s: require("./opt_s"),
+  opt: require("./opt"),
+  parseTrue: require("./parseTrue"),
+  setValue: require("./setValue"),
+  unpack: require("./unpack"),
+  updateValue: require("./updateValue"),
+  welcome: require("./welcome")
+};
