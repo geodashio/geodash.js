@@ -1,143 +1,107 @@
-module.exports = function($element, featurelayers, baselayers)
+module.exports = function($element, featurelayers, baselayers, servers)
 {
   $('.typeahead', $element).each(function(){
+
+    var datasets = [];
+    var engine = undefined;
+
     var s = $(this);
     var placeholder = s.data('placeholder');
-    var initialData = s.data('initialData');
     var w = s.data('width');
     var h = s.data('height');
     var css = 'geodashserver-welcome-select-dropdown';
     var template_empty = s.data('template-empty');
-    var template_suggestion = s.data('template-suggestion');
 
-    var bloodhoundData = [];
-    if(angular.isString(initialData))
+    if(angular.isString(s.attr('data-typeahead-datasets')) && s.attr('data-typeahead-datasets').length > 0)
     {
-      if(initialData == "layers")
-      {
-        bloodhoundData = [];
-        featurelayers = featurelayers || geodash.api.listFeatureLayers();
-        //angular.element("#geodash-main").scope()["map_config"]["featurelayers"];
-        if(featurelayers != undefined)
-        {
-          bloodhoundData = bloodhoundData.concat($.map(featurelayers, function(x, i){
-            return {'id': x.id, 'text': x.id};
-          }));
-        }
-        baselayers = baselayers || geodash.api.listBaseLayers();
-        //angular.element("#geodash-main").scope()["map_config"]["baselayers"];
-        if(baselayers != undefined)
-        {
-          bloodhoundData = bloodhoundData.concat($.map(baselayers, function(x, i){
-            return {'id': x.id, 'text': x.id};
-          }));
-        }
-      }
-      else if(initialData == "featurelayers")
-      {
-        featurelayers = featurelayers || geodash.api.listFeatureLayers();
-        bloodhoundData = $.map(featurelayers, function(fl, id){ return {'id': id, 'text': id}; });
-      }
-      else if(initialData == "baselayers")
-      {
-        baselayers = baselayers || geodash.api.listBaseLayers();
-        bloodhoundData = $.map(baselayers, function(bl, id){ return {'id': id, 'text': id}; });
-      }
-      else if(initialData.length > 0)
-      {
-        bloodhoundData = [].concat(geodash.initial_data["data"][initialData]);
-        for(var i = 0; i < bloodhoundData.length; i++)
-        {
-          if(angular.isString(bloodhoundData[i]))
-          {
-            bloodhoundData[i] = {'id': bloodhoundData[i], 'text': bloodhoundData[i]};
-          }
-        }
-      }
+      var datasetsFn = extract(s.attr('data-typeahead-datasets'), geodash.typeahead.datasets);
+      datasets = datasetsFn(s, featurelayers, baselayers, servers);
     }
-    else if(Array.isArray(initialData))
+    else
     {
-      bloodhoundData = [].concat(initialData);
-      for(var i = 0; i < bloodhoundData.length; i++)
-      {
-        if(angular.isString(bloodhoundData[i]))
-        {
-          bloodhoundData[i] = {'id': bloodhoundData[i], 'text': bloodhoundData[i]};
-        }
-      }
-      //bloodhoundData = $.map(initialData, function(x, i){ return {'id': x, 'text': x}; });
+      var datasetsFn = extract('default', geodash.typeahead.datasets);
+      datasets = datasetsFn(s, featurelayers, baselayers, servers);
     }
 
-    if(angular.isDefined(bloodhoundData) && bloodhoundData.length > 0)
+    if(datasets.length > 0)
     {
-      bloodhoundData.sort(function(a, b){
-        var textA = a.text.toLowerCase();
-        var textB = b.text.toLowerCase();
-        if(textA < textB){ return -1; }
-        else if(textA > textB){ return 1; }
-        else { return 0; }
-      });
-
-      // Twitter Typeahead with
-      //https://github.com/bassjobsen/typeahead.js-bootstrap-css
-      var engine = new Bloodhound({
-        identify: function(obj) {
-          return obj['text'];
-        },
-        datumTokenizer: function(d) {
-          return Bloodhound.tokenizers.whitespace(d.text);
-        },
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: bloodhoundData
-      });
-
-      s.data('engine', engine);
       s.typeahead('destroy','NoCached');
-      s.typeahead(null, {
-        name: s.attr('name'),
-        minLength: 0,
-        limit: 10,
-        hint: false,
-        highlight: true,
-        displayKey: 'text',
-        source: function (query, cb)
+      var typeahead = s.typeahead(null, datasets);
+      s.data('datasets', datasets);
+
+      typeahead.on('blur', geodash.typeahead.listeners.blur);
+      typeahead.on('typeahead:change', geodash.typeahead.listeners.change);
+      typeahead.on('typeahead:select typeahead:autocomplete typeahead:cursorchange', geodash.typeahead.listeners.select);
+
+      /*typeahead.on('typeahead:change', function(event, value) {
+        console.log("Event: ", event, value);
+        if(angular.isDefined($(this).data('datasets')))
         {
-          // https://github.com/twitter/typeahead.js/pull/719#issuecomment-43083651
-          // http://pastebin.com/adWHFupF
-          //query == "" ? cb(data) : engine.ttAdapter()(query, cb);
-          engine.ttAdapter()(query, cb);
-        },
-        templates: {
-          empty: template_empty,
-          suggestion: function (data) {
-              return '<p><strong>' + data.text + '</strong> - ' + data.id + '</p>';
-          },
-          footer: function (data) {
-            return '<div>Searched for <strong>' + data.query + '</strong></div>';
+          var results = geodash.typeahead.getResultsFromDatasets($(this).data('datasets'), value);
+          var resultIndex = $(this).attr('data-search-output')|| 'id';
+          var newValue = results.length == 1 ? extract(resultIndex, results[0]) : null;
+          if(angular.isString($(this).data('backend')))
+          {
+            var backend = $('#'+$(this).data('backend'))
+              .val(angular.isString(newValue) ? newValue : JSON.stringify(newValue))
+              .trigger('input')
+              .change();
+          }
+          else if(angular.isString($(this).attr('data-typeahead-scope')))
+          {
+            var $scope = geodash.api.getScope($(this).attr('data-typeahead-scope'));
+            $scope.$apply(function(){
+              $scope.setValue($scope.path_flat, newValue, $scope.workspace);
+              $.each($scope.workspace_flat, function(key, value){
+                if(key.startsWith($scope.path_flat+"__"))
+                {
+                  $scope.workspace_flat[key] = $scope.stack.head.workspace_flat[key] = undefined;
+                }
+              });
+              if(angular.isDefined(newValue) && newValue != null)
+              {
+                $.each(geodash.api.flatten(newValue), function(i, x){
+                  $scope.workspace_flat[$scope.path_flat+"__"+i] = $scope.stack.head.workspace_flat[$scope.path_flat+"__"+i] = x;
+                });
+              }
+            });
           }
         }
-      }).on('blur', function(event) {
-        var results = engine.get($(this).val());
-        var backend = $('#'+$(this).data('backend'))
-          .val(results.length == 1 ? results[0]['id'] : null)
-          .trigger('input')
-          .change();
-      })
-      .on('typeahead:change', function(event, value) {
-        console.log("Event: ", event, value);
-        var results = engine.get(value);
-        var backend = $('#'+$(this).data('backend'))
-          .val(results.length == 1 ? results[0]['id'] : null)
-          .trigger('input')
-          .change();
-      })
-      .on('typeahead:select typeahead:autocomplete typeahead:cursorchange', function(event, obj) {
-        console.log("Event: ", event, obj);
-        var backend = $('#'+$(this).data('backend'))
-          .val(extract("id", obj, null))
-          .trigger('input')
-          .change();
       });
+
+      typeahead.on('typeahead:select typeahead:autocomplete typeahead:cursorchange', function(event, obj) {
+        console.log("Event: ", event, obj);
+        var resultIndex = $(this).attr('data-search-output')|| 'id';
+        var newValue = extract(resultIndex, obj, null)
+        if(angular.isString($(this).data('backend')))
+        {
+          var backend = $('#'+$(this).data('backend'))
+            .val(angular.isString(newValue) ? newValue : JSON.stringify(newValue))
+            .trigger('input')
+            .change();
+        }
+        else if(angular.isString($(this).attr('data-typeahead-scope')))
+        {
+          var $scope = geodash.api.getScope($(this).attr('data-typeahead-scope'));
+          $scope.$apply(function(){
+            $scope.setValue($scope.path_flat, newValue, $scope.workspace);
+            $.each($scope.workspace_flat, function(key, value){
+              if(key.startsWith($scope.path_flat+"__"))
+              {
+                $scope.workspace_flat[key] = $scope.stack.head.workspace_flat[key] = undefined;
+              }
+            });
+            if(angular.isDefined(newValue) && newValue != null)
+            {
+              $.each(geodash.api.flatten(newValue), function(i, x){
+                $scope.workspace_flat[$scope.path_flat+"__"+i] = $scope.stack.head.workspace_flat[$scope.path_flat+"__"+i] = x;
+              });
+            }
+          });
+        }
+      });
+      */
+
     }
 
   });

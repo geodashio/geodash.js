@@ -1,7 +1,7 @@
 module.exports = function(response, fields_by_featuretype)
 {
   var features = [];
-  //$(response).find("FeatureCollection")  No need to search for featurecollection.  It IS the featurecollection
+  //features = new ol.format.GML3().readFeatures(response)
   $(response).find('gml\\:featuremember').each(function(){
       //var f = $(this).find(typeName.indexOf(":") != -1 ? typeName.substring(typeName.indexOf(":") + 1) : typeName);
       var f = $(this).children();

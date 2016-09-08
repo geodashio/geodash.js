@@ -3,7 +3,7 @@ module.exports = function(popup, layer, feature, state)
   var panes = popup.panes;
   var popupTemplate = "";
   //////////////////
-  if(angular.isString(popup.title))
+  if(geodash.mapping_library != "ol3" && angular.isString(popup.title))
   {
     popupTemplate += "<h5 style=\"word-wrap:break-word;text-align:center;\">"+popup.title+"</h5>";
   }
@@ -61,11 +61,11 @@ module.exports = function(popup, layer, feature, state)
       var html_tabs = "<ul class=\"nav nav-tabs nav-justified\">"+tabs.join("")+"</ul>";
       ///////////////
       var paneContentsWithWrapper = [];
-      var html_pane = "<div id=\""+panes[0].id+"\" class=\"tab-pane fade in active\">"+paneContents[0]+"</div>";
+      var html_pane = "<div id=\""+panes[0].id+"\" class=\"tab-pane fade in active\" style=\"padding: 4px;\">"+paneContents[0]+"</div>";
       paneContentsWithWrapper.push(html_pane);
       for(var i = 1; i < panes.length; i++)
       {
-        html_pane = "<div id=\""+panes[i].id+"\" class=\"tab-pane fade\">"+paneContents[i]+"</div>";
+        html_pane = "<div id=\""+panes[i].id+"\" class=\"tab-pane fade\" style=\"padding: 4px;\">"+paneContents[i]+"</div>";
         paneContentsWithWrapper.push(html_pane);
       }
       ///////////////

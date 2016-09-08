@@ -12,6 +12,9 @@ module.exports = function(opts)
         source: new ol.source.OSM()
       })
     ],
+    overlays: [
+      new ol.Overlay({element: document.getElementById('popup')})
+    ],
     view: new ol.View({
       center: ol.proj.fromLonLat(lonlat),
       zoom: zoom,

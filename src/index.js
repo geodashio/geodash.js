@@ -1,5 +1,5 @@
 'use strict';
-/*global require, window, console, jQuery, $, angular */
+/*global require, window, console, jQuery, $, angular, Bloodhound, location */
 
 var expand = function(x)
 {
@@ -39,56 +39,64 @@ var extract = function(keyChain, node, fallback)
   {
     keyChain = keyChain.split(".");
   }
+
   var obj = undefined;
-  if(keyChain.length==0)
+
+  if(node != undefined && node != null)
   {
-    if(node != undefined && node != null)
+    if(keyChain.length==0)
     {
       obj = node;
     }
     else
     {
-      obj = fallback;
-    }
-  }
-  else
-  {
-    var newKeyChain = keyChain.slice(1);
-    if(newKeyChain.length == 0)
-    {
-      if(angular.isString(keyChain[0]) && keyChain[0].toLowerCase() == "length")
+      var newKeyChain = keyChain.slice(1);
+      if(newKeyChain.length == 0)
+      {
+        if(angular.isString(keyChain[0]) && keyChain[0].toLowerCase() == "length")
+        {
+          if(Array.isArray(node))
+          {
+            obj = node.length;
+          }
+          else if(angular.isDefined(node))
+          {
+            obj = node["length"];
+          }
+          else
+          {
+            obj = 0;
+          }
+        }
+      }
+
+      if(obj == undefined && angular.isDefined(node))
       {
         if(Array.isArray(node))
         {
-          obj = node.length;
-        }
-        else if(angular.isDefined(node))
-        {
-          obj = node["length"];
+          var index = angular.isString(keyChain[0]) ?
+            parseInt(keyChain[0], 10) :
+            keyChain[0];
+          obj = extract(newKeyChain, node[index], fallback);
         }
         else
         {
-          obj = 0;
+          obj = extract(newKeyChain, node[""+keyChain[0]], fallback);
         }
       }
-    }
-
-    if(obj == undefined && angular.isDefined(node))
-    {
-      if(Array.isArray(node))
-      {
-        var index = angular.isString(keyChain[0]) ?
-          parseInt(keyChain[0], 10) :
-          keyChain[0];
-        obj = extract(newKeyChain, node[index], fallback);
-      }
-      else
-      {
-        obj = extract(newKeyChain, node[""+keyChain[0]], fallback);
-      }
-    }
-	}
+  	}
+  }
+  else
+  {
+    obj = fallback;
+  }
 	return obj;
+};
+
+var extractArrayLength = function(keyChain, node, fallback)
+{
+  var value = extract(keyChain, node, undefined);
+  return Array.isArray(value) ? value.length : fallback;
 };
 
 var getHashValue = function(keys, type)
@@ -213,8 +221,9 @@ var layersAsArray = function(layers)
 
 window.expand = expand;
 window.extract = extract;
+window.extractArrayLength = extractArrayLength;
 window.getHashValue = getHashValue;
-window.hasHasValue = hasHashValue;
+window.hasHashValue = hasHashValue;
 window.getHashValueAsStringArray = getHashValueAsStringArray;
 window.getHashValueAsInteger = getHashValueAsInteger;
 window.getHashValueAsIntegerArray = getHashValueAsIntegerArray;

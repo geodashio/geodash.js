@@ -5,11 +5,29 @@ module.exports = function(id, layerConfig, $scope, live, map_config)
     var t = extract("type", layerConfig, "").toLowerCase();
     if(t == "geojson")
     {
-      geodash.layers.init_featurelayer_geojson($scope, live, map_config, id, layerConfig);
+      if(angular.isDefined(extract("heatmap", layerConfig, undefined)))
+      {
+        geodash.layers.init_featurelayer_heatmap($scope, live, map_config, id, layerConfig);
+      }
+      else
+      {
+        geodash.layers.init_featurelayer_geojson($scope, live, map_config, id, layerConfig);
+      }
     }
     else if(t == "wms")
     {
-      geodash.layers.init_featurelayer_wms($scope, live, map_config, id, layerConfig);
+      if(angular.isDefined(extract("heatmap", layerConfig, undefined)))
+      {
+        geodash.layers.init_featurelayer_heatmap($scope, live, map_config, id, layerConfig);
+      }
+      else
+      {
+        geodash.layers.init_featurelayer_wms($scope, live, map_config, id, layerConfig);
+      }
+    }
+    else if(t == "tegola")
+    {
+      geodash.layers.init_featurelayer_tegola($scope, live, map_config, id, layerConfig);
     }
     else if(t == "wmts")
     {

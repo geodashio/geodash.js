@@ -8,10 +8,6 @@ module.exports = function(that, app, controller)
   }
   else
   {
-    currentControllers.push({
-      'controllerName': controllerName,
-      'controller': (controller || geodash.controllers.controller_base)
-    });
     app.controller(controllerName, controller || geodash.controllers.GeoDashControllerBase);
   }
 };

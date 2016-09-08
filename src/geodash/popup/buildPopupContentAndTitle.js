@@ -6,5 +6,7 @@ module.exports = function($interpolate, featureLayer, feature, state)
     'feature': feature,
     'state': state
   };
-  return $interpolate(popupTemplate)(ctx);
+  var content = $interpolate(popupTemplate)(ctx);
+  var title = angular.isString(featureLayer.popup.title) ? $interpolate(featureLayer.popup.title)(ctx) : "";
+  return { 'content': content, 'title': title }
 };

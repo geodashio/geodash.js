@@ -53,14 +53,7 @@ module.exports = function(event, args)
             modalElement.find('.tab-pane').slice(0, 1).addClass('in active');
             modalElement.find('.tab-pane').slice(1).removeClass('in active');
           }
-          // Initalize Tooltips
-          $('[data-toggle="tooltip"]', modalElement).tooltip();
-          //Initialize Typeahead
-          geodash.init.typeahead(
-            modalElement,
-            modal_scope.featurelayers,
-            modal_scope.baselayers);
-          // Toggle Modal
+          geodash.ui.update(id);
           $("#"+id).modal(modalOptions);
           $("#"+id).modal('toggle');
         },0);

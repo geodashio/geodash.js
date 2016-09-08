@@ -1,55 +1,66 @@
 module.exports = function(a, b)
 {
-  var p = L.Projection.SphericalMercator;
+  var minDistance = undefined;
   if(b.toString != undefined && b.toString().startsWith('LatLng'))
   {
-    return (p.project(a)).distanceTo(p.project(b));
+    var p = L.Projection.SphericalMercator;
+    minDistance = (p.project(a)).distanceTo(p.project(b));
+  }
+  else if(b.getType != undefined && b.getType() == 'Point')
+  {
+    minDistance = ol.sphere.WGS84.haversineDistance([a.lon, a.lat], b.flatCoordinates);
   }
   else
   {
-    var minDistance = undefined;
-    $.each(b._layers, function(id, layer)
+    if(typeof L != "undefined")
     {
-      var rings = [];
-      if(layer.feature.geometry.type == "MultiPolygon")
+      $.each(b._layers, function(id, layer)
       {
-        for(var i = 0; i < layer._latlngs.length; i++)
+        var rings = [];
+        if(layer.feature.geometry.type == "MultiPolygon")
         {
-          for(var j = 0; j < layer._latlngs[i].length; j++)
+          for(var i = 0; i < layer._latlngs.length; i++)
           {
-            rings.push(layer._latlngs[i][j]);
+            for(var j = 0; j < layer._latlngs[i].length; j++)
+            {
+              rings.push(layer._latlngs[i][j]);
+            }
           }
         }
-      }
-      else
-      {
-        rings.push(layer._latlngs);
-      }
-      for(var r = 0; r < rings.length; r++)
-      {
-        var verticies = rings[r];
-        var i = 0;
-        if(minDistance == undefined)
+        else
         {
-          minDistance = L.LineUtil.pointToSegmentDistance(
-            p.project(a),
-            p.project(verticies[i]),
-            p.project(verticies[i+1]));
-          i++;
+          rings.push(layer._latlngs);
         }
-        for(; i < verticies.length -1; i++)
+        for(var r = 0; r < rings.length; r++)
         {
-          var d = L.LineUtil.pointToSegmentDistance(
-            p.project(a),
-            p.project(verticies[i]),
-            p.project(verticies[i+1]));
-          if(d < minDistance)
+          var verticies = rings[r];
+          var i = 0;
+          if(minDistance == undefined)
           {
-            minDistance = d;
+            minDistance = L.LineUtil.pointToSegmentDistance(
+              p.project(a),
+              p.project(verticies[i]),
+              p.project(verticies[i+1]));
+            i++;
+          }
+          for(; i < verticies.length -1; i++)
+          {
+            var d = L.LineUtil.pointToSegmentDistance(
+              p.project(a),
+              p.project(verticies[i]),
+              p.project(verticies[i+1]));
+            if(d < minDistance)
+            {
+              minDistance = d;
+            }
           }
         }
-      }
-    });
-    return minDistance;
+      });
+    }
+    else if(typeof ol != "undefined")
+    {
+      minDistance = undefined;
+    }
   }
+  return minDistance;
 };

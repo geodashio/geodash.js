@@ -2,6 +2,8 @@
 //var getScope = require("./getScope");
 module.exports = {
   buildScope: require("./buildScope"),
+  clearValue: require("./clearValue"),
+  deepCopy: require("./deepCopy"),
   flatten: require("./flatten"),
   getBaseLayer: require("./getBaseLayer"),
   getDashboardConfig: require("./getDashboardConfig"),
@@ -17,7 +19,9 @@ module.exports = {
   intend: require("./intend"),
   listBaseLayers: require("./listBaseLayers"),
   listFeatureLayers: require("./listFeatureLayers"),
-  normalize_feature: require("./normalize_feature"),
+  listServers: require("./listServers"),
+  listTegolaServers: require("./listTegolaServers"),
+  listWMSServers: require("./listWMSServers"),
   opt_b: require("./opt_b"),
   opt_i: require("./opt_i"),
   opt_j: require("./opt_j"),

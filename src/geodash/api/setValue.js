@@ -1,13 +1,18 @@
-module.exports = function(field_flat, value, target)
+//module.exports = function(field_flat, value, target)
+module.exports = function(keyChain, value, target)
 {
   // Update map_config
-  if(field_flat.indexOf("__") == -1)
+  if(angular.isString(keyChain))
   {
-    target[field_flat] = value;
+    keyChain = keyChain.split("__");
+  }
+
+  if(keyChain.length == 1)
+  {
+    target[keyChain[0]] = value;
   }
   else
   {
-    var keyChain = field_flat.split("__");
     for(var j = 0; j < keyChain.length -1 ; j++)
     {
       var newKey = keyChain[j];

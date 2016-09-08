@@ -3,6 +3,6 @@ module.exports = {
   buildChart: require("./buildChart"),
   buildField: require("./buildField"),
   buildPopupTemplate: require("./buildPopupTemplate"),
-  buildPopupContent: require("./buildPopupContent"),
+  buildPopupContentAndTitle: require("./buildPopupContentAndTitle"),
   openPopup: require("./openPopup")
 };

@@ -8,7 +8,15 @@ module.exports = function(element)
   if(attribute.find("gml\\:point").length > 0)
   {
     var coords = attribute.find("gml\\:point").find("gml\\:coordinates").text().split(",");
-    geom = new L.LatLng(parseFloat(coords[1]), parseFloat(coords[0]));
+    //(new ol.format.GML3().readFeatures(response),
+    if(typeof ol != "undefined")
+    {
+      geom = new ol.geom.Point([parseFloat(coords[0]), parseFloat(coords[1])]);
+    }
+    else
+    {
+      geom = new L.LatLng(parseFloat(coords[1]), parseFloat(coords[0]));
+    }
   }
   else if(attribute.find("gml\\:multilinestring").length > 0)
   {

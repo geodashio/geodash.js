@@ -1,8 +1,7 @@
 module.exports = function(feature)
 {
-  var feature = {
+  return {
     'attributes': feature.attributes || feature.properties,
     'geometry': feature.geometry
   };
-  return feature;
 };
