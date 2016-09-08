@@ -19,8 +19,9 @@ module.exports = function($scope, live, map_config, id, layerConfig)
   });
   var fl = new ol.layer.Heatmap({
     source: source,
-    blur: parseInt(extract('heatmap.blur', layerConfig, 15), 10),
-    radius: parseInt(extract('heatmap.radius', layerConfig, 5), 10)
+    blur: extract('heatmap.blur', layerConfig, 15),
+    radius: extract('heatmap.radius', layerConfig, 5),
+    weight: extract('heatmap.weight', layerConfig, undefined)
   });
   live["featurelayers"][id] = fl;
   geodash.layers.init_featurelayer_post_ol3($scope, live, id, fl, layerConfig.visible);

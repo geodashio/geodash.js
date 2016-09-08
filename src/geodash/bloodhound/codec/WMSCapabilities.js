@@ -19,12 +19,13 @@ module.exports = function(response, url)
           "TIME=-99999999999-01-01T00:00:00.0Z/99999999999-01-01T00:00:00.0Z",
           "layers="+name
         ].join("&");
+      var title = $(this).children('Title').text();
       var newLayer = {
         'id': name,
-        'text': name,
+        'text': title,
         'obj': {
           'id': name,
-          'title': $(this).children('Title').text(),
+          'title': title,
           'description': $(this).children('Abstract').text(),
           'type': 'wms',
           'wms': {
