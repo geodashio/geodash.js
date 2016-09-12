@@ -5,5 +5,7 @@ module.exports = {
   footer: require("./footer"),
   templates: require("./templates"),
   listeners: require("./listeners"),
-  getResultsFromDatasets: require("./getResultsFromDatasets")
+  getResultsFromDatasets: require("./getResultsFromDatasets"),
+  displayFn: require("./displayFn"),
+  sourceFn: require("./sourceFn")
 };

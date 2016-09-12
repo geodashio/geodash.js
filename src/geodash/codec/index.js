@@ -4,5 +4,6 @@ module.exports = {
   parseAttributes: require("./parseAttributes"),
   parseFeatures: require("./parseFeatures"),
   parseGeometry: require("./parseGeometry"),
-  parseURL: require("./parseURL")
+  parseURL: require("./parseURL"),
+  parseSearch: require("./parseSearch")
 };

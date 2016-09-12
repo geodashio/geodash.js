@@ -37,14 +37,8 @@ module.exports = function(element, featurelayers, baselayers, servers)
     limit: 10,
     hint: false,
     highlight: true,
-    display: geodash.typeahead.displayFn,
-    source: function (query, syncResults, asyncResults)
-    {
-      // https://github.com/twitter/typeahead.js/pull/719#issuecomment-43083651
-      // http://pastebin.com/adWHFupF
-      //query == "" ? cb(data) : engine.ttAdapter()(query, cb);
-      this.engine.ttAdapter()(query, syncResults, asyncResults);
-    },
+    display: geodash.typeahead.displayFn.default,
+    source: geodash.typeahead.sourceFn.default,
     templates: templates
   };
   datasets.push(dataset);

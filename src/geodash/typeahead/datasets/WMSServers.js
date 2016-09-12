@@ -32,7 +32,7 @@ module.exports = function(element, featurelayers, baselayers, servers)
       servers);
     var engine = geodash.bloodhound.engine(local, prefetch, remote);
     var templates = {
-      header: '<h3 style="margin: 0 20px 5px 20px; padding: 3px 0; border-bottom: 1px solid #ccc;">'+ extract('title' || 'id', server, "") +'</h3>',
+      header: geodash.typeahead.templates.header.WMSServer(server),
       suggestion: template_suggestion
     };
     var dataset = {
@@ -42,14 +42,8 @@ module.exports = function(element, featurelayers, baselayers, servers)
       limit: 10,
       hint: false,
       highlight: true,
-      display: geodash.typeahead.displayFn,
-      source: function (query, syncResults, asyncResults)
-      {
-        // https://github.com/twitter/typeahead.js/pull/719#issuecomment-43083651
-        // http://pastebin.com/adWHFupF
-        //query == "" ? cb(data) : engine.ttAdapter()(query, cb);
-        this.engine.ttAdapter()(query, syncResults, asyncResults);
-      },
+      display: geodash.typeahead.displayFn.default,
+      source: geodash.typeahead.sourceFn.WMSServer,
       templates: templates
     };
     datasets.push(dataset);

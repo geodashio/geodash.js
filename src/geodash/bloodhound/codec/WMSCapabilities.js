@@ -14,8 +14,8 @@ module.exports = function(response, url)
         "/reflect?" +
         [
           "format=image/png",
-          "width=40",
-          "height=40",
+          "width=120",
+          "height=120",
           "TIME=-99999999999-01-01T00:00:00.0Z/99999999999-01-01T00:00:00.0Z",
           "layers="+name
         ].join("&");
@@ -35,6 +35,9 @@ module.exports = function(response, url)
           'wfs': {
             'layers': name,
             'url': extract("wfs.base", geodash.codec.parseURL(url, 'wms'), "")
+          },
+          'metadata': {
+            'keywords': $.map($(this).children('KeywordList').children('Keyword'), $.text)
           }
         },
         'extra': {
