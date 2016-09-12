@@ -13,7 +13,16 @@ module.exports = function(options)
     else if(angular.isString(options.url))
     {
       var url = options.url;
-      var codec = extract(options.codec, geodash.bloodhound.codec, undefined);
+      var codecs = options.codecs || [geodash.bloodhound.codec];
+      var codec = undefined;
+      for(var i = 0; i < codecs.length; i++)
+      {
+        codec = extract(options.codec, codecs[i], undefined);
+        if(angular.isDefined(codec))
+        {
+          break;
+        }
+      }
       var data = {
         'url': url,
         'dataType': extract('dataType', options, 'json'),

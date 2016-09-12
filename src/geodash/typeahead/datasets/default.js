@@ -1,4 +1,4 @@
-module.exports = function(element, featurelayers, baselayers, servers)
+module.exports = function(element, featurelayers, baselayers, servers, codecOptions)
 {
   var datasets = [];
   var local = geodash.bloodhound.local(
@@ -11,13 +11,15 @@ module.exports = function(element, featurelayers, baselayers, servers)
     prefetchOptions,
     featurelayers,
     baselayers,
-    servers);
+    servers,
+    codecOptions);
   var remoteOptions = element.data('remoteData');
   var remote = geodash.bloodhound.remote(
     remoteOptions,
     featurelayers,
     baselayers,
-    servers);
+    servers,
+    codecOptions);
 
   if((angular.isDefined(local) && local.length > 0) || angular.isDefined(prefetch) || angular.isDefined(remote))
   {

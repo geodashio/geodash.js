@@ -1,4 +1,4 @@
-module.exports = function(element, featurelayers, baselayers, servers)
+module.exports = function(element, featurelayers, baselayers, servers, codecs)
 {
   var datasets = [];
   var template_suggestion = extract(element.data('template-suggestion') || 'default', geodash.typeahead.templates.suggestion);
@@ -12,24 +12,18 @@ module.exports = function(element, featurelayers, baselayers, servers)
       url: url,
       dataType: 'xml',
       codec: "WMSCapabilities",
-      cache: false
+      cache: false,
+      codecs: codecs
     };
-    var prefetch = geodash.bloodhound.prefetch(
-      prefetchOptions,
-      featurelayers,
-      baselayers,
-      servers);
+    var prefetch = geodash.bloodhound.prefetch(prefetchOptions);
     var remoteOptions = {
       url: url,
       dataType: 'xml',
       codec: "WMSCapabilities",
-      rate: 1000
+      rate: 1000,
+      codecs: codecs
     };
-    var remote = geodash.bloodhound.remote(
-      remoteOptions,
-      featurelayers,
-      baselayers,
-      servers);
+    var remote = geodash.bloodhound.remote(remoteOptions);
     var engine = geodash.bloodhound.engine(local, prefetch, remote);
     var templates = {
       header: '<h3 style="margin: 0 20px 5px 20px; padding: 3px 0; border-bottom: 1px solid #ccc;">'+ extract('title' || 'id', server, "") +'</h3>',

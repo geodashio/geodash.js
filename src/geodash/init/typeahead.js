@@ -1,5 +1,8 @@
-module.exports = function($element, featurelayers, baselayers, servers)
+module.exports = function($element, featurelayers, baselayers, servers, datasetOptions, codecOptions)
 {
+  datasetOptions = datasetOptions || [geodash.typeahead.datasets];
+  codecOptions = codecOptions || [geodash.bloodhound.codec];
+
   $('.typeahead', $element).each(function(){
 
     var datasets = [];
@@ -14,13 +17,22 @@ module.exports = function($element, featurelayers, baselayers, servers)
 
     if(angular.isString(s.attr('data-typeahead-datasets')) && s.attr('data-typeahead-datasets').length > 0)
     {
-      var datasetsFn = extract(s.attr('data-typeahead-datasets'), geodash.typeahead.datasets);
-      datasets = datasetsFn(s, featurelayers, baselayers, servers);
+      var datasetsName = s.attr('data-typeahead-datasets');
+      var datasetsFn = undefined;
+      for(var i = 0; i < datasetOptions.length; i++)
+      {
+        datasetsFn = extract(datasetsName, datasetOptions[i]);
+        if(angular.isDefined(datasetsFn))
+        {
+          break;
+        }
+      }
+      datasets = datasetsFn(s, featurelayers, baselayers, servers, codecOptions);
     }
     else
     {
       var datasetsFn = extract('default', geodash.typeahead.datasets);
-      datasets = datasetsFn(s, featurelayers, baselayers, servers);
+      datasets = datasetsFn(s, featurelayers, baselayers, servers, codecOptions);
     }
 
     if(datasets.length > 0)
