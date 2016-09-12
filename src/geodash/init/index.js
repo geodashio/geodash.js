@@ -4,6 +4,7 @@ module.exports = {
   controller: require("./controller"),
   controllers: require("./controllers"),
   directives: require("./directives"),
+  factory: require("./factory"),
   filters: require("./filters"),
   listeners: require("./listeners"),
   map_leaflet: require("./map_leaflet"),
