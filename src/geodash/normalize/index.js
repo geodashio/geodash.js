@@ -2,5 +2,6 @@
 
 module.exports = {
   feature: require("./feature"),
-  point: require("./point")
+  point: require("./point"),
+  float: require("./float")
 };

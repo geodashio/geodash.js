@@ -1,6 +1,7 @@
 'use strict';
 //var getScope = require("./getScope");
 module.exports = {
+  arrayToObject: require("./arrayToObject"),
   buildScope: require("./buildScope"),
   clearValue: require("./clearValue"),
   deepCopy: require("./deepCopy"),
