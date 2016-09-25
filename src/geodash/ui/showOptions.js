@@ -1,4 +1,4 @@
-module.exports = function($event, selector)
+module.exports = function(selector)
 {
   try{
     var input = $(selector);

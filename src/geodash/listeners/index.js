@@ -1,4 +1,11 @@
 'use strict';
+
+/**
+ * Generic AngularJS listeners for GeoDash
+ * @namespace log
+ * @memberof geodash
+ */
+
 module.exports = {
   hideModal: require("./hideModal"),
   saveAndHide: require("./saveAndHide"),

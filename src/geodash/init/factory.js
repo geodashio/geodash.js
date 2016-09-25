@@ -1,3 +1,14 @@
+/**
+ * Injects GeoDash factory variables into the Angular application.  Run before `bootstrap`.
+ *
+ * @function factory
+ * @param {(Object)} app - the Angular Application
+ * @memberof geodash.init
+ *
+ * @example
+ * geodash.init.factory(app);
+ */
+
 module.exports = function(app)
 {
 

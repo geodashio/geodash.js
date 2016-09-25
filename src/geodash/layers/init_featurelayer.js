@@ -1,37 +1,33 @@
-module.exports = function(id, layerConfig, $scope, live, map_config)
+module.exports = function(id, layerConfig, $scope, live, map_config, state)
 {
-  if(layerConfig.enabled == undefined || layerConfig.enabled == true)
+  if(extract("enabled", layerConfig, true))
   {
     var t = extract("type", layerConfig, "").toLowerCase();
-    if(t == "geojson")
+
+    var initFn = undefined;
+
+    if((t == "geojson" || t == "wms") && angular.isDefined(extract("heatmap", layerConfig, undefined)))
     {
-      if(angular.isDefined(extract("heatmap", layerConfig, undefined)))
-      {
-        geodash.layers.init_featurelayer_heatmap($scope, live, map_config, id, layerConfig);
-      }
-      else
-      {
-        geodash.layers.init_featurelayer_geojson($scope, live, map_config, id, layerConfig);
-      }
+      initFn = extract("heatmap", geodash.layers.featurelayer)
     }
-    else if(t == "wms")
+    else
     {
-      if(angular.isDefined(extract("heatmap", layerConfig, undefined)))
-      {
-        geodash.layers.init_featurelayer_heatmap($scope, live, map_config, id, layerConfig);
+      initFn = extract(t, geodash.layers.featurelayer);
+    }
+
+    initFn({
+      "$scope": $scope,
+      "live": live,
+      "dashboard": map_config,
+      "id": id,
+      "layerConfig": layerConfig,
+      "state": state,
+      "cb": {
+        "success": geodash.layers.init_featurelayer_post_ol3,
+        "failed": function(options){
+          geodash.log.error("layers", ["Could not initialize feature layer" + extract("id", options) +".", extract("fl", options)]);
+        }
       }
-      else
-      {
-        geodash.layers.init_featurelayer_wms($scope, live, map_config, id, layerConfig);
-      }
-    }
-    else if(t == "tegola")
-    {
-      geodash.layers.init_featurelayer_tegola($scope, live, map_config, id, layerConfig);
-    }
-    else if(t == "wmts")
-    {
-      geodash.layers.init_featurelayer_wmts($scope, live, map_config, id, layerConfig);
-    }
+    });
   }
 };

@@ -1,6 +1,14 @@
 'use strict';
-//var getScope = require("./getScope");
+
+/**
+ * Contains basic access functions and utility functions
+ * @namespace api
+ * @memberof geodash
+ */
+
 module.exports = {
+  addBaseLayer: require("./addBaseLayer"),
+  addFeatureLayer: require("./addFeatureLayer"),
   arrayToObject: require("./arrayToObject"),
   buildScope: require("./buildScope"),
   clearValue: require("./clearValue"),
@@ -13,11 +21,13 @@ module.exports = {
   getLayer: require("./getLayer"),
   getOption: require("./getOption"),
   getPage: require("./getPage"),
+  getRenderOrder: require("./getRenderOrder"),
   getScope: require("./getScope"),
   hasBaseLayer: require("./hasBaseLayer"),
   hasFeatureLayer: require("./hasFeatureLayer"),
   hasLayer: require("./hasLayer"),
   intend: require("./intend"),
+  isVisible: require("./isVisible"),
   listBaseLayers: require("./listBaseLayers"),
   listFeatureLayers: require("./listFeatureLayers"),
   listServers: require("./listServers"),

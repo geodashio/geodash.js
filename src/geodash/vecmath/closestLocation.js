@@ -1,3 +1,13 @@
+/**
+ * Find the closest location in b to a
+ *
+ * @name arrayToObject
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object} point
+ * @memberof geodash.vecmath
+ */
+
 module.exports = function(a, b)
 {
   if(b.toString != undefined && b.toString().startsWith('LatLng'))

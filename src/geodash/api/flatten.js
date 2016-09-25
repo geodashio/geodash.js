@@ -1,3 +1,18 @@
+/**
+ * Flattens an object.
+ *
+ * @function flatten
+ * @param {Object} obj - The original object
+ * @param {string|undefined} prefix - A prefix, if any, to add to the new object's keys.
+ * @return {Object} object - the flattened version of the object
+ * @memberof geodash.api
+ *
+ * @example
+ * var a = {'x': {'y': 'z' }}
+ * var b = geodash.api.fatten(a);
+ * b == {'x__y': 'z'}
+ */
+
 module.exports = function(obj, prefix)
 {
   var newObject = {};

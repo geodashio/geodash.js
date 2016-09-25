@@ -50,18 +50,18 @@ module.exports = function(popup, layer, feature, state)
     {
       var tabs = [];
       var pane = panes[0];
-      var html_tab ="<li class=\"active\"><a data-toggle=\"tab\" href=\"#"+pane.id+"\">"+pane.tab.label+"</a></li>";
+      var html_tab ="<li class=\"active\"><a role=\"tab\" data-toggle=\"tab\" href=\"#"+pane.id+"\">"+pane.tab.label+"</a></li>";
       tabs.push(html_tab);
       for(var i = 1; i < panes.length; i++)
       {
         pane = panes[i];
-        html_tab = "<li><a data-toggle=\"tab\" href=\"#"+pane.id+"\">"+pane.tab.label+"</a></li>"
+        html_tab = "<li><a role=\"tab\" data-toggle=\"tab\" href=\"#"+pane.id+"\">"+pane.tab.label+"</a></li>"
         tabs.push(html_tab);
       }
       var html_tabs = "<ul class=\"nav nav-tabs nav-justified\">"+tabs.join("")+"</ul>";
       ///////////////
       var paneContentsWithWrapper = [];
-      var html_pane = "<div id=\""+panes[0].id+"\" class=\"tab-pane fade in active\" style=\"padding: 4px;\">"+paneContents[0]+"</div>";
+      var html_pane = "<div id=\""+panes[0].id+"\" class=\"tab-pane fade in active\" style=\"padding: 4px;height:"+geodash.config.popup.height+";\">"+paneContents[0]+"</div>";
       paneContentsWithWrapper.push(html_pane);
       for(var i = 1; i < panes.length; i++)
       {

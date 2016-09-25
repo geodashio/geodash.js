@@ -1,4 +1,11 @@
 'use strict';
+
+/**
+ * Functions for tile math
+ * @namespace tilemath
+ * @memberof geodash
+ */
+
 module.exports = {
   D2R: (Math.PI / 180),
   R2D: (180 / Math.PI),

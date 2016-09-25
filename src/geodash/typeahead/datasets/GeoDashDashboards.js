@@ -20,7 +20,11 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
     codecs: codecs
   };
   var remote = geodash.bloodhound.remote(remoteOptions);
-  var engine = geodash.bloodhound.engine(local, prefetch, remote);
+  var engine = geodash.bloodhound.engine({
+    'local': local,
+    'prefetch': prefetch,
+    'remote': remote
+  });
   var templates = {
     suggestion: template_suggestion
   };

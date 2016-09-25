@@ -1,3 +1,4 @@
+
 module.exports = function(responses, fields_by_featuretype)
 {
   var features = [];

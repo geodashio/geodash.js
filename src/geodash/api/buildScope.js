@@ -1,3 +1,15 @@
+
+/**
+ * Builds a new [AngularJS](https://angularjs.org/) [scope](https://docs.angularjs.org/guide/scope) for a object.
+ *
+ * @function buildScope
+ * @param {Object} event - of objects with properties name and value
+ * @param {Object} args - of objects with properties name and value
+ * @return {Object} scope - object new scope
+ * @memberof geodash.api
+ * @see https://docs.angularjs.org/guide/scope
+ */
+
 module.exports = function(event, args)
 {
   var mainScope = geodash.api.getScope("geodash-main");

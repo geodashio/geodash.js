@@ -8,16 +8,17 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
     var datasets = [];
     var engine = undefined;
 
-    var s = $(this);
-    var placeholder = s.data('placeholder');
-    var w = s.data('width');
-    var h = s.data('height');
+    var that = $(this);
+    var placeholder = that.data('placeholder');
+    var w = that.data('width');
+    var h = that.data('height');
     var css = 'geodashserver-welcome-select-dropdown';
-    var template_empty = s.data('template-empty');
+    var template_empty = that.data('template-empty');
+    var initialValue = that.data('initial-value');
 
-    if(angular.isString(s.attr('data-typeahead-datasets')) && s.attr('data-typeahead-datasets').length > 0)
+    if(angular.isString(that.attr('data-typeahead-datasets')) && that.attr('data-typeahead-datasets').length > 0)
     {
-      var datasetsName = s.attr('data-typeahead-datasets');
+      var datasetsName = that.attr('data-typeahead-datasets');
       var datasetsFn = undefined;
       for(var i = 0; i < datasetOptions.length; i++)
       {
@@ -27,93 +28,36 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
           break;
         }
       }
-      datasets = datasetsFn(s, featurelayers, baselayers, servers, codecOptions);
+      datasets = datasetsFn(that, featurelayers, baselayers, servers, codecOptions);
     }
     else
     {
       var datasetsFn = extract('default', geodash.typeahead.datasets);
-      datasets = datasetsFn(s, featurelayers, baselayers, servers, codecOptions);
+      datasets = datasetsFn(that, featurelayers, baselayers, servers, codecOptions);
     }
 
     if(datasets.length > 0)
     {
-      s.typeahead('destroy','NoCached');
-      var typeahead = s.typeahead(null, datasets);
-      s.data('datasets', datasets);
+      that.typeahead('destroy','NoCached');
+      var typeahead = that.typeahead(null, datasets);
+      that.data('datasets', datasets);
+      if(angular.isDefined(initialValue))
+      {
+        that.typeahead('val', geodash.typeahead.displayFn(initialValue));
+        var newValue = extract(that.attr('data-search-output') || 'id', initialValue);
+        geodash.ui.saveToInput(this, newValue);
+        geodash.ui.saveToScope(this, newValue);
+      }
 
+      that.on('keydown', geodash.typeahead.listeners.keydown);
+      that.on('keyup', geodash.typeahead.listeners.keyup);
+      //
       typeahead.on('blur', geodash.typeahead.listeners.blur);
+      // Don't hook to change, since is triggered with null on typeaheads when new box is being opened.
+      // Need to manually trigger listener when doing geodash-clear
+      //typeahead.on('change', geodash.typeahead.listeners.change);
       typeahead.on('typeahead:change', geodash.typeahead.listeners.change);
       typeahead.on('typeahead:select typeahead:autocomplete typeahead:cursorchange', geodash.typeahead.listeners.select);
-
-      /*typeahead.on('typeahead:change', function(event, value) {
-        console.log("Event: ", event, value);
-        if(angular.isDefined($(this).data('datasets')))
-        {
-          var results = geodash.typeahead.getResultsFromDatasets($(this).data('datasets'), value);
-          var resultIndex = $(this).attr('data-search-output')|| 'id';
-          var newValue = results.length == 1 ? extract(resultIndex, results[0]) : null;
-          if(angular.isString($(this).data('backend')))
-          {
-            var backend = $('#'+$(this).data('backend'))
-              .val(angular.isString(newValue) ? newValue : JSON.stringify(newValue))
-              .trigger('input')
-              .change();
-          }
-          else if(angular.isString($(this).attr('data-typeahead-scope')))
-          {
-            var $scope = geodash.api.getScope($(this).attr('data-typeahead-scope'));
-            $scope.$apply(function(){
-              $scope.setValue($scope.path_flat, newValue, $scope.workspace);
-              $.each($scope.workspace_flat, function(key, value){
-                if(key.startsWith($scope.path_flat+"__"))
-                {
-                  $scope.workspace_flat[key] = $scope.stack.head.workspace_flat[key] = undefined;
-                }
-              });
-              if(angular.isDefined(newValue) && newValue != null)
-              {
-                $.each(geodash.api.flatten(newValue), function(i, x){
-                  $scope.workspace_flat[$scope.path_flat+"__"+i] = $scope.stack.head.workspace_flat[$scope.path_flat+"__"+i] = x;
-                });
-              }
-            });
-          }
-        }
-      });
-
-      typeahead.on('typeahead:select typeahead:autocomplete typeahead:cursorchange', function(event, obj) {
-        console.log("Event: ", event, obj);
-        var resultIndex = $(this).attr('data-search-output')|| 'id';
-        var newValue = extract(resultIndex, obj, null)
-        if(angular.isString($(this).data('backend')))
-        {
-          var backend = $('#'+$(this).data('backend'))
-            .val(angular.isString(newValue) ? newValue : JSON.stringify(newValue))
-            .trigger('input')
-            .change();
-        }
-        else if(angular.isString($(this).attr('data-typeahead-scope')))
-        {
-          var $scope = geodash.api.getScope($(this).attr('data-typeahead-scope'));
-          $scope.$apply(function(){
-            $scope.setValue($scope.path_flat, newValue, $scope.workspace);
-            $.each($scope.workspace_flat, function(key, value){
-              if(key.startsWith($scope.path_flat+"__"))
-              {
-                $scope.workspace_flat[key] = $scope.stack.head.workspace_flat[key] = undefined;
-              }
-            });
-            if(angular.isDefined(newValue) && newValue != null)
-            {
-              $.each(geodash.api.flatten(newValue), function(i, x){
-                $scope.workspace_flat[$scope.path_flat+"__"+i] = $scope.stack.head.workspace_flat[$scope.path_flat+"__"+i] = x;
-              });
-            }
-          });
-        }
-      });
-      */
-
     }
 
   });

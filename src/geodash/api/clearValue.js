@@ -1,7 +1,14 @@
-//module.exports = function(field_flat, value, target)
+/**
+ * Deletes the property in target at the given location given by keyChain.
+ *
+ * @function clearValue
+ * @param {Object} keyChain - The key chain of the property
+ * @param {Object} target - The object
+ * @memberof geodash.api
+ */
+
 module.exports = function(keyChain, target)
 {
-  // Update map_config
   if(angular.isString(keyChain))
   {
     keyChain = keyChain.split("__");

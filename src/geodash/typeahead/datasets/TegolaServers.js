@@ -24,7 +24,11 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
       codecs: codecs
     };
     var remote = geodash.bloodhound.remote(remoteOptions);
-    var engine = geodash.bloodhound.engine(local, prefetch, remote);
+    var engine = geodash.bloodhound.engine({
+      'local': local,
+      'prefetch': prefetch,
+      'remote': remote
+    });
     var templates = {
       header: '<h3 style="margin: 0 20px 5px 20px; padding: 3px 0; border-bottom: 1px solid #ccc;">'+ extract('title' || 'id', server, "") +'</h3>',
       suggestion: template_suggestion

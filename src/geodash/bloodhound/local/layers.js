@@ -1,8 +1,8 @@
-module.exports = function(featurelayers, baselayers)
+module.exports = function(options)
 {
   var bloodhoundData = [];
 
-  featurelayers = featurelayers || geodash.api.listFeatureLayers();
+  var featurelayers = options.featurelayers || geodash.api.listFeatureLayers();
   if(angular.isDefined(featurelayers))
   {
     bloodhoundData = bloodhoundData.concat($.map(featurelayers, function(x, i){
@@ -14,7 +14,7 @@ module.exports = function(featurelayers, baselayers)
     }));
   }
 
-  baselayers = baselayers || geodash.api.listBaseLayers();
+  var baselayers = options.baselayers || geodash.api.listBaseLayers();
   if(angular.isDefined(baselayers))
   {
     bloodhoundData = bloodhoundData.concat($.map(baselayers, function(x, i){

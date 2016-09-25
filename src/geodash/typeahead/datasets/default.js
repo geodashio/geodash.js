@@ -1,7 +1,7 @@
 module.exports = function(element, featurelayers, baselayers, servers, codecOptions)
 {
   var datasets = [];
-  var local = geodash.bloodhound.local(
+  var local = geodash.bloodhound.initLocal(
     element.data('localData'),
     featurelayers,
     baselayers,
@@ -25,7 +25,11 @@ module.exports = function(element, featurelayers, baselayers, servers, codecOpti
   {
     // Twitter Typeahead with
     //https://github.com/bassjobsen/typeahead.js-bootstrap-css
-    var engine = geodash.bloodhound.engine(local, prefetch, remote);
+    var engine = geodash.bloodhound.engine({
+      'local': local,
+      'prefetch': prefetch,
+      'remote': remote
+    });
 
     var templates = {
       empty: element.attr('data-template-empty'),

@@ -1,4 +1,11 @@
 'use strict';
+
+/**
+ * Functions to initialize Twitter typeahead seach interfaces.
+ * @namespace typeahead
+ * @memberof geodash
+ */
+
 module.exports = {
   datasets: require("./datasets"),
   displayFn: require("./displayFn"),

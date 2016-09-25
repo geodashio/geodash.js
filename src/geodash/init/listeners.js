@@ -1,42 +1,38 @@
 module.exports = function()
 {
-  $('body').on('click', '.btn-clear', function(event) {
+  $('body').on('click', '.btn-clear, .geodash-clear', function(event) {
     // "this" doesn't always point to what you think it does,
     // that's why need to use event.currentTarget
-    var selector = $(event.currentTarget).attr('data-target');
 
-    try{ $(selector).typeahead('close'); }catch(err){};
+    var input_id = $(event.currentTarget).attr('data-target-input-id');
+    if(angular.isString(input_id))
+    {
+      try{ $("#"+input_id).typeahead('close'); }catch(err){};
+      geodash.ui.saveToInput(event.currentTarget, null);
+    }
 
+    geodash.ui.saveToScope(event.currentTarget, null);
+
+    /*
     $(selector).each(function(){
-      var input = $(this);
-      input.val(null);
-      // Update Typeahead backend if exists
-      if(input.data('backend') != undefined)
-      {
-        var backend = $('#'+input.data('backend'));
-        backend.val(null);
-        backend.trigger('input');
-        backend.change();
-      }
-    });
+      $(this).val(null);
+      geodash.ui.saveToInput(this, null);
+      geodash.ui.saveToScope(this, null);
+    });*/
   });
   $('body').on('click', '.btn-off', function(event) {
-    var selector = $(event.currentTarget).attr('data-target');
-    $(selector).each(function(){
-      var input = $(this);
-      input.val("false");
-      input.trigger('input');
-      input.change();
-    });
+    var input_id = $(event.currentTarget).attr('data-target-input-id');
+    var input = $("#"+input_id);
+    input.val("false");
+    input.trigger('input');
+    input.change();
   });
   $('body').on('click', '.btn-on', function(event) {
-    var selector = $(event.currentTarget).attr('data-target');
-    $(selector).each(function(){
-      var input = $(this);
-      input.val("true");
-      input.trigger('input');
-      input.change();
-    });
+    var input_id = $(event.currentTarget).attr('data-target-input-id');
+    var input = $("#"+input_id);
+    input.val("true");
+    input.trigger('input');
+    input.change();
   });
 
   $('body').on('click', '.geodash-intent', function(event) {

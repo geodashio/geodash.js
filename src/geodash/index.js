@@ -1,5 +1,13 @@
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
+
+/**
+ * GeoDash.js is the Low-level Javascript API for GeoDash
+ *
+ * @namespace geodash
+ * @summary Low-level Javascript API for GeoDash
+ */
+
 module.exports = {
   api: require("./api"),
   assert: require("./assert"),
@@ -23,6 +31,8 @@ module.exports = {
   ui: require("./ui"),
   vecmath: require("./vecmath"),
   var: {
-    logs: {}
+    logs: {},
+    baselayers: {},
+    featurelayers: {}
   }
 };

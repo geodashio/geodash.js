@@ -9,9 +9,11 @@
   ],
   "homepage": "http://geodash.io/",
   "scripts": {
+    "build:docs": "mkdir docs; gulp docs",
     "build:js": "browserify src/index.js --outfile dist/geodash.js",
     "uglify": "cat dist/geodash.js | uglifyjs > dist/geodash.min.js",
-    "build": "mkdir dist; npm run build:js && npm run uglify",
+    "build:code": "mkdir dist; npm run build:js && npm run uglify",
+    "build": "npm run build:docs; npm run build:code",
     "jshint": "jshint src/*.js",
     "tests": "npm run jshint"
   },
@@ -28,7 +30,9 @@
   "devDependencies": {
     "browserify": "*",
     "browserify-shim": "*",
-    "uglify-js": "*",
-    "jshint": "*"
+    "gulp": "*",
+    "gulp-jsdoc3": "^0.3.0",
+    "jshint": "*",
+    "uglify-js": "*"
   }
 }

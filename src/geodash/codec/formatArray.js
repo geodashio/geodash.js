@@ -1,7 +1,9 @@
 module.exports = function(path, obj, fallback)
 {
   var result = fallback || '';
-  var x = extract(path, obj);
+
+  var x = angular.isDefined(obj) ? extract(path, obj) : path;
+
   if(Array.isArray(x))
   {
     result = x.join(",");

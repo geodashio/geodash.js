@@ -1,4 +1,11 @@
 'use strict';
+
+/**
+ * Functions to initialize a variety of components
+ * @namespace init
+ * @memberof geodash
+ */
+
 module.exports = {
   controller_base: require("./controller_base"),
   controller: require("./controller"),

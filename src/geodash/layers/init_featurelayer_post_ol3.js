@@ -1,15 +1,12 @@
-module.exports = function($scope, live, id, fl, visible)
+module.exports = function(options)
 {
-  if(fl != undefined)
+  if(geodash.api.isVisible(options))
   {
-    if(visible != undefined ? visible : true)
-    {
-      live["map"].addLayer(fl);
-    }
-    geodash.api.intend("layerLoaded", {'type':'featurelayer', 'layer': id, 'visible': visible}, $scope);
-  }
-  else
-  {
-    console.log("Could not add featurelayer "+id+" because it is undefined.");
+    var fl = extract("fl", options);
+    var layerID = extract("id", options) || extract("layerID", options);
+    var $scope = extract("$scope", options) || extract("scope", options);
+
+    geodash.var.map.addLayer(fl);
+    geodash.api.intend("layerLoaded", {'type':'featurelayer', 'layer': layerID, 'visible': true}, $scope);
   }
 };

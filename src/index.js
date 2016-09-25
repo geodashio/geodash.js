@@ -93,6 +93,11 @@ var extract = function(keyChain, node, fallback)
 	return obj;
 };
 
+var extractFloat = function(keyChain, node, fallback)
+{
+  return geodash.normalize.float(extract(keyChain, node, fallback));
+};
+
 var extractArrayLength = function(keyChain, node, fallback)
 {
   var value = extract(keyChain, node, undefined);
@@ -208,10 +213,17 @@ var sortLayers = function(layers, reverse)
 };
 var updateRenderOrder = function(layers)
 {
+  if(geodash.mapping_library == "ol3")
+  {
+
+  }
+  else if(geodash.mapping_library == "leaflet")
+  {
     for(var i = 0; i < layers.length; i++)
     {
         layers[i].bringToFront();
     }
+  }
 };
 var layersAsArray = function(layers)
 {
@@ -221,6 +233,7 @@ var layersAsArray = function(layers)
 
 window.expand = expand;
 window.extract = extract;
+window.extractFloat = extractFloat;
 window.extractArrayLength = extractArrayLength;
 window.getHashValue = getHashValue;
 window.hasHashValue = hasHashValue;

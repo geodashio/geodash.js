@@ -5,7 +5,7 @@ module.exports = function(options)
   var f = extract('feature', options) || extract('f', options);
   var state = extract('state', options);
   var config = extract('map_config', options) || extract('config', options);
-  var style_static = angular.isArray(extract('style_static', options)) ? geodash.api.arrayToObject(extract('style_static', options)) : {};
+  var style_static = angular.isArray(extract('style_static', options)) ? geodash.api.arrayToObject(extract('style_static', options)) : extract('style_static', options);
   var style_dynamic_fn = extract('style_dynamic_fn', options);
   var style_dynamic_options = extract('style_dynamic_options', options);
   ////
@@ -25,20 +25,32 @@ module.exports = function(options)
   if(geometryType == "Point")
   {
     var circleOptions = {
-        radius: geodash.normalize.float(extract("radius", styleStaticAndDynamic, 5.0))
+        radius: extractFloat("radius", styleStaticAndDynamic, 5.0)
     };
-    if(angular.isDefined(extract("strokeColor", style_static)))
+    if(angular.isDefined(extract("strokeColor", styleStaticAndDynamic)))
     {
-      circleOptions["stroke"] = new ol.style.Stroke({
-        color: extract("strokeColor", styleStaticAndDynamic),
-        width: geodash.normalize.float(extract("strokeWidth", styleStaticAndDynamic, 1.0))
-      });
+      var strokeWidth = extractFloat("strokeWidth", styleStaticAndDynamic, 1.0);
+      if(strokeWidth > 0)
+      {
+        circleOptions["stroke"] = new ol.style.Stroke({
+          color: extract("strokeColor", styleStaticAndDynamic),
+          width: strokeWidth
+        });
+      }
     }
     if(angular.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
-      circleOptions["fill"] = new ol.style.Fill({
-        color: extract("fillColor", styleStaticAndDynamic, undefined)
-      })
+      var fillColor = extract("fillColor", styleStaticAndDynamic);
+      var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic)
+      if(angular.isDefined(fillOpacity))
+      {
+        try{
+          var fillColorAsArray = ol.color.asArray(fillColor).slice();
+          fillColorAsArray[3] = fillOpacity;
+          fillColor = fillColorAsArray;
+        }catch(err){}
+      }
+      circleOptions["fill"] = new ol.style.Fill({ color: fillColor })
     }
     style["image"] = new ol.style.Circle(circleOptions);
   }
@@ -47,10 +59,14 @@ module.exports = function(options)
   {
     if(angular.isDefined(extract("strokeColor", styleStaticAndDynamic)))
     {
-      style["stroke"] = new ol.style.Stroke({
-        color: extract("strokeColor", styleStaticAndDynamic),
-        width: geodash.normalize.float(extract("strokeWidth", styleStaticAndDynamic, 1.0))
-      });
+      var strokeWidth = extractFloat("strokeWidth", styleStaticAndDynamic, 1.0);
+      if(strokeWidth > 0)
+      {
+        style["stroke"] = new ol.style.Stroke({
+          color: extract("strokeColor", styleStaticAndDynamic),
+          width: strokeWidth
+        });
+      }
     }
   }
 
@@ -58,9 +74,17 @@ module.exports = function(options)
   {
     if(angular.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
-      style["fill"] = new ol.style.Fill({
-        color: extract("fillColor", styleStaticAndDynamic)
-      })
+      var fillColor = extract("fillColor", styleStaticAndDynamic);
+      var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic)
+      if(angular.isDefined(fillOpacity))
+      {
+        try{
+          var fillColorAsArray = ol.color.asArray(fillColor).slice();
+          fillColorAsArray[3] = fillOpacity;
+          fillColor = fillColorAsArray;
+        }catch(err){}
+      }
+      style["fill"] = new ol.style.Fill({ color: fillColor })
     }
   }
 

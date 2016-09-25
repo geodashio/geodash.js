@@ -1,13 +1,13 @@
-module.exports = function(local, prefetch, remote)
+module.exports = function(options)
 {
-  var options = {
+  var engine = new Bloodhound({
     identify: geodash.bloodhound.identify,
     datumTokenizer: geodash.bloodhound.datumTokenizer,
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: local,
-    prefetch: prefetch,
-    remote: remote
-  };
-  var engine = new Bloodhound(options);
+    local: extract('local', options),
+    prefetch: extract('prefetch', options),
+    remote: extract('remote', options)
+  });
+
   return engine;
 };
