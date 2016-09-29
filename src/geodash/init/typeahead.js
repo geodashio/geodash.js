@@ -1,7 +1,7 @@
 module.exports = function($element, featurelayers, baselayers, servers, datasetOptions, codecOptions)
 {
-  datasetOptions = datasetOptions || [geodash.typeahead.datasets];
-  codecOptions = codecOptions || [geodash.bloodhound.codec];
+  datasetOptions = datasetOptions || extract("config.search.datasets", geodash) || [geodash.typeahead.datasets];
+  codecOptions = codecOptions || extract("config.search.codecs", geodash) || [geodash.bloodhound.codec];
 
   $('.typeahead', $element).each(function(){
 

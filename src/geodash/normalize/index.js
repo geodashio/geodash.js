@@ -8,6 +8,8 @@
 
 module.exports = {
   feature: require("./feature"),
+  float: require("./float"),
+  geometry: require("./geometry"),
   point: require("./point"),
-  float: require("./float")
+  polygon: require("./polygon")
 };
