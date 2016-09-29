@@ -31,6 +31,10 @@ module.exports = function(field_flat, source, target)
         }
         target.push(source[field_flat]);
       }
+      else
+      {
+        target[finalKey] = source[field_flat];
+      }
     }
     else
     {

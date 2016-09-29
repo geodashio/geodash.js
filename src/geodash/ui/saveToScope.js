@@ -10,9 +10,23 @@ module.exports = function(element, newValue)
       {
         if(angular.isString($(element).attr('data-target-scope-path')))
         {
-          var path = $(element).attr('data-target-scope-path');
-          var path_array = path.split(".");
-          var path_flat = path_array.join("__");
+          var targetScopePath = $(element).attr('data-target-scope-path');
+          try { targetScopePath = JSON.parse(targetScopePath); }catch(err){}
+          var path = undefined;
+          var path_array = undefined;
+          var path_flat = undefined;
+          if(Array.isArray(targetScopePath))
+          {
+            path_array = targetScopePath;
+            path = path_array.join(".");
+            path_flat = path_array.join("__");
+          }
+          else
+          {
+            path = targetScopePath;
+            path_array = path.split(".");
+            path_flat = path_array.join("__");
+          }
 
           $scope.$apply(function(){
             $scope.setValue(path_array, newValue, $scope);

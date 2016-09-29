@@ -36,6 +36,10 @@ module.exports = function(keyChain, value, target)
         }
         target.push(value);
       }
+      else
+      {
+        target[finalKey] = value;
+      }
     }
     else
     {
