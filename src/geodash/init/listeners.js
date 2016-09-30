@@ -12,6 +12,7 @@ module.exports = function()
     }
 
     geodash.ui.saveToScope(event.currentTarget, null);
+    geodash.ui.changeTab(event.currentTarget, null);
 
     /*
     $(selector).each(function(){

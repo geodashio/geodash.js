@@ -9,6 +9,7 @@
 module.exports = {
   default: require("./default"),
   FeatureLayers: require("./FeatureLayers"),
+  FeatureLayersWithFilters: require("./FeatureLayersWithFilters"),
   GeoDashDashboards: require("./GeoDashDashboards"),
   TegolaServers: require("./TegolaServers"),
   WMSServers: require("./WMSServers")

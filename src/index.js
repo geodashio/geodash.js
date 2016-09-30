@@ -204,9 +204,7 @@ var getHashValueAsFloat = function(keys)
 var sortLayers = function(layers, reverse)
 {
   var renderLayers = $.isArray(layers) ? layers : $.map(layers, function(layer){return layer;});
-  renderLayers = renderLayers.sort(function(a, b){
-      return a.options.renderOrder - b.options.renderOrder;
-  });
+  renderLayers = renderLayers.sort(function(a, b){ return a.get('zIndex') - b.get('zIndex'); });
   if(reverse === true)
     renderLayers.reverse();
   return renderLayers;

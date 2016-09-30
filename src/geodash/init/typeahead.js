@@ -47,6 +47,7 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
         var newValue = extract(that.attr('data-search-output') || 'id', initialValue);
         geodash.ui.saveToInput(this, newValue);
         geodash.ui.saveToScope(this, newValue);
+        geodash.ui.changeTab(this, newValue);
       }
 
       that.on('keydown', geodash.typeahead.listeners.keydown);

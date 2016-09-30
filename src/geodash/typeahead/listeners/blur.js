@@ -12,5 +12,6 @@ module.exports = function(event)
 
     geodash.ui.saveToInput(this, newValue);
     geodash.ui.saveToScope(this, newValue);
+    geodash.ui.changeTab(this, newValue);
   }
 };

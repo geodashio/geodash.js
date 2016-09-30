@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+  changeTab: require("./changeTab"),
   toggleOptions: require("./toggleOptions"),
   showOptions: require("./showOptions"),
   init_slider_label: require("./init_slider_label"),

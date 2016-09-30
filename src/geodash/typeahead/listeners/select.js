@@ -6,4 +6,5 @@ module.exports = function(event, obj) {
 
   geodash.ui.saveToInput(this, newValue);
   geodash.ui.saveToScope(this, newValue);
+  geodash.ui.changeTab(this, newValue);
 };

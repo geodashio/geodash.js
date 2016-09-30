@@ -10,11 +10,12 @@ module.exports = function($interpolate, $scope, that, type, range, value, minVal
       step: 1,
       slide: function(event, ui) {
           geodash.ui.update_slider_label.apply(this, [$interpolate, event, ui]);
+          var layer = that.data('layer');
           var output = that.data('output');
           var newValue = that.data('options')[ui.value];
           var filter = {};
           filter[output] = newValue;
-          geodash.api.intend("filterChanged", {"layer":"popatrisk", "filter":filter}, $scope);
+          geodash.api.intend("filterChanged", {"layer": layer, "filter":filter}, $scope);
       }
     });
   }
@@ -30,11 +31,12 @@ module.exports = function($interpolate, $scope, that, type, range, value, minVal
         step: step,
         slide: function(event, ui) {
             geodash.ui.update_slider_label.apply(this, [$interpolate, event, ui]);
+            var layer = that.data('layer');
             var output = that.data('output');
             var newValue = ui.values;
             var filter = {};
             filter[output] = newValue;
-            geodash.api.intend("filterChanged", {"layer":"popatrisk", "filter":filter}, $scope);
+            geodash.api.intend("filterChanged", {"layer":layer, "filter":filter}, $scope);
         }
       });
     }
@@ -48,11 +50,12 @@ module.exports = function($interpolate, $scope, that, type, range, value, minVal
         step: step,
         slide: function(event, ui) {
             geodash.ui.update_slider_label.apply(this, [$interpolate, event, ui]);
+            var layer = that.data('layer');
             var output = that.data('output');
             var newValue = ui.value / 100.0;
             var filter = {};
             filter[output] = newValue;
-            geodash.api.intend("filterChanged", {"layer":"popatrisk", "filter":filter}, $scope);
+            geodash.api.intend("filterChanged", {"layer":layer, "filter":filter}, $scope);
         }
       });
     }

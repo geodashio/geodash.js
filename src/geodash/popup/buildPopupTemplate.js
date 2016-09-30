@@ -65,7 +65,7 @@ module.exports = function(popup, layer, feature, state)
       paneContentsWithWrapper.push(html_pane);
       for(var i = 1; i < panes.length; i++)
       {
-        html_pane = "<div id=\""+panes[i].id+"\" class=\"tab-pane fade\" style=\"padding: 4px;\">"+paneContents[i]+"</div>";
+        html_pane = "<div id=\""+panes[i].id+"\" class=\"tab-pane fade\" style=\"padding: 4px;height:"+geodash.config.popup.height+";\">"+paneContents[i]+"</div>";
         paneContentsWithWrapper.push(html_pane);
       }
       ///////////////
