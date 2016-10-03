@@ -41,6 +41,20 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
       that.typeahead('destroy','NoCached');
       var typeahead = that.typeahead(null, datasets);
       that.data('datasets', datasets);
+      if(angular.isString(initialValue))
+      {
+        var matches = undefined;
+        for(var i = 0; i < datasets.length; i++)
+        {
+          matches = datasets[i].engine.getByPropertyName('id', initialValue);
+          if(Array.isArray(matches) && matches.length > 0)
+          {
+            break;
+          }
+        }
+        initialValue = matches[0];
+      }
+
       if(angular.isDefined(initialValue))
       {
         that.typeahead('val', geodash.typeahead.displayFn(initialValue));

@@ -21,7 +21,14 @@ module.exports = function(x)
   {
     for(var i = 0; i < x.length; i++)
     {
-      y[x[i].name] = x[i].value;
+      if("value" in x[i])
+      {
+        y[x[i].id || x[i].name] = x[i].value;
+      }
+      else
+      {
+        y[x[i].id || x[i].name] = x[i];
+      }
     }
   }
   return y;

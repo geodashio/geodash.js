@@ -11,6 +11,7 @@ module.exports = {
   FeatureLayers: require("./FeatureLayers"),
   FeatureLayersWithFilters: require("./FeatureLayersWithFilters"),
   GeoDashDashboards: require("./GeoDashDashboards"),
+  Images: require("./Images"),
   TegolaServers: require("./TegolaServers"),
   WMSServers: require("./WMSServers")
 };

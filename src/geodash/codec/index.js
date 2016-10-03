@@ -8,6 +8,7 @@
 
 module.exports = {
   formatArray: require("./formatArray"),
+  formatCSS: require("./formatCSS"),
   parseAttributes: require("./parseAttributes"),
   parseFeatures: require("./parseFeatures"),
   parseGeometry: require("./parseGeometry"),

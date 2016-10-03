@@ -11,16 +11,10 @@ module.exports = function()
       geodash.ui.saveToInput(event.currentTarget, null);
     }
 
-    geodash.ui.saveToScope(event.currentTarget, null);
+    geodash.ui.clearFromScope(event.currentTarget);
     geodash.ui.changeTab(event.currentTarget, null);
-
-    /*
-    $(selector).each(function(){
-      $(this).val(null);
-      geodash.ui.saveToInput(this, null);
-      geodash.ui.saveToScope(this, null);
-    });*/
   });
+
   $('body').on('click', '.btn-off', function(event) {
     var input_id = $(event.currentTarget).attr('data-target-input-id');
     var input = $("#"+input_id);

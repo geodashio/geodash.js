@@ -1,13 +1,14 @@
 /**
- * Saves the typeahead value to an Angular Scope
+ * Deletes the value from an Angular scope
  *
- * @function saveToInput
- * @param {Object} element - The input element
+ * @function deleteFromScope
+ * @param {Object} element - The typeahead element
  * @param {(Object|string))} newValue - The new value to be saved
+ * @return {Object} object - returns new object
  * @memberof geodash.ui
  */
 
-module.exports = function(element, newValue)
+module.exports = function(element)
 {
   if(angular.isDefined(element))
   {
@@ -42,22 +43,13 @@ module.exports = function(element, newValue)
           }
 
           $scope.$apply(function(){
-            $scope.setValue(path_array, newValue, $scope);
+            $scope.clearValue(path_array, $scope);
             $.each($scope, function(key, value){
               if(key.startsWith(path_flat+"__"))
               {
-                $scope[key] = undefined;
+                delete $scope[key];
               }
             });
-            if(angular.isDefined(newValue) && newValue != null)
-            {
-              if(! angular.isString(newValue))
-              {
-                $.each(geodash.api.flatten(newValue), function(i, x){
-                  $scope[path_flat+"__"+i] = x;
-                });
-              }
-            }
           });
 
           if(Array.isArray(targetScopeChange))
@@ -72,19 +64,14 @@ module.exports = function(element, newValue)
         else
         {
           $scope.$apply(function(){
-            $scope.setValue($scope.path_array, newValue, $scope.workspace);
+            $scope.clearValue($scope.path_array, $scope.workspace);
             $.each($scope.workspace_flat, function(key, value){
               if(key.startsWith($scope.path_flat+"__"))
               {
-                $scope.workspace_flat[key] = $scope.stack.head.workspace_flat[key] = undefined;
+                delete $scope.workspace_flat[key];
+                delete $scope.stack.head.workspace_flat[key];
               }
             });
-            if(angular.isDefined(newValue) && newValue != null)
-            {
-              $.each(geodash.api.flatten(newValue), function(i, x){
-                $scope.workspace_flat[$scope.path_flat+"__"+i] = $scope.stack.head.workspace_flat[$scope.path_flat+"__"+i] = x;
-              });
-            }
           });
 
           if(Array.isArray(targetScopeChange))

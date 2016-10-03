@@ -29,7 +29,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
     suggestion: template_suggestion
   };
   var dataset = {
-    name: "geodash",
+    name: "dashboards",
     engine: engine,
     minLength: 0,
     limit: 10,
