@@ -35,6 +35,7 @@ module.exports = {
   listServers: require("./listServers"),
   listTegolaServers: require("./listTegolaServers"),
   listWMSServers: require("./listWMSServers"),
+  objectToArray: require("./objectToArray"),
   opt_b: require("./opt_b"),
   opt_i: require("./opt_i"),
   opt_j: require("./opt_j"),

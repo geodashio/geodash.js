@@ -42,7 +42,12 @@ module.exports = function(options)
     var ws = extract("config.dynamicStyleFunctionWorkspaces", geodash) || [geodash.dynamicStyleFn];
     var styleFn = (function(_layerID, styleFnWorkspaces){
       return function(feature, resolution) {
-        return geodash.style.ol3(feature, resolution, _layerID, styleFnWorkspaces);
+        return geodash.style.ol3({
+          "feature": feature,
+          "resolution": resolution,
+          "layerID": _layerID,
+          "styleFnWorkspaces": styleFnWorkspaces
+        });
       };
     })(layerID, extract('dynamicStyleFunctionWorkspaces', geodash.config, ws));
     var fl = new ol.layer.Vector({

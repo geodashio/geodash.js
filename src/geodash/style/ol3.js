@@ -1,5 +1,10 @@
-module.exports = function(f, resolution, layerID, styleFnWorkspaces)
+module.exports = function(options)
 {
+  var feature = extract("feature", options);
+  var resolution = extract("resolution", options);
+  var layerID = extract("layerID", options);
+  var styleFnWorkspaces = extract("styleFnWorkspaces", options);
+  //
   var styles = [];
   //var layerID = this.layerID;
   var mainScope = geodash.api.getScope("geodash-main");
@@ -7,46 +12,24 @@ module.exports = function(f, resolution, layerID, styleFnWorkspaces)
   if(angular.isDefined(fl))
   {
     var currentStyle = 0;
-    var geometryType = f.getGeometry().getType();
+    var geometryType = feature.getGeometry().getType();
     var symbolizers = extract(["carto", "styles", currentStyle, "symbolizers"], fl, []);
     for(var i = 0; i < symbolizers.length; i++)
     {
       var symbolizer = symbolizers[i];
-      var style_static = extract(["static", "properties"], symbolizer);
-      var style_dynamic_fn_name = extract(["dynamic", "func"], symbolizer);
-      var style_dynamic_fn = undefined;
-      if(angular.isDefined(style_dynamic_fn_name))
-      {
-        for(var j = 0; j < styleFnWorkspaces.length; j++)
-        {
-          style_dynamic_fn = extract(style_dynamic_fn_name, styleFnWorkspaces[j]);
-          if(angular.isFunction(style_dynamic_fn))
-          {
-            break;
-          }
-        }
-      }
-      style = geodash.style.translate.ol3({
-        'feature': f,
-        'state': mainScope.state,
-        'map_config': mainScope.map_config,
-        'style_static': style_static,
-        'style_dynamic_fn': style_dynamic_fn,
-        'style_dynamic_options': extract(["dynamic", "options"], symbolizer)
+      var symbolizerFn = extract(symbolizer.type, geodash.style.symbolizer);
+      var style = symbolizerFn({
+        "feature": feature,
+        "symbolizer": symbolizer,
+        "styleFnWorkspaces": styleFnWorkspaces,
+        "state": extract("state", mainScope),
+        "map_config": extract("map_config", mainScope)
       });
-      styles.push(new ol.style.Style(style))
-    }
-
-    //$.extend(style, style_static);
-
-    /*
-    var style_dynamic = extract(["cartography", 0, "styles", "default", "dynamic", "func"], popatrisk);
-    var options = extract(["cartography", 0, "styles", "default", "dynamic", "options"], popatrisk);
-    var delta = angular.isFunction(geodash[style_dynamic]) ? geodash[style_dynamic](f, state, map_config, options) : undefined;
-    if(delta != undefined)
-    {
-      $.extend(style, delta);
-    }*/
+      if(angular.isDefined(style))
+      {
+        styles.push(new ol.style.Style(style))
+      }
   }
+}
   return styles;
 };

@@ -10,5 +10,6 @@
 module.exports = {
   ol3: require("./ol3"),
   leaflet: require("./leaflet"),
+  symbolizer: require("./symbolizer"),
   translate: require("./translate")
 };

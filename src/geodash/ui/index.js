@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+  css: require("./css"),
   changeTab: require("./changeTab"),
   clearFromScope: require("./clearFromScope"),
   toggleOptions: require("./toggleOptions"),

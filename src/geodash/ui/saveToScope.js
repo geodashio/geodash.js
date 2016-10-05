@@ -3,7 +3,7 @@
  *
  * @function saveToInput
  * @param {Object} element - The input element
- * @param {(Object|string))} newValue - The new value to be saved
+ * @param {(Object|string)} newValue - The new value to be saved
  * @memberof geodash.ui
  */
 

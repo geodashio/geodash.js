@@ -1,9 +1,9 @@
 /**
  * Deletes the value from an Angular scope
  *
- * @function deleteFromScope
+ * @function clearFromScope
  * @param {Object} element - The typeahead element
- * @param {(Object|string))} newValue - The new value to be saved
+ * @param {(Object|string)} newValue - The new value to be saved
  * @return {Object} object - returns new object
  * @memberof geodash.ui
  */
