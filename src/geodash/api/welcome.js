@@ -6,7 +6,7 @@ module.exports = function(options)
     "id": "geodash-modal-welcome",
     "dynamic": {},
     "static": {
-      "welcome": scope.map_config["welcome"]
+      "welcome": scope.dashboard["welcome"]
     }
   };
   geodash.api.intend("toggleModal", intentData, scope);

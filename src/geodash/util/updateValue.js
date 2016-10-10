@@ -1,6 +1,5 @@
 module.exports = function(field_flat, source, target)
 {
-  // Update map_config
   if(field_flat.indexOf("__") == -1)
   {
     target[field_flat] = source[field_flat];

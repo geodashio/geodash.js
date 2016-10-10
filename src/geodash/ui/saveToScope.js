@@ -14,7 +14,7 @@ module.exports = function(element, newValue)
     var scope_id = $(element).attr('data-target-scope-id');
     if(angular.isString(scope_id))
     {
-      var $scope = geodash.api.getScope(scope_id);
+      var $scope = geodash.util.getScope(scope_id);
       if(angular.isDefined($scope))
       {
         if(angular.isString($(element).attr('data-target-scope-path')))
@@ -53,7 +53,7 @@ module.exports = function(element, newValue)
             {
               if(! angular.isString(newValue))
               {
-                $.each(geodash.api.flatten(newValue), function(i, x){
+                $.each(geodash.util.flatten(newValue), function(i, x){
                   $scope[path_flat+"__"+i] = x;
                 });
               }
@@ -81,7 +81,7 @@ module.exports = function(element, newValue)
             });
             if(angular.isDefined(newValue) && newValue != null)
             {
-              $.each(geodash.api.flatten(newValue), function(i, x){
+              $.each(geodash.util.flatten(newValue), function(i, x){
                 $scope.workspace_flat[$scope.path_flat+"__"+i] = $scope.stack.head.workspace_flat[$scope.path_flat+"__"+i] = x;
               });
             }

@@ -7,7 +7,7 @@ module.exports = function(options)
   //
   var styles = [];
   //var layerID = this.layerID;
-  var mainScope = geodash.api.getScope("geodash-main");
+  var mainScope = geodash.util.getScope("geodash-main");
   var fl = geodash.api.getFeatureLayer(layerID);
   if(angular.isDefined(fl))
   {
@@ -23,7 +23,7 @@ module.exports = function(options)
         "symbolizer": symbolizer,
         "styleFnWorkspaces": styleFnWorkspaces,
         "state": extract("state", mainScope),
-        "map_config": extract("map_config", mainScope)
+        "dashboard": extract("dashboard", mainScope)
       });
       if(angular.isDefined(style))
       {

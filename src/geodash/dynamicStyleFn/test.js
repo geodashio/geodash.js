@@ -1,4 +1,4 @@
-module.exports = function(f, state, map_config, options)
+module.exports = function(f, state, dashboard, options)
 {
   var idx = parseInt(f.id_.split(".")[1], 10);
   var colors = [

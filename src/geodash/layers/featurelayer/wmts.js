@@ -1,4 +1,4 @@
-module.exports = function($scope, live, map_config, id, layerConfig)
+module.exports = function($scope, live, dashboard, id, layerConfig)
 {
   var w = layerConfig.wmts;
   if(extract("auth", layerConfig, "") == "basic")
@@ -16,7 +16,7 @@ module.exports = function($scope, live, map_config, id, layerConfig)
       success: function(){},
       complete: function(response){
         var fl = L.tileLayer.wmts(w.url, {
-          renderOrder: $.inArray(id, map_config.renderlayers),
+          renderOrder: $.inArray(id, dashboard.renderlayers),
           version: w.version || "1.0.0",
           layers: geodash.codec.formatArray('layers', w, ''),
           styles: geodash.codec.formatArray('styles', w, ''),
@@ -36,7 +36,7 @@ module.exports = function($scope, live, map_config, id, layerConfig)
   else
   {
     var fl = L.tileLayer.wmts(w.url, {
-      renderOrder: $.inArray(id, map_config.renderlayers),
+      renderOrder: $.inArray(id, dashboard.renderlayers),
       version: w.version || "1.0.0",
       layers: geodash.codec.formatArray('layers', w, ''),
       styles: geodash.codec.formatArray('styles', w, ''),

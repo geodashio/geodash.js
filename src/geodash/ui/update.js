@@ -12,7 +12,7 @@ module.exports = function(element, tab)
   var id = angular.isString(element) ? element : $(element).attr("id");
   element = angular.isString(element) ? $("#"+id) : element;
 
-  var $scope = geodash.api.getScope(id);
+  var $scope = geodash.util.getScope(id);
 
   $('[data-toggle="tooltip"]', element).tooltip();
 

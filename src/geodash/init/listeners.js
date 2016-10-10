@@ -34,7 +34,7 @@ module.exports = function()
     event.preventDefault();  // For anchor tags
     var that = $(this);
     //var scope = angular.element('[ng-controller='+that.data('intent-ctrl')+']').scope();
-    var scope = geodash.api.getScope(that.attr('data-intent-ctrl'));
+    var scope = geodash.util.getScope(that.attr('data-intent-ctrl'));
     if(that.hasClass('geodash-toggle'))
     {
       var intentData = JSON.parse(that.attr('data-intent-data')); // b/c jquery data not updated by angular

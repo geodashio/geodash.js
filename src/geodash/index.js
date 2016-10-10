@@ -29,8 +29,10 @@ module.exports = {
   tilemath: require("./tilemath"),
   typeahead: require("./typeahead"),
   ui: require("./ui"),
+  util: require("./util"),
   vecmath: require("./vecmath"),
   var: {
+    apps: {},
     logs: {},
     baselayers: {},
     featurelayers: {}

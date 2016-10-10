@@ -4,8 +4,8 @@ module.exports = function(options)
   var style = {};
   var f = extract('feature', options) || extract('f', options);
   var state = extract('state', options);
-  var config = extract('map_config', options) || extract('config', options);
-  var style_static = angular.isArray(extract('style_static', options)) ? geodash.api.arrayToObject(extract('style_static', options)) : extract('style_static', options);
+  var config = extract('dashboard', options) || extract('config', options);
+  var style_static = angular.isArray(extract('style_static', options)) ? geodash.util.arrayToObject(extract('style_static', options)) : extract('style_static', options);
   var style_dynamic_fn = extract('style_dynamic_fn', options);
   var style_dynamic_options = extract('style_dynamic_options', options);
   ////

@@ -8,7 +8,7 @@
  *
  * @example
  * var a = {'x': 'y', 'q': 'r'};
- * var b = geodash.api.objectToArray(a);
+ * var b = geodash.util.objectToArray(a);
  * b == [{'name': 'x', 'value': 'y'}, {'name': 'q', 'value': 'r'}]
  */
 

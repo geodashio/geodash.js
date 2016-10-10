@@ -7,9 +7,9 @@
  */
 
 module.exports = {
-  controller_base: require("./controller_base"),
-  controller: require("./controller"),
+  all: require("./all"),
   controllers: require("./controllers"),
+  dashboard: require("./dashboard"),
   directives: require("./directives"),
   factory: require("./factory"),
   filters: require("./filters"),

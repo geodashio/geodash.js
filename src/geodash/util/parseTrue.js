@@ -7,12 +7,12 @@
  * @memberof geodash.api
  *
  * @example
- * true == geodash.api.parseTrue('on');
- * true == geodash.api.parseTrue('true');
- * true == geodash.api.parseTrue('t');
- * true == geodash.api.parseTrue('1');
- * true == geodash.api.parseTrue(1);
- * true == geodash.api.parseTrue(true);
+ * true == geodash.util.parseTrue('on');
+ * true == geodash.util.parseTrue('true');
+ * true == geodash.util.parseTrue('t');
+ * true == geodash.util.parseTrue('1');
+ * true == geodash.util.parseTrue(1);
+ * true == geodash.util.parseTrue(true);
  */
 
 module.exports = function(value)

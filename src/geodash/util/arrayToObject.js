@@ -10,7 +10,7 @@
  *
  * @example
  * var a = [{'name': 'x', 'value': 'y'}, {'name': 'q', 'value': 'r'}]
- * var b = geodash.api.arrayToObject(a);
+ * var b = geodash.util.arrayToObject(a);
  * b == {'x': 'y', 'q': 'r'}
  */
 

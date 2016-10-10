@@ -16,5 +16,5 @@
 module.exports = function(id, options)
 {
   var config = geodash.api.getDashboardConfig(options);
-  return geodash.api.getByID(id, config.assets);
+  return geodash.util.getByID(id, config.assets);
 };

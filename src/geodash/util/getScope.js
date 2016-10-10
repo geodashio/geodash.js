@@ -9,7 +9,7 @@
  * @see https://docs.angularjs.org/guide/scope
  *
  * @example
- * var $scope = geodash.api.getScope('geodash-main');
+ * var $scope = geodash.util.getScope('geodash-main');
  * var $scope = geodash.api.getEndpoint('geodash-modal-welcome');
  */
 

@@ -1,6 +1,45 @@
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
 
+var buildPageURL = function($interpolate, dashboard, state)
+{
+  var template = geodash.api.getPage(extract("page", state));
+  if(angular.isDefined(template))
+  {
+    //
+    var url = $interpolate(template)(state);
+
+    var hash_args = [];
+    var view = state["view"];
+    if(view != undefined && view["z"] != undefined && view["lat"] != undefined && view["lon"] != undefined)
+    {
+      hash_args.push("z="+view["z"]);
+      hash_args.push("lat="+view["lat"].toFixed(4));
+      hash_args.push("lon="+view["lon"].toFixed(4));
+    }
+    var filters = state["filters"];
+    if(filters)
+    {
+        $.each(state["filters"], function(layer_id, layer_filters)
+        {
+          $.each(layer_filters, function(filter_id, filter_value)
+          {
+              hash_args.push(layer_id+":"+filter_id+"="+filter_value);
+          });
+        });
+    }
+    if(hash_args.length > 0)
+    {
+      url += "#"+hash_args.join("&");
+    }
+    return url;
+  }
+  else
+  {
+    return undefined;
+  }
+};
+
 var expand = function(x)
 {
   var newArray = [];
@@ -103,103 +142,21 @@ var extractArrayLength = function(keyChain, node, fallback)
   var value = extract(keyChain, node, undefined);
   return Array.isArray(value) ? value.length : fallback;
 };
-
-var getHashValue = function(keys, type)
-{
-    var value = undefined;
-    if(typeof keys === 'string')
-    {
-      keys = [keys.toLowerCase()];
-    }
-    else
-    {
-      keys = $.map(keys,function(value, i){return value.toLowerCase();});
-    }
-    var hash_lc = location.hash.toLowerCase();
-    for(var i = 0; i < keys.length; i++)
-    {
-      var key = keys[i];
-      var keyAndHash = hash_lc.match(new RegExp(key + '=([^&]*)'));
-      if(keyAndHash)
-      {
-          value = keyAndHash[1];
-          if(value != undefined && value != null && value != "")
-          {
-            break;
-          }
-      }
-    }
-
-    if(type != undefined)
-    {
-        if(type == "integer")
-        {
-          value = (value != undefined && value != null && value != "") ? parseInt(value, 10) : undefined;
-        }
-        else if(type == "stringarray")
-        {
-          if(value != undefined)
-          {
-            var newValue = value.split(",");
-            value = newValue;
-          }
-        }
-        else if(type == "integerarray")
-        {
-          if(value != undefined)
-          {
-            var sValue = value.split(",");
-            var newValue = [];
-            for(var i = 0; i < sValue.length; i++)
-            {
-              var v = sValue[i];
-              newValue.push((v != undefined && v != null && v != "") ? parseInt(v, 10) : undefined);
-            }
-            value = newValue;
-          }
-        }
-        else if(type == "float")
-        {
-          value = (value != undefined && value != null && value != "") ? parseFloat(value) : undefined;
-        }
-        else if(type == "floatarray")
-        {
-          if(value !=undefined)
-          {
-            var sValue = value.split(",");
-            var newValue = [];
-            for(var i = 0; i < sValue.length; i++)
-            {
-              var v = sValue[i];
-              newValue.push((v != undefined && v != null && v != "") ? parseFloat(v) : undefined);
-            }
-            value = newValue;
-          }
-        }
-    }
-    return value;
-};
-
-var hasHashValue = function(keys)
-{
-    var value = getHashValue(keys);
-    return value != undefined && value != null && value != "";
-};
 var getHashValueAsStringArray = function(keys)
 {
-  return getHashValue(keys, "stringarray");
+  return geodash.util.getHashValue(keys, "stringarray");
 };
 var getHashValueAsInteger = function(keys)
 {
-  return getHashValue(keys, "integer");
+  return geodash.util.getHashValue(keys, "integer");
 };
 var getHashValueAsIntegerArray = function(keys)
 {
-  return getHashValue(keys, "integerarray");
+  return geodash.util.getHashValue(keys, "integerarray");
 };
 var getHashValueAsFloat = function(keys)
 {
-  return getHashValue(keys, "float");
+  return geodash.util.getHashValue(keys, "float");
 };
 var sortLayers = function(layers, reverse)
 {
@@ -229,12 +186,11 @@ var layersAsArray = function(layers)
 };
 
 
+window.buildPageURL = buildPageURL;
 window.expand = expand;
 window.extract = extract;
 window.extractFloat = extractFloat;
 window.extractArrayLength = extractArrayLength;
-window.getHashValue = getHashValue;
-window.hasHashValue = hasHashValue;
 window.getHashValueAsStringArray = getHashValueAsStringArray;
 window.getHashValueAsInteger = getHashValueAsInteger;
 window.getHashValueAsIntegerArray = getHashValueAsIntegerArray;

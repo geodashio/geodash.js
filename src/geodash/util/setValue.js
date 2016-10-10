@@ -1,7 +1,6 @@
-//module.exports = function(field_flat, value, target)
 module.exports = function(keyChain, value, target)
 {
-  // Update map_config
+  // Update dashboard
   if(angular.isString(keyChain))
   {
     keyChain = keyChain.split("__");

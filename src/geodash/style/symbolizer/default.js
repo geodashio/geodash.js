@@ -20,7 +20,7 @@ module.exports = function(options)
   var style = geodash.style.translate.ol3({
     'feature': options.feature,
     'state': options.state,
-    'map_config': options.map_config,
+    'dashboard': options.dashboard,
     'style_static': style_static,
     'style_dynamic_fn': style_dynamic_fn,
     'style_dynamic_options': extract(["dynamic", "options"], symbolizer)

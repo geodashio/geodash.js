@@ -4,7 +4,7 @@ module.exports = function(event, args)
     console.log('args', args);
     //
     var id = args["id_show"] || args["id"];
-    var modal_scope = geodash.api.getScope(id);
+    var modal_scope = geodash.util.getScope(id);
     var modal_scope_new = geodash.api.buildScope(event, args);
     var modalOptions = args['modal'] || {};
     modalOptions['show'] = false;

@@ -30,13 +30,13 @@ module.exports = function(obj, prefix)
     }
     else if(angular.isArray(value))
     {
-      $.each(geodash.api.flatten(value, newKey), function(key2, value2){
+      $.each(geodash.util.flatten(value, newKey), function(key2, value2){
         newObject[""+key2] = value2;
       });
     }
     else
     {
-      $.each(geodash.api.flatten(value, newKey), function(key2, value2){
+      $.each(geodash.util.flatten(value, newKey), function(key2, value2){
         newObject[key2] = value2;
       });
     }

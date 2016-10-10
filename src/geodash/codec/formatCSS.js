@@ -4,7 +4,7 @@ module.exports = function(x)
   {
     if(Array.isArray(x))
     {
-      x = geodash.api.arrayToObject(x);
+      x = geodash.util.arrayToObject(x);
     }
     if(Object.keys(x).length > 0)
     {

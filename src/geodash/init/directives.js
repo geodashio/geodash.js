@@ -9,8 +9,9 @@
  * geodash.init.directives(app);
  */
 
-module.exports = function(app)
+module.exports = function(options)
 {
+  var app = extract("app", options);
   if(geodash.directives != undefined)
   {
     geodash.meta.directives = [];

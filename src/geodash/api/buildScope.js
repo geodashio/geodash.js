@@ -12,7 +12,7 @@
 
 module.exports = function(event, args)
 {
-  var mainScope = geodash.api.getScope("geodash-main");
+  var mainScope = geodash.util.getScope("geodash-main");
   //
   var id = args["id_target"] || args["id_show"] || args["id"];
   var sourceScope = event.targetScope;
@@ -31,9 +31,9 @@ module.exports = function(event, args)
       $.each(args["dynamic"],function(key, value){
         if(angular.isString(value))
         {
-          if(value == "map_config")
+          if(value == "dashboard")
           {
-            scope_new[key] = mainScope.map_config;
+            scope_new[key] = mainScope.dashboard;
           }
           else if(value == "state")
           {
@@ -57,9 +57,9 @@ module.exports = function(event, args)
           }
           else
           {
-            if(value_0_lc == "map_config")
+            if(value_0_lc == "dashboard")
             {
-              scope_new[key] = extract(expand(value.slice(1)), mainScope.map_config);
+              scope_new[key] = extract(expand(value.slice(1)), mainScope.dashboard);
             }
             else if(value_0_lc == "state")
             {

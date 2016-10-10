@@ -1,7 +1,5 @@
 module.exports = function(options)
 {
-  var scope = geodash.api.getOption(options, '$scope') ||
-    geodash.api.getOption(options, 'scope') ||
-    geodash.api.getScope("geodash-main");
-  return scope.map_config;
+  var scope = extract("$scope", options) || extract("scope", options) || geodash.util.getScope("geodash-main");
+  return scope.dashboard;
 };
