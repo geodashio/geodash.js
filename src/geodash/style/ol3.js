@@ -17,7 +17,8 @@ module.exports = function(options)
     for(var i = 0; i < symbolizers.length; i++)
     {
       var symbolizer = symbolizers[i];
-      var symbolizerFn = extract(symbolizer.type, geodash.style.symbolizer);
+      var symbolizerType = extract("type", symbolizer);
+      var symbolizerFn = extract(symbolizerType || "default", geodash.style.symbolizer);
       var style = symbolizerFn({
         "feature": feature,
         "symbolizer": symbolizer,
@@ -29,7 +30,7 @@ module.exports = function(options)
       {
         styles.push(new ol.style.Style(style))
       }
+    }
   }
-}
   return styles;
 };

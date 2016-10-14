@@ -11,6 +11,7 @@ module.exports = {
   arrayToObject: require("./arrayToObject"),
   clearValue: require("./clearValue"),
   deepCopy: require("./deepCopy"),
+  diff: require("./diff"),
   flatten: require("./flatten"),
   getByID: require("./getByID"),
   getHashValue: require("./getHashValue"),

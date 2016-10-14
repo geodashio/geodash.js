@@ -1,4 +1,4 @@
-module.exports = function(appName, mainElement)
+module.exports = function(appName, mainElement, loaders)
 {
   var app = angular.module(appName, ['ngRoute', 'ngSanitize', 'ngCookies']);
   geodash.var.apps[appName] = app;
@@ -23,6 +23,16 @@ module.exports = function(appName, mainElement)
   */
 
   var requests = [];
+
+  if(angular.isDefined(mainElement.attr("data-geodash-dashboard-resources")))
+  {
+    var resources = undefined;
+    try { resources = JSON.parse(mainElement.attr("data-geodash-dashboard-resources")); }catch(err){ resources = undefined; };
+    for(var i = 0; i < resources.length; i++)
+    {
+      requests.push(resources[i]);
+    }
+  }
 
   var dependencies = [
     {
@@ -101,7 +111,28 @@ module.exports = function(appName, mainElement)
         var response = responses[i];
         if(response.status == 200)
         {
-          app.value(requests[i].name, YAML.parse(response.data));
+          if(angular.isDefined(requests[i].loader))
+          {
+            var loaderFn = extract(requests[i].loader, loaders);
+            if(angular.isDefined(loaderFn))
+            {
+              loaderFn(response);
+            }
+          }
+          else
+          {
+            var value = undefined;
+            var contentType = response.headers("content-type");
+            if(contentType == "application/json")
+            {
+              value = response.data;
+            }
+            else
+            {
+              try { value = YAML.parse(response.data); }catch(err){ value = undefined; };
+            }
+            app.value(requests[i].name, value);
+          }
         }
       }
       angular.bootstrap(document, [appName]);

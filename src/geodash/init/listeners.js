@@ -75,6 +75,7 @@ module.exports = function()
     {
       var intentName = that.attr('data-intent-name');
       var intentData = JSON.parse(that.attr('data-intent-data'));
+      angular.extend(intentData, {'element': this});
       geodash.api.intend(intentName, intentData, scope);
     }
   });
