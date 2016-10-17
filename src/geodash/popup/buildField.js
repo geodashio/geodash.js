@@ -27,7 +27,12 @@ module.exports = function(field, layer, feature, state)
     if(field.type == "link")
     {
       var value = field.value != undefined ? field.value : "{{ feature.attributes." + output + " }}";
-      html = "<span><b>"+ field.label +":</b> <a target=\"_blank\" href=\""+field.url+"\">";
+      html = "<span>";
+      if(angular.isString(field.label) && field.label.length > 0)
+      {
+        html += "<b>"+ field.label +":</b> ";
+      }
+      html = "<a target=\"_blank\" href=\""+field.url+"\">";
       html += value;
       html += "</a></span>";
     }
@@ -55,7 +60,14 @@ module.exports = function(field, layer, feature, state)
         }
         value = "{{ "+value +" }}";
       }
-      html = "<span><b>"+ field.label +":</b> "+value+"</span>";
+      if(angular.isString(field.label) && field.label.length > 0)
+      {
+        html = "<span><b>"+ field.label +":</b> "+value+"</span>";
+      }
+      else
+      {
+        html = "<span>"+value+"</span>";
+      }
     }
   }
   return html;

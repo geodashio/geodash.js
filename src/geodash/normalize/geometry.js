@@ -1,4 +1,4 @@
-module.exports = function(geometry)
+module.exports = function(geometry, options)
 {
   var geometryType = undefined;
   try{
@@ -11,7 +11,7 @@ module.exports = function(geometry)
   }
   else if(geometryType == "Point")
   {
-    return geodash.normalize.point(geometry);
+    return geodash.normalize.point(geometry, options);
   }
   else
   {

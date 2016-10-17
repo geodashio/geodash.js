@@ -12,10 +12,11 @@
  * normalizedFeature = {'attributes': ..., 'geometry': ...}
  */
 
-module.exports = function(feature)
+module.exports = function(feature, options)
 {
   return {
     'attributes': feature.attributes || feature.properties || feature.values_,
-    'geometry': geodash.normalize.geometry(feature.geometry || feature.getGeometry())
+    'geometry': geodash.normalize.geometry(feature.geometry || feature.getGeometry(), options),
+    'projection': extract("projection.target", options)
   };
 };

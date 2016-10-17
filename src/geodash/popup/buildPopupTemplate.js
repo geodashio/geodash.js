@@ -3,7 +3,7 @@ module.exports = function(popup, layer, feature, state)
   var panes = popup.panes;
   var popupTemplate = "";
   //////////////////
-  if(geodash.mapping_library != "ol3" && angular.isString(popup.title))
+  if(geodash.mapping_library == "leaflet" && angular.isString(popup.title))
   {
     popupTemplate += "<h5 style=\"word-wrap:break-word;text-align:center;\">"+popup.title+"</h5>";
   }

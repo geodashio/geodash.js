@@ -20,6 +20,13 @@ module.exports = function($interpolate, featureLayer, feature, location, map, st
     setTimeout(function(){
       element.popover('show');
 
+      if(angular.isDefined(extract("popup.css.properties", featureLayer)))
+      {
+        var tip = element.data("bs.popover").$tip;
+        var styleMap = geodash.util.arrayToObject(extract("popup.css.properties", featureLayer));
+        tip.css(styleMap);
+      }
+
       // Add Listeners for Tabs
       $('.popover').each(function(){
         var popoverElement = $(this);

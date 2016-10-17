@@ -15,15 +15,20 @@
  * y == {'lat': 0.0, 'lon': 0.0}
  */
 
-module.exports = function(point)
+module.exports = function(point, options)
 {
   if("flatCoordinates" in point)
   {
     var coords = point.flatCoordinates;
-    return {
-      'lat': coords[1],
-      'lon': coords[0]
-    };
+    if(extract("projection.target", options))
+    {
+      coords = ol.proj.transform(coords, options.projection.source || "EPSG:3857", options.projection.target);
+      return { 'lat': coords[1], 'lon': coords[0] };
+    }
+    else
+    {
+      return { 'lat': coords[1], 'lon': coords[0] };
+    }
   }
   else if(Array.isArray(point))
   {
