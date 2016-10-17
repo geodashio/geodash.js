@@ -22,6 +22,27 @@ module.exports = function(options)
 
   var geometryType = f.getGeometry().getType();
 
+  var textContent = extract("textContent", styleStaticAndDynamic);
+  var textCode = extract("textCode", styleStaticAndDynamic);
+  if(angular.isDefined(textContent) || angular.isDefined(textCode))
+  {
+    if(! angular.isDefined(textContent))
+    {
+      textContent = String.fromCharCode(parseInt(textCode, 16));
+    }
+    var textOptions = {
+      textAlign: extract("textAlign", styleStaticAndDynamic, "center"),
+      textBaseline: extract("textBaseline", styleStaticAndDynamic, "middle"),
+      font: extract("textFont", styleStaticAndDynamic, "normal 10px Verdana"),
+      text: textContent,
+      fill: new ol.style.Fill({color: extract("textColor", styleStaticAndDynamic, "#000000")}),
+      offsetX: 0,
+      offsetY: 0,
+      rotation: 0
+    };
+    style["text"] = new ol.style.Text(textOptions);
+  }
+
   if(geometryType == "Point")
   {
     var circleOptions = {

@@ -3,46 +3,21 @@ module.exports = function(appName, mainElement, loaders)
   var app = angular.module(appName, ['ngRoute', 'ngSanitize', 'ngCookies']);
   geodash.var.apps[appName] = app;
 
-  var initFn = ['templates', 'filters', 'directives', 'factory', 'controllers'];
-  for(var i = 0; i < initFn.length; i++)
-  {
-    geodash.init[initFn[i]]({
-      "app": app,
-      "mainElement": mainElement
-    });
-  }
+  var steps = [
+    {"id": "internals", "label": "Internals", "status": "pending"},
+    {"id": "dashboard", "label": "Dashboard", "status": "waiting"},
+    {"id": "resources", "label": "External Resources", "status": "waiting"}
+  ];
+  geodash.bootloader.ui.update({ "element": mainElement, "steps": steps });
+  geodash.bootloader.internals({ "app": app, "element": mainElement });
+  steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "internals", "status": "complete" });
+  steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "pending" });
 
   // Initialize UI interaction for intents.
   // Listen's for events bubbling up to body element, so can initialize before children.
   geodash.init.listeners();
 
-  /*
-  If you miss a component with ng-controller, bootstrap will attempt
-  to load it on its own within angular.bootstrap.  That'll error out
-  and is not good.  So you NEED!!! to get to it first!!!!!!
-  */
-
-  var requests = [];
-
-  if(angular.isDefined(mainElement.attr("data-geodash-dashboard-resources")))
-  {
-    var resources = undefined;
-    try { resources = JSON.parse(mainElement.attr("data-geodash-dashboard-resources")); }catch(err){ resources = undefined; };
-    for(var i = 0; i < resources.length; i++)
-    {
-      requests.push(resources[i]);
-    }
-  }
-
-  var dependencies = [
-    {
-      "name": "dashboard",
-      "local": "data-geodash-dashboard-config-path",
-      "remote": "data-geodash-dashboard-config-url",
-      "hash": "config",
-      "querystring": "config",
-      "fallback": "dashboard"
-    },
+  var system_resources = [
     {
       "name": "state",
       "local": "data-geodash-dashboard-initial-state-path",
@@ -61,86 +36,85 @@ module.exports = function(appName, mainElement, loaders)
     }
   ];
 
-  for(var i = 0; i < dependencies.length; i++)
+  var result_dashboard = geodash.bootloader.process({
+    "app": app,
+    "appName": appName,
+    "element": mainElement,
+    "resource": {
+      "name": "dashboard",
+      "local": "data-geodash-dashboard-config-path",
+      "remote": "data-geodash-dashboard-config-url",
+      "hash": "config",
+      "querystring": "config",
+      "fallback": "dashboard"
+    }
+  });
+
+  // See: https://blog.mariusschulz.com/2014/10/22/asynchronously-bootstrapping-angularjs-applications-with-server-side-data
+  var initInjector = angular.injector(["ng"]);
+  var $q = initInjector.get("$q");
+  var $http = initInjector.get("$http");
+
+  if(angular.isDefined(extract("request", result_dashboard)))
   {
-    var dep = dependencies[i];
-    if(angular.isString(mainElement.attr(dep.local)))
-    {
-      app.value(dep.name, extract(mainElement.attr(dep.local), geodash));
-    }
-    else if(angular.isString(mainElement.attr(dep.remote)))
-    {
-      requests.push({
-        'name': dep.name,
-        'url': mainElement.attr(dep.remote)
-      });
-    }
-    else if(geodash.util.hasHashValue(appName+":"+dep.hash))
-    {
-      requests.push({
-        'name': dep.name,
-        'url': geodash.util.getHashValue(appName+":"+dep.hash)
-      });
-    }
-    else if(geodash.util.getParameterByName(appName+":"+dep.hash) != null)
-    {
-      requests.push({
-        'name': dep.name,
-        'url': geodash.util.getParameterByName(appName+":"+dep.hash)
-      });
-    }
-    else
-    {
-      app.value(dep.name, extract(dep.fallback, geodash));
-    }
-  }
-
-  if(requests.length > 0)
-  {
-    var urls = $.map(requests, function(x){ return x["url"]; });
-
-    // See: https://blog.mariusschulz.com/2014/10/22/asynchronously-bootstrapping-angularjs-applications-with-server-side-data
-    var initInjector = angular.injector(["ng"]);
-    var $q = initInjector.get("$q");
-    var $http = initInjector.get("$http");
-
-    $q.all(geodash.http.build_promises($http, urls)).then(function(responses)
-    {
-      for(var i = 0; i < responses.length; i++)
+    $http.get(result_dashboard.request.url, {}).then(
+      function(response)
       {
-        var response = responses[i];
-        if(response.status == 200)
+        var success = geodash.bootloader.handle({
+          "request": result_dashboard.request,
+          "response": response,
+          "app": app,
+          "loaders": loaders
+        });
+
+        if(success)
         {
-          if(angular.isDefined(requests[i].loader))
-          {
-            var loaderFn = extract(requests[i].loader, loaders);
-            if(angular.isDefined(loaderFn))
-            {
-              loaderFn(response);
-            }
-          }
-          else
-          {
-            var value = undefined;
-            var contentType = response.headers("content-type");
-            if(contentType == "application/json")
-            {
-              value = response.data;
-            }
-            else
-            {
-              try { value = YAML.parse(response.data); }catch(err){ value = undefined; };
-            }
-            app.value(requests[i].name, value);
-          }
+          steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "complete" });
+          steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "resources", "status": "pending" });
+          geodash.bootloader.resources({
+            "app": app,
+            "appName": appName,
+            "loaders": loaders,
+            "element": mainElement,
+            "system_resources": system_resources,
+            "$q": $q,
+            "$http": $http,
+            "steps": steps
+          });
+        }
+      },
+      function(response)
+      {
+        steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "error" });
+        if(response.status == 500)
+        {
+          geodash.log.error("bootloader", [
+            "Could not load resource at \"" + response.config.url + "\" due to HTTP 500 Error (Internal Server Error)."
+          ]);
+        }
+        else
+        {
+          geodash.log.error("bootloader", [
+            "Could not load resource at \"" + response.config.url + "\" due to unknown HTTP Error."
+          ]);
         }
       }
-      angular.bootstrap(document, [appName]);
-    });
+    );
   }
   else
   {
-    angular.bootstrap(document, [appName]);
+    steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "complete" });
+    steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "resources", "status": "pending" });
+    geodash.bootloader.resources({
+      "app": app,
+      "appName": appName,
+      "loaders": loaders,
+      "element": mainElement,
+      "system_resources": system_resources,
+      "$q": $q,
+      "$http": $http,
+      "steps": steps
+    });
   }
 
 };

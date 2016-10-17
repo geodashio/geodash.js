@@ -12,6 +12,7 @@ module.exports = {
   api: require("./api"),
   assert: require("./assert"),
   bloodhound: require("./bloodhound"),
+  bootloader: require("./bootloader"),
   codec: require("./codec"),
   dynamicStyleFn: require("./dynamicStyleFn"),
   http: require("./http"),
