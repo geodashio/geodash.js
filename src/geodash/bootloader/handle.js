@@ -14,7 +14,7 @@ module.exports = function(options)
       {
         loaderFn(response);
       }
-      return true;
+      return { "success": true };
     }
     else
     {
@@ -29,14 +29,12 @@ module.exports = function(options)
         try { value = YAML.parse(response.data); }catch(err){ value = undefined; };
       }
       app.value(request.name, value);
-      return true;
+      return { "success": true };
     }
   }
   else if(response.status == 500)
   {
-    geodash.log.error("bootloader", [
-      "Could not load resource at \"" + response.config.url + "\" due to HTTP 500 Error (Internal Server Error)."
-    ]);
-    return false;
+    var message = "Could not load resource at \"" + response.config.url + "\" due to HTTP 500 Error (Internal Server Error).";
+    return { "success": false, "message": message };
   }
 };

@@ -51,7 +51,6 @@ module.exports = function(options)
   }
   else
   {
-    geodash.log.error("bootloader", ["Could not process resource, because it is undefined."]);
-    return {"success": false};
+    return {"success": false, "message": "Could not process resource, because it is undefined."};
   }
 };

@@ -6,7 +6,6 @@ module.exports = function(appName, mainElement, loaders)
   var steps = [
     {"id": "internals", "label": "Internals", "status": "pending"},
     {"id": "dashboard", "label": "Dashboard", "status": "waiting"},
-    {"id": "resources", "label": "External Resources", "status": "waiting"}
   ];
   geodash.bootloader.ui.update({ "element": mainElement, "steps": steps });
   geodash.bootloader.internals({ "app": app, "element": mainElement });
@@ -20,6 +19,7 @@ module.exports = function(appName, mainElement, loaders)
   var system_resources = [
     {
       "name": "state",
+      "title": "State",
       "local": "data-geodash-dashboard-initial-state-path",
       "remote": "data-geodash-dashboard-initial-state-url",
       "hash": "state",
@@ -28,6 +28,7 @@ module.exports = function(appName, mainElement, loaders)
     },
     {
       "name": "stateschema",
+      "title": "State Schema",
       "local": "data-geodash-dashboard-state-schema-path",
       "remote": "data-geodash-dashboard-state-schema-url",
       "hash": "stateschema",
@@ -35,6 +36,12 @@ module.exports = function(appName, mainElement, loaders)
       "fallback": "state_schema"
     }
   ];
+
+  for(var i = 0; i < system_resources.length; i++)
+  {
+    var resource = system_resources[i];
+    steps.push({"id": "resource-"+resource.name, "label": resource.title, "status": "waiting"});
+  }
 
   var result_dashboard = geodash.bootloader.process({
     "app": app,
@@ -60,17 +67,16 @@ module.exports = function(appName, mainElement, loaders)
     $http.get(result_dashboard.request.url, {}).then(
       function(response)
       {
-        var success = geodash.bootloader.handle({
+        var result = geodash.bootloader.handle({
           "request": result_dashboard.request,
           "response": response,
           "app": app,
           "loaders": loaders
         });
 
-        if(success)
+        if(result.success)
         {
           steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "complete" });
-          steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "resources", "status": "pending" });
           geodash.bootloader.resources({
             "app": app,
             "appName": appName,
@@ -82,29 +88,31 @@ module.exports = function(appName, mainElement, loaders)
             "steps": steps
           });
         }
+        else
+        {
+          geodash.log.error("bootloader", [result.message]);
+          steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "error", "message": message });
+        }
       },
       function(response)
       {
-        steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "error" });
+        var message = "";
         if(response.status == 500)
         {
-          geodash.log.error("bootloader", [
-            "Could not load resource at \"" + response.config.url + "\" due to HTTP 500 Error (Internal Server Error)."
-          ]);
+          message = "Could not load resource at \"" + response.config.url + "\" due to HTTP 500 Error (Internal Server Error).";
         }
         else
         {
-          geodash.log.error("bootloader", [
-            "Could not load resource at \"" + response.config.url + "\" due to unknown HTTP Error."
-          ]);
+          message = "Could not load resource at \"" + response.config.url + "\" due to unknown HTTP Error.";
         }
+        geodash.log.error("bootloader", [message]);
+        steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "error", "message": message });
       }
     );
   }
   else
   {
     steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "dashboard", "status": "complete" });
-    steps = geodash.bootloader.step.status({ "element": mainElement, "steps": steps, "id": "resources", "status": "pending" });
     geodash.bootloader.resources({
       "app": app,
       "appName": appName,

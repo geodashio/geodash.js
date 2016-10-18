@@ -14,7 +14,7 @@
     "uglify": "cat dist/geodash.js | uglifyjs > dist/geodash.min.js",
     "build:code": "mkdir dist; npm run build:js && npm run uglify",
     "build": "npm run build:docs; npm run build:code",
-    "jshint": "jshint src/*.js",
+    "jshint": "jshint src",
     "tests": "npm run jshint"
   },
   "main": "dist/geodash.min.js",
