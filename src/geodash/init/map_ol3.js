@@ -2,14 +2,15 @@ module.exports = function(options)
 {
   var id = extract("id", options, "map");
   var lonlat = [
-    geodash.api.opt_i(options,["longitude", "lon", "lng", "long"], 0),
-    geodash.api.opt_i(options,["latitude", "lat"], 0)];
-  var zoom = geodash.api.opt_i(options, ["zoom", "z"], 0);
+    extract("dashboard.view.lon", options) || extract('dashboard.view.longitude', options, 0),
+    extract("dashboard.view.lat", options) || extract('dashboard.view.latitude', options, 0),
+  ];
+  var zoom = extract("dashboard.view.zoom", options) || extract('dashboard.view.z', options, 0);
 
   var controls = [];
-  if(extract("zoomControl", options, true)) { controls.push(new ol.control.Zoom()); }
+  if(extract("dashboard.controls.zoom", options, true)) { controls.push(new ol.control.Zoom()); }
   controls.push(new ol.control.Rotate());
-  if(extract("attributionControl", options, true)) { controls.push(new ol.control.Attribution()); }
+  if(extract("dashboard.controls.attribution", options, true)) { controls.push(new ol.control.Attribution()); }
 
   var map = new ol.Map({
     target: id,
@@ -25,19 +26,22 @@ module.exports = function(options)
     view: new ol.View({
       center: ol.proj.fromLonLat(lonlat),
       zoom: zoom,
-      minZoom: geodash.api.opt_i(options, "minZoom", 3),
-      maxZoom: geodash.api.opt_i(options, "maxZoom", 18)
+      minZoom: extract("dashboard.view.minZoom", options, 3),
+      maxZoom: extract("dashboard.view.maxZoom", options, 18)
     })
   });
-  //var map = ol.Map('map',
-  //{
-  //  attributionControl: geodash.api.opt_b(options, "attributionControl", false),
-  //  zoomControl: geodash.api.opt_b(options, "zoomControl", false),
-  //});
 
-  $.each(geodash.api.opt_j(options, "listeners"), function(e, f){
-    map.on(e, f);
-  });
+
+  if(angular.isDefined(extract("listeners.map", options)))
+  {
+    $.each(extract("listeners.map", options), function(e, f){ map.on(e, f); });
+  }
+
+  if(angular.isDefined(extract("listeners.view", options)))
+  {
+    var v = map.getView();
+    $.each(extract("listeners.view", options), function(e, f){ v.on(e, f); });
+  }
 
   return map;
 };

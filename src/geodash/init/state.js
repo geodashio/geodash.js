@@ -12,22 +12,25 @@ module.exports = function(options)
   }
 
   // Update View
-  var lat = getHashValueAsFloat(["latitude", "lat", "y"]) || extract("state.lat", options, 0.0);
-  var lon = getHashValueAsFloat(["longitude", "lon", "long", "lng", "x"]) || extract("state.lon", options, 0.0);
-  var z = getHashValueAsInteger(["zoom", "z"]) || extract("state.z", options, 3);
-  var delta = {'lat': lat, 'lon': lon, 'z': z};
-  newState["view"] = angular.isDefined(extract("view", newState)) ? angular.extend(newState["view"], delta) : delta;
+  var newView = {
+    "baselayer": (extract("view.baselayer", newState) || extract(["dashboard", "baselayers", 0, "id"], options)),
+    "featurelayers": (extract("view.featurelayers", newState) || $.map(extract(["dashboard", "featurelayers"], options, []), function(fl){ return fl.id; })),
+    "controls": extract("view.controls", newState) || ["legend"]
+  };
 
-  if(! angular.isDefined(extract("view.baselayer", newState)))
+  if(Array.isArray(extract("view.extent", newState)))
   {
-    newState["view"]["baselayer"] = extract(["dashboard", "baselayers", 0, "id"], options);
+    newView["extent"] = extract("view.extent", newState);
   }
-  if(! angular.isDefined(extract("view.featurelayers", newState)))
+  else
   {
-    newState["view"]["featurelayers"] = $.map(extract(["dashboard", "featurelayers"], options, []), function(fl){
-      return fl.id;
-    });
+    var lat = getHashValueAsFloat(["latitude", "lat", "y"]) || extract("state.lat", options, 0.0);
+    var lon = getHashValueAsFloat(["longitude", "lon", "long", "lng", "x"]) || extract("state.lon", options, 0.0);
+    var z = getHashValueAsInteger(["zoom", "z"]) || extract("state.z", options, 3);
+    var delta = {'lat': lat, 'lon': lon, 'z': z};
+    angular.extend(newView, delta);
   }
+  newState["view"] = newView;
 
   // Update Filters
   if(Array.isArray(extract("filters", newState)))

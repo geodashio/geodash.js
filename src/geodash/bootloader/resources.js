@@ -29,8 +29,9 @@ module.exports = function(options)
         steps = geodash.bootloader.step.status({
           "element": element,
           "steps": steps,
-          "id": "resource"+resource.name,
-          "status": "pending"
+          "id": "resource-"+resource.name,
+          "status": "pending",
+          "message": "Loading from "+result.request.url
         });
       }
       else
@@ -38,7 +39,7 @@ module.exports = function(options)
         steps = geodash.bootloader.step.status({
           "element": element,
           "steps": steps,
-          "id": "resource"+resource.name,
+          "id": "resource-"+resource.name,
           "status": "complete"
         });
       }
@@ -49,7 +50,7 @@ module.exports = function(options)
       steps = geodash.bootloader.step.status({
         "element": element,
         "steps": steps,
-        "id": "resource"+resource.name,
+        "id": "resource-"+resource.name,
         "status": "error",
         "messsage": result.message
       });
@@ -113,9 +114,7 @@ module.exports = function(options)
     {
       promises[i].then(responseFn(requests[i])).catch(responseFn(requests[i]));
     }
-    $q.all(promises)
-      .then(function(responses){ geodash.bootloader.bootstrap({ "appName": appName }); })
-      .catch(function(responses){ geodash.bootloader.bootstrap({ "appName": appName }); });
+    $q.all(promises).finally(function(responses){ geodash.bootloader.bootstrap({ "appName": appName }); });
   }
   else
   {
