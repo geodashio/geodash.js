@@ -27,6 +27,10 @@
   "bugs": {
     "url": "https://github.com/geodashio/geodash.js/issues"
   },
+  "dependencies": {
+    "geodash-extract": "*",
+    "geodash-expand": "*"
+  },
   "devDependencies": {
     "browserify": "*",
     "browserify-shim": "*",
