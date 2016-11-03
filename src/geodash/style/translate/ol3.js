@@ -54,14 +54,14 @@ module.exports = function(options)
       if(strokeWidth > 0)
       {
         circleOptions["stroke"] = new ol.style.Stroke({
-          color: extract("strokeColor", styleStaticAndDynamic),
+          color: geodash.normalize.color(extract("strokeColor", styleStaticAndDynamic)),
           width: strokeWidth
         });
       }
     }
     if(angular.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
-      var fillColor = extract("fillColor", styleStaticAndDynamic);
+      var fillColor = geodash.normalize.color(extract("fillColor", styleStaticAndDynamic));
       var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic)
       if(angular.isDefined(fillOpacity))
       {
@@ -84,7 +84,7 @@ module.exports = function(options)
       if(strokeWidth > 0)
       {
         style["stroke"] = new ol.style.Stroke({
-          color: extract("strokeColor", styleStaticAndDynamic),
+          color: geodash.normalize.color(extract("strokeColor", styleStaticAndDynamic)),
           width: strokeWidth
         });
       }
@@ -95,7 +95,7 @@ module.exports = function(options)
   {
     if(angular.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
-      var fillColor = extract("fillColor", styleStaticAndDynamic);
+      var fillColor = geodash.normalize.color(extract("fillColor", styleStaticAndDynamic));
       var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic)
       if(angular.isDefined(fillOpacity))
       {

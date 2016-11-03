@@ -14,11 +14,7 @@ module.exports = function(options)
 
   var map = new ol.Map({
     target: id,
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM()
-      })
-    ],
+    layers: [],
     controls: controls,
     overlays: [
       new ol.Overlay({element: document.getElementById('popup')})

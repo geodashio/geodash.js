@@ -6,6 +6,7 @@ module.exports = function(options)
   var tilePixelRatio = 16;
 
   var tegola = extract("fl.tegola", options);
+  var mapzen = extract("fl.mapzen", options);
 
   var url = undefined;
 
@@ -16,6 +17,12 @@ module.exports = function(options)
     {
       url += "?debug=true";
     }
+  }
+
+  if(angular.isDefined(mapzen))
+  {
+    url = "http://tile.mapzen.com/mapzen/vector/"+extract("version", mapzen, "v1")+"/"+extract("layers", mapzen, []).join(",")+"/{z}/{x}/{y}."+extract("format", mapzen, "mvt");
+    url += "?api_key="+extract("api_key", mapzen, "");
   }
 
   if(angular.isDefined(url))

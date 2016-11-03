@@ -35,6 +35,7 @@ module.exports = function()
     var that = $(this);
     //var scope = angular.element('[ng-controller='+that.data('intent-ctrl')+']').scope();
     var scope = geodash.util.getScope(that.attr('data-intent-ctrl'));
+    var intents = [];
     if(that.hasClass('geodash-toggle'))
     {
       var intentData = JSON.parse(that.attr('data-intent-data')); // b/c jquery data not updated by angular
@@ -66,17 +67,53 @@ module.exports = function()
           that.removeClass(that.data("intent-class-off"));
           siblings.addClass(that.data("intent-class-off"));
         }
-        var intentName = that.attr('data-intent-name');
-        var intentData = JSON.parse(that.attr('data-intent-data')); // b/c jquery data not updated by angular
-        geodash.api.intend(intentName, intentData, scope);
+
+        if(angular.isDefined(that.attr('data-intents')) && Array.isArray(JSON.parse(that.attr('data-intents'))))
+        {
+          intents = intents.concat(JSON.parse(that.attr('data-intents')));
+        }
+        else
+        {
+          var intentName = that.attr('data-intent-name');
+          if(angular.isDefined(intentName))
+          {
+            var intentData = that.attr('data-intent-data');
+            if(angular.isDefined(intentData))
+            {
+              intentData = JSON.parse(intentData);
+              angular.extend(intentData, {'element': this});
+              intents.push({"name": intentName, "data": intentData});
+            }
+          }
+        }
+        
       }
     }
     else
     {
-      var intentName = that.attr('data-intent-name');
-      var intentData = JSON.parse(that.attr('data-intent-data'));
-      angular.extend(intentData, {'element': this});
-      geodash.api.intend(intentName, intentData, scope);
+      if(angular.isDefined(that.attr('data-intents')) && Array.isArray(JSON.parse(that.attr('data-intents'))))
+      {
+        intents = intents.concat(JSON.parse(that.attr('data-intents')));
+      }
+      else
+      {
+        var intentName = that.attr('data-intent-name');
+        if(angular.isDefined(intentName))
+        {
+          var intentData = that.attr('data-intent-data');
+          if(angular.isDefined(intentData))
+          {
+            intentData = JSON.parse(intentData);
+            angular.extend(intentData, {'element': this});
+            intents.push({"name": intentName, "data": intentData});
+          }
+        }
+      }
+    }
+
+    for(var i = 0; i < intents.length; i++)
+    {
+      geodash.api.intend(intents[i].name, intents[i].data, scope);
     }
   });
 };

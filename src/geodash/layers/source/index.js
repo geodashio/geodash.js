@@ -9,5 +9,6 @@
 module.exports = {
   geojson: require("./geojson"),
   vectortile: require("./vectortile"),
-  wms: require("./wms")
+  wms: require("./wms"),
+  xyz: require("./xyz")
 };

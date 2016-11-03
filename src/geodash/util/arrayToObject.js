@@ -14,20 +14,48 @@
  * b == {'x': 'y', 'q': 'r'}
  */
 
-module.exports = function(x)
+module.exports = function(x, options)
 {
   var y = {};
   if(angular.isArray(x))
   {
-    for(var i = 0; i < x.length; i++)
+    var $interpolate = extract("$interpolate", options) || extract("interpolate", options);
+    var ctx = extract("context", options) || extract("ctx", options) || {};
+    if(angular.isDefined($interpolate))
     {
-      if("value" in x[i])
+      for(var i = 0; i < x.length; i++)
       {
-        y[x[i].id || x[i].name] = x[i].value;
+        if("value" in x[i])
+        {
+          var v = x[i].value;
+          if(angular.isString(v))
+          {
+            y[x[i].id || x[i].name] = $interpolate(v)(ctx);
+          }
+          else
+          {
+            y[x[i].id || x[i].name] = v;
+          }
+        }
+        else
+        {
+          var v = x[i];
+          y[x[i].id || x[i].name] = v;
+        }
       }
-      else
+    }
+    else
+    {
+      for(var i = 0; i < x.length; i++)
       {
-        y[x[i].id || x[i].name] = x[i];
+        if("value" in x[i])
+        {
+          y[x[i].id || x[i].name] = x[i].value;
+        }
+        else
+        {
+          y[x[i].id || x[i].name] = x[i];
+        }
       }
     }
   }

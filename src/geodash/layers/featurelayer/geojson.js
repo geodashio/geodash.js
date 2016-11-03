@@ -47,7 +47,7 @@ module.exports = function(options)
           "resolution": resolution,
           "layerID": _layerID,
           "styleFnWorkspaces": styleFnWorkspaces
-        });
+        }) || [];
       };
     })(layerID, extract('dynamicStyleFunctionWorkspaces', geodash.config, ws));
     var fl = new ol.layer.Vector({

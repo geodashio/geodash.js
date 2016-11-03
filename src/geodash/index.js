@@ -9,6 +9,7 @@
  */
 
 module.exports = {
+  animations: require("./animations"),
   api: require("./api"),
   assert: require("./assert"),
   bloodhound: require("./bloodhound"),
@@ -36,6 +37,9 @@ module.exports = {
     apps: {},
     logs: {},
     baselayers: {},
-    featurelayers: {}
+    featurelayers: {},
+    cache: {
+        styles: {}
+    }
   }
 };

@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+  color: require("./color"),
   feature: require("./feature"),
   float: require("./float"),
   geometry: require("./geometry"),

@@ -15,7 +15,7 @@ module.exports = function(options)
   var newView = {
     "baselayer": (extract("view.baselayer", newState) || extract(["dashboard", "baselayers", 0, "id"], options)),
     "featurelayers": (extract("view.featurelayers", newState) || $.map(extract(["dashboard", "featurelayers"], options, []), function(fl){ return fl.id; })),
-    "controls": extract("view.controls", newState) || ["legend"]
+    "controls": extract("view.controls", newState) || extract("dashboard.view.controls", options) || []
   };
 
   if(Array.isArray(extract("view.extent", newState)))
