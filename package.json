@@ -28,8 +28,10 @@
     "url": "https://github.com/geodashio/geodash.js/issues"
   },
   "dependencies": {
+    "geodash-diff": "*",
     "geodash-extract": "*",
-    "geodash-expand": "*"
+    "geodash-expand": "*",
+    "geodash-flatten": "*"
   },
   "devDependencies": {
     "browserify": "*",

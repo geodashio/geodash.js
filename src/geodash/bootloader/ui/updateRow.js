@@ -47,4 +47,18 @@ module.exports = function(options)
       .removeAttr("data-placement")
       .removeAttr("title");
   }
+
+  if(angular.isString(step.link) && step.link.length > 0)
+  {
+    $(".geodash-bootloader-status a", row).attr({
+        "href": step.link,
+        "target": "_blank"
+    })
+  }
+  else
+  {
+    $(".geodash-bootloader-status a", row)
+      .removeAttr("href")
+      .removeAttr("target")
+  }
 };

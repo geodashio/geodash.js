@@ -14,23 +14,7 @@
  * // url == "/dashboard/{{ slug }}"
  */
 
-module.exports = function(id, options)
-{
-  if(angular.isDefined(id))
-  {
-    var config = geodash.api.getDashboardConfig(options);
-    var matches = $.grep(config.pages, function(x, i){return x.id == id;});
-    if(matches.length == 1)
-    {
-      return matches[0]["url"];
-    }
-    else
-    {
-      return undefined;
-    }
-  }
-  else
-  {
-    return undefined;
-  }
-};
+ module.exports = function(id)
+ {
+   return extract(["pages", id], geodash.var);
+ };

@@ -31,7 +31,8 @@ module.exports = function(options)
           "steps": steps,
           "id": "resource-"+resource.name,
           "status": "pending",
-          "message": "Loading from "+result.request.url
+          "message": "Loading from "+result.request.url,
+          "link": result.request.url
         });
       }
       else
@@ -68,7 +69,8 @@ module.exports = function(options)
       steps.push({
         "id": "resource-"+(resource.id || resource.name || resource.loader),
         "label": (resource.title || resource.name || resource.id || resource.loader),
-        "status": "pending"
+        "status": "pending",
+        "link": resource.url
       });
       requests.push(resource);
     }
@@ -95,7 +97,8 @@ module.exports = function(options)
             "element": element,
             "steps": steps,
             "id": "resource-"+(request.id || request.name || request.loader),
-            "status": "complete"
+            "status": "complete",
+            "link": request.url
           });
         }
         else
@@ -105,7 +108,8 @@ module.exports = function(options)
             "steps": steps,
             "id": "resource-"+(request.id || request.name || request.loader),
             "status": "error",
-            "message": result.message
+            "message": result.message,
+            "link": request.url
           });
         }
       };

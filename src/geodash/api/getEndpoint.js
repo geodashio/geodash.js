@@ -15,7 +15,7 @@
  * $http.post(url, payload, httpConfig).success(...
  */
 
-module.exports = function(name)
+module.exports = function(id)
 {
-  return extract("initial_data.data.endpoints."+name, geodash);
+  return extract(["endpoints", id], geodash.var);
 };

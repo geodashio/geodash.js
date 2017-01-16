@@ -21,6 +21,7 @@ module.exports = {
   directives: {},
   filters: {},
   handlers: {},
+  history: require("./history"),
   init: require("./init"),
   layers: require("./layers"),
   listeners: require("./listeners"),
@@ -35,11 +36,13 @@ module.exports = {
   vecmath: require("./vecmath"),
   var: {
     apps: {},
-    logs: {},
     baselayers: {},
-    featurelayers: {},
     cache: {
-        styles: {}
-    }
+      styles: {}
+    },
+    endpoints: {},
+    logs: {},
+    featurelayers: {},
+    pages: {}
   }
 };

@@ -8,8 +8,10 @@
 
 module.exports = {
   color: require("./color"),
+  extent: require("./extent"),
   feature: require("./feature"),
   float: require("./float"),
+  integer: require("./integer"),
   geometry: require("./geometry"),
   point: require("./point"),
   polygon: require("./polygon")

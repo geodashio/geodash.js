@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+  loaders: require("./loaders"),
   ui: require("./ui"),
   step: require("./step"),
   bootstrap: require("./bootstrap"),

@@ -1,4 +1,38 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var extract = require("geodash-extract");
+
+module.exports = function(paths, a, b)
+{
+  var diff = [];
+  if((a !== undefined) && (b !== undefined))
+  {
+    for(var i = 0; i < paths.length; i++)
+    {
+      var path = paths[i];
+      var text_a = JSON.stringify(extract(path, a, ""));
+      var text_b = JSON.stringify(extract(path, b, ""));
+      if(text_a != text_b)
+      {
+        diff.push(path);
+      }
+    }
+  }
+  else if((a !== undefined) && (b === undefined))
+  {
+    diff = paths;
+  }
+  else if((a === undefined) && (b !== undefined))
+  {
+    diff = paths;
+  }
+  else
+  {
+    diff = [];
+  }
+  return diff;
+};
+
+},{"geodash-extract":3}],2:[function(require,module,exports){
 /**
  * A function mostly used with [extract](https://www.npmjs.com/package/geodash-extract).
  * Expand can expand an arbitrary array of period-separated keychains and
@@ -51,7 +85,7 @@ var expand = function(keyChain)
 
 module.exports = expand;
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /**
  * A powerful function that provides the basis for much of the
  * GeoDash methodology.  Rather than having many `getter` methods for different
@@ -136,7 +170,56 @@ var extract = function(keyChain, node, fallback)
 
 module.exports = extract;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+/**
+ * Flattens an object.
+ *
+ * @function flatten
+ * @param {Object} obj - The original object
+ * @param {string|undefined} prefix - A prefix, if any, to add to the new object's keys.
+ * @return {Object} the flattened version of the object
+ *
+ * @example
+ * var flatten = require("geodash-flatten")
+ * var a = {'x': {'y': 'z' }, 'a': ['b', 'c', 'd']}
+ * var b = flatten(a);
+ * b == {'x__y': 'z', 'a__0': 'b', 'a__1': 'c', 'a__2': 'd' }
+ */
+
+var flatten = function(obj, prefix)
+{
+  var newObject = {};
+  $.each(obj, function(key, value){
+    var newKey = prefix !== undefined ? prefix+"__"+key : key;
+    if(
+      (value === undefined) ||
+      (value === null) ||
+      (typeof value == "string") ||
+      (typeof value == "number") ||
+      (typeof value == "boolean")
+    )
+    {
+      newObject[newKey] = value;
+    }
+    else if(Array.isArray(value))
+    {
+      $.each(flatten(value, newKey), function(key2, value2){
+        newObject[""+key2] = value2;
+      });
+    }
+    else
+    {
+      $.each(flatten(value, newKey), function(key2, value2){
+        newObject[key2] = value2;
+      });
+    }
+  });
+  return newObject;
+};
+
+module.exports = flatten;
+
+},{}],5:[function(require,module,exports){
 module.exports = function(options)
 {
   var duration = extract("duration", options, 2000);
@@ -150,14 +233,81 @@ module.exports = function(options)
   });
 };
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+module.exports = function($scope){
+  return function(success){
+    if(! success)
+    {
+      var m = geodash.var.map;
+      var v = m.getView();
+      var h = extract(["var", "history", "extent"], geodash);
+      h.list = h.list.slice(0, h.cursor); // Removes Future
+      var delta = {
+        "extent": v.calculateExtent(m.getSize()), //"extent": v.calculateExtent(m.getSize()).join(","),
+        "location": {
+          "lat": c[1],
+          "lon": c[0]
+        },
+        "z": v.getZoom()
+      };
+      geodash.api.intend("viewChanged", delta, $scope);
+    }
+  };
+};
+
+},{}],7:[function(require,module,exports){
+module.exports = function(m, v, targetExtent)
+{
+  var chain = [];
+
+  var current_res = v.getResolution();
+  var target_res = v.constrainResolution(v.getResolutionForExtent(targetExtent, m.getSize()));
+  var target_center = ol.extent.getCenter(targetExtent);
+
+  if(current_res == target_res)
+  {
+    if(! ol.array.equals(v.getCenter(), target_center))
+    {
+      chain = [{center: target_center}]
+    }
+  }
+  else if(current_res < target_res)
+  {
+    if(ol.array.equals(v.getCenter(), target_center))
+    {
+      chain = [{resolution: target_res}]
+    }
+    else
+    {
+      //chain = [{resolution: target_res}, {center: target_center}]
+      chain = [{resolution: target_res, center: target_center}]
+    }
+  }
+  else if(current_res > target_res)
+  {
+    if(ol.array.equals(v.getCenter(), target_center))
+    {
+      chain = [{resolution: target_res}]
+    }
+    else
+    {
+      //chain = [{center: target_center}, {resolution: target_res}]
+      chain = [{center: target_center, resolution: target_res}]
+    }
+  }
+  return chain;
+};
+
+},{}],8:[function(require,module,exports){
 module.exports =
 {
   "bounce": require("./bounce"),
+  "callback": require("./callback"),
+  "chain": require("./chain"),
   "pan": require("./pan")
 };
 
-},{"./bounce":3,"./pan":5}],5:[function(require,module,exports){
+},{"./bounce":5,"./callback":6,"./chain":7,"./pan":9}],9:[function(require,module,exports){
 module.exports = function(options)
 {
   var duration = extract("duration", options, 2000);
@@ -171,19 +321,19 @@ module.exports = function(options)
   });
 };
 
-},{}],6:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function(id, layer)
 {
   geodash.var.baselayers[id] = layer;
 };
 
-},{}],7:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = function(id, layer)
 {
   geodash.var.featurelayers[id] = layer;
 };
 
-},{}],8:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 /**
  * Builds a new [AngularJS](https://angularjs.org/) [scope](https://docs.angularjs.org/guide/scope) for a object.
@@ -263,7 +413,7 @@ module.exports = function(event, args)
   return $.extend(true, {}, scope_new);  // Returns a deep copy of variables
 };
 
-},{}],9:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /**
  * Gets an asset by id from the GeoDash dashboard config
  *
@@ -285,7 +435,7 @@ module.exports = function(id, options)
   return geodash.util.getByID(id, config.assets);
 };
 
-},{}],10:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * Gets a base layer by id from the GeoDash dashboard config
  *
@@ -307,14 +457,14 @@ module.exports = function(id, options)
   return geodash.util.getByID(id, config.baselayers);
 };
 
-},{}],11:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function(options)
 {
   var scope = extract("$scope", options) || extract("scope", options) || geodash.util.getScope("geodash-main");
   return scope.dashboard;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Gets an API url ednpoint from a dashboard config by id
  *
@@ -332,12 +482,12 @@ module.exports = function(options)
  * $http.post(url, payload, httpConfig).success(...
  */
 
-module.exports = function(name)
+module.exports = function(id)
 {
-  return extract("initial_data.data.endpoints."+name, geodash);
+  return extract(["endpoints", id], geodash.var);
 };
 
-},{}],13:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * Gets a feature layer by id from the GeoDash dashboard config
  *
@@ -359,7 +509,7 @@ module.exports = function(id, options)
   return geodash.util.getByID(id, config.featurelayers);
 };
 
-},{}],14:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /**
  * Gets a page url from a dashboard config by id
  *
@@ -376,28 +526,12 @@ module.exports = function(id, options)
  * // url == "/dashboard/{{ slug }}"
  */
 
-module.exports = function(id, options)
-{
-  if(angular.isDefined(id))
-  {
-    var config = geodash.api.getDashboardConfig(options);
-    var matches = $.grep(config.pages, function(x, i){return x.id == id;});
-    if(matches.length == 1)
-    {
-      return matches[0]["url"];
-    }
-    else
-    {
-      return undefined;
-    }
-  }
-  else
-  {
-    return undefined;
-  }
-};
+ module.exports = function(id)
+ {
+   return extract(["pages", id], geodash.var);
+ };
 
-},{}],15:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function(options)
 {
   var dashboard = extract("dashboard", options) || geodash.api.getDashboardConfig();
@@ -414,7 +548,7 @@ module.exports = function(options)
   }
 };
 
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /**
  * Checks by id if the GeoDash dashboard config includes the base layer
  *
@@ -436,7 +570,7 @@ module.exports = function(id, options)
   return geodash.api.hasLayer(id, config.baselayers);
 };
 
-},{}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /**
  * Checks by id if the GeoDash dashboard config includes the feature layer
  *
@@ -458,7 +592,7 @@ module.exports = function(id, options)
   return geodash.api.hasLayer(id, config.featurelayers);
 };
 
-},{}],18:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function(id, layers)
 {
   var layer = undefined;
@@ -466,7 +600,7 @@ module.exports = function(id, layers)
   return matches.length == 1;
 };
 
-},{}],19:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 /**
@@ -505,7 +639,7 @@ module.exports = {
   welcome: require("./welcome")
 };
 
-},{"./addBaseLayer":6,"./addFeatureLayer":7,"./buildScope":8,"./getAsset":9,"./getBaseLayer":10,"./getDashboardConfig":11,"./getEndpoint":12,"./getFeatureLayer":13,"./getPage":14,"./getRenderOrder":15,"./hasBaseLayer":16,"./hasFeatureLayer":17,"./hasLayer":18,"./intend":20,"./isVisible":21,"./listBaseLayers":22,"./listFeatureLayers":23,"./listImages":24,"./listServers":25,"./listTegolaServers":26,"./listWMSServers":27,"./opt":28,"./opt_b":29,"./opt_i":30,"./opt_j":31,"./opt_s":32,"./welcome":33}],20:[function(require,module,exports){
+},{"./addBaseLayer":10,"./addFeatureLayer":11,"./buildScope":12,"./getAsset":13,"./getBaseLayer":14,"./getDashboardConfig":15,"./getEndpoint":16,"./getFeatureLayer":17,"./getPage":18,"./getRenderOrder":19,"./hasBaseLayer":20,"./hasFeatureLayer":21,"./hasLayer":22,"./intend":24,"./isVisible":25,"./listBaseLayers":26,"./listFeatureLayers":27,"./listImages":28,"./listServers":29,"./listTegolaServers":30,"./listWMSServers":31,"./opt":32,"./opt_b":33,"./opt_i":34,"./opt_j":35,"./opt_s":36,"./welcome":37}],24:[function(require,module,exports){
 /**
  * Used for intents (requesting and action), such as opening modals, zooming the map, etc.
  * @param {string} name of the intent (toggleModal, refreshMap, filterChanged)
@@ -517,7 +651,7 @@ module.exports = function(name, data, scope)
   scope.$emit(name, data);
 };
 
-},{}],21:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function(options)
 {
   var visible = false;
@@ -536,7 +670,7 @@ module.exports = function(options)
   return visible;
 }
 
-},{}],22:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * Lists the baselayers in the GeoDash dashboard config
  *
@@ -558,7 +692,7 @@ module.exports = function(options)
   return extract("baselayers", config, []);
 };
 
-},{}],23:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
  * Lists the feature layers in the GeoDash dashboard config
  *
@@ -580,7 +714,7 @@ module.exports = function(options)
   return extract("featurelayers", config, []);
 };
 
-},{}],24:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * Lists the image assets in the GeoDash dashboard config
  *
@@ -605,7 +739,7 @@ module.exports = function(options)
   });
 };
 
-},{}],25:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /**
  * Lists the servers in the GeoDash dashboard config
  *
@@ -625,7 +759,7 @@ module.exports = function(options)
   return extract("servers", config, []);
 };
 
-},{}],26:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * Lists the tegola servers in the GeoDash dashboard config
  *
@@ -648,7 +782,7 @@ module.exports = function(options)
   });
 };
 
-},{}],27:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /**
  * Lists the WMS servers in the GeoDash dashboard config
  *
@@ -671,7 +805,7 @@ module.exports = function(options)
   });
 };
 
-},{}],28:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = function(options, names, fallback, fallback2)
 {
   if(options != undefined)
@@ -694,31 +828,31 @@ module.exports = function(options, names, fallback, fallback2)
       return fallback || fallback2;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function(options, names, fallback)
 {
   return geodash.api.opt(options, names, fallback, false);
 };
 
-},{}],30:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function(options, names, fallback)
 {
   return geodash.api.opt(options, names, fallback, 0);
 };
 
-},{}],31:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = function(options, names, fallback)
 {
   return geodash.api.opt(options, names, fallback, {});
 };
 
-},{}],32:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function(options, names, fallback)
 {
   return geodash.api.opt(options, names, fallback, "");
 };
 
-},{}],33:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = function(options)
 {
   options = options || {};
@@ -733,7 +867,7 @@ module.exports = function(options)
   geodash.api.intend("toggleModal", intentData, scope);
 };
 
-},{}],34:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = function(x, length, fallback)
 {
   if(x === undefined || x === "")
@@ -765,7 +899,7 @@ module.exports = function(x, length, fallback)
   }
 };
 
-},{}],35:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 /**
@@ -778,7 +912,7 @@ module.exports = {
   array_length: require("./array_length")
 };
 
-},{"./array_length":34}],36:[function(require,module,exports){
+},{"./array_length":38}],40:[function(require,module,exports){
 module.exports = function(response, url)
 {
   var encoded = [];
@@ -801,7 +935,7 @@ module.exports = function(response, url)
   return encoded;
 };
 
-},{}],37:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function(response, url)
 {
   var layers = [];
@@ -832,7 +966,7 @@ module.exports = function(response, url)
   return layers;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = function(response, url)
 {
   var layers = [];
@@ -882,7 +1016,7 @@ module.exports = function(response, url)
   return layers;
 };
 
-},{}],39:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict';
 module.exports = {
   GeoDashCapabilities: require("./GeoDashCapabilities"),
@@ -890,13 +1024,13 @@ module.exports = {
   WMSCapabilities: require("./WMSCapabilities")
 };
 
-},{"./GeoDashCapabilities":36,"./TegolaCapabilities":37,"./WMSCapabilities":38}],40:[function(require,module,exports){
+},{"./GeoDashCapabilities":40,"./TegolaCapabilities":41,"./WMSCapabilities":42}],44:[function(require,module,exports){
 module.exports = function(d)
 {
   return Bloodhound.tokenizers.whitespace(d.text);
 };
 
-},{}],41:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function(options)
 {
   var engine = new Bloodhound({
@@ -911,12 +1045,12 @@ module.exports = function(options)
   return engine;
 };
 
-},{}],42:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function(obj) {
   return obj['text'];
 };
 
-},{}],43:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 /**
@@ -936,7 +1070,7 @@ module.exports = {
   remote: require("./remote")
 };
 
-},{"./codec":39,"./datumTokenizer":40,"./engine":41,"./identify":42,"./initLocal":44,"./local":49,"./prefetch":54,"./remote":55}],44:[function(require,module,exports){
+},{"./codec":43,"./datumTokenizer":44,"./engine":45,"./identify":46,"./initLocal":48,"./local":53,"./prefetch":58,"./remote":59}],48:[function(require,module,exports){
 module.exports = function(localData, featurelayers, baselayers, servers)
 {
   var bloodhoundData = undefined;
@@ -1012,7 +1146,7 @@ module.exports = function(localData, featurelayers, baselayers, servers)
   return bloodhoundData;
 };
 
-},{}],45:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1032,7 +1166,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],46:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1052,7 +1186,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],47:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1077,7 +1211,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],48:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1097,7 +1231,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],49:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 module.exports = {
   baselayers: require("./baselayers"),
@@ -1110,7 +1244,7 @@ module.exports = {
   wms: require("./wms")
 };
 
-},{"./baselayers":45,"./featurelayers":46,"./featurelayerswithfilters":47,"./images":48,"./layers":50,"./reflect":51,"./wfs":52,"./wms":53}],50:[function(require,module,exports){
+},{"./baselayers":49,"./featurelayers":50,"./featurelayerswithfilters":51,"./images":52,"./layers":54,"./reflect":55,"./wfs":56,"./wms":57}],54:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1142,7 +1276,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],51:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1182,7 +1316,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],52:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1202,7 +1336,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],53:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = function(options)
 {
   var bloodhoundData = [];
@@ -1222,7 +1356,7 @@ module.exports = function(options)
   return bloodhoundData;
 };
 
-},{}],54:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = function(options)
 {
   if(angular.isDefined(options))
@@ -1268,7 +1402,7 @@ module.exports = function(options)
   }
 };
 
-},{}],55:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = function(options)
 {
   if(angular.isDefined(options))
@@ -1314,7 +1448,7 @@ module.exports = function(options)
   }
 };
 
-},{}],56:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = function(options)
 {
   var appName = extract("appName", options);
@@ -1323,24 +1457,42 @@ module.exports = function(options)
   angular.bootstrap(element, [appName]);
 };
 
-},{}],57:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports = function(options)
 {
   var request = extract("request", options);
   var response = extract("response", options);
   var app = extract("app", options);
-  var loaders = extract("loaders", options);
+  var loaders = extract("loaders", options) || extract("config.bootloader.loaders", geodash);
 
   if(response.status == 200)
   {
-    if(angular.isDefined(request.loader))
+    if(angular.isString(request.loader))
     {
-      var loaderFn = extract(request.loader, loaders);
-      if(angular.isDefined(loaderFn))
+      var success = false;
+      for(var i = 0; i < loaders.length; i++)
       {
-        loaderFn(response);
+        var loaderCollection = loaders[i];
+        if(angular.isDefined(loaderCollection))
+        {
+          var loaderFn = extract(request.loader, loaderCollection);
+          if(angular.isDefined(loaderFn))
+          {
+            loaderFn(response);
+            success = true;
+          }
+        }
       }
-      return { "success": true };
+
+      if(success)
+      {
+        return { "success": true };
+      }
+      else
+      {
+        var message = "Could not find loader with name \""+request.loader+"\" for \"" + response.config.url + "\".";
+        return { "success": false, "message": message };
+      }
     }
     else
     {
@@ -1365,7 +1517,7 @@ module.exports = function(options)
   }
 };
 
-},{}],58:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1375,6 +1527,7 @@ module.exports = function(options)
  */
 
 module.exports = {
+  loaders: require("./loaders"),
   ui: require("./ui"),
   step: require("./step"),
   bootstrap: require("./bootstrap"),
@@ -1384,7 +1537,7 @@ module.exports = {
   resources: require("./resources")
 };
 
-},{"./bootstrap":56,"./handle":57,"./internals":59,"./process":60,"./resources":61,"./step":63,"./ui":66}],59:[function(require,module,exports){
+},{"./bootstrap":60,"./handle":61,"./internals":63,"./loaders":65,"./process":67,"./resources":68,"./step":70,"./ui":73}],63:[function(require,module,exports){
 module.exports = function(options)
 {
   var app = extract("app", options);
@@ -1400,7 +1553,75 @@ module.exports = function(options)
   };
 };
 
-},{}],60:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
+/**
+ * Loads API Endpoints into runtime framework
+ *
+ * @function endpoints
+ * @param {(Object)} response - The response
+ * @memberof geodash.bootloader.loaders
+ *
+ * @example <caption>Basic</caption>
+ * geodash.bootloader.loaders.endpoints(response);
+ * // geodash.var.endpoints == {"save_dashboard": "...", "delete_dashboard": "..."}
+ *
+ */
+
+module.exports = function(response)
+{
+  var contentType = response.headers("Content-Type");
+  if(contentType == "application/json")
+  {
+    var endpoints = response.data;
+    if(angular.isDefined(endpoints))
+    {
+      angular.extend(geodash.var.endpoints, endpoints);
+    }
+  }
+};
+
+},{}],65:[function(require,module,exports){
+'use strict';
+
+/**
+ * Bootloader functions for GeoDash
+ * @namespace loaders
+ * @memberof geodash.bootloader
+ */
+
+module.exports = {
+  endpoints: require("./endpoints"),
+  pages: require("./pages")
+};
+
+},{"./endpoints":64,"./pages":66}],66:[function(require,module,exports){
+/**
+ * Loads urls to apges into runtime framework
+ *
+ * @function pages
+ * @param {(Object)} response - The response
+ * @memberof geodash.bootloader.loaders
+ *
+ * @example <caption>Basic</caption>
+ * geodash.bootloader.loaders.pages(response);
+ * // geodash.var.pages == {"home": "/", "dashboard": "/dashboard/{{ uuid }}"}
+ *
+ */
+
+module.exports = function(response)
+{
+  var contentType = response.headers("Content-Type");
+  if(contentType == "application/json")
+  {
+    var pages = response.data;
+    if(angular.isDefined(pages))
+    {
+      angular.extend(geodash.var.pages, pages);
+    }
+  }
+};
+
+},{}],67:[function(require,module,exports){
 module.exports = function(options)
 {
   var resource = extract("resource", options);
@@ -1458,7 +1679,7 @@ module.exports = function(options)
   }
 };
 
-},{}],61:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = function(options)
 {
   var app = extract("app", options);
@@ -1492,7 +1713,8 @@ module.exports = function(options)
           "steps": steps,
           "id": "resource-"+resource.name,
           "status": "pending",
-          "message": "Loading from "+result.request.url
+          "message": "Loading from "+result.request.url,
+          "link": result.request.url
         });
       }
       else
@@ -1529,7 +1751,8 @@ module.exports = function(options)
       steps.push({
         "id": "resource-"+(resource.id || resource.name || resource.loader),
         "label": (resource.title || resource.name || resource.id || resource.loader),
-        "status": "pending"
+        "status": "pending",
+        "link": resource.url
       });
       requests.push(resource);
     }
@@ -1556,7 +1779,8 @@ module.exports = function(options)
             "element": element,
             "steps": steps,
             "id": "resource-"+(request.id || request.name || request.loader),
-            "status": "complete"
+            "status": "complete",
+            "link": request.url
           });
         }
         else
@@ -1566,7 +1790,8 @@ module.exports = function(options)
             "steps": steps,
             "id": "resource-"+(request.id || request.name || request.loader),
             "status": "error",
-            "message": result.message
+            "message": result.message,
+            "link": request.url
           });
         }
       };
@@ -1585,7 +1810,7 @@ module.exports = function(options)
 
 };
 
-},{}],62:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 module.exports = function(options)
 {
   var element = extract("element", options);
@@ -1599,7 +1824,7 @@ module.exports = function(options)
   return steps;
 };
 
-},{}],63:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1613,7 +1838,7 @@ module.exports = {
   status: require("./status")
 };
 
-},{"./add":62,"./status":64}],64:[function(require,module,exports){
+},{"./add":69,"./status":71}],71:[function(require,module,exports){
 module.exports = function(options)
 {
   var element = extract("element", options);
@@ -1621,12 +1846,14 @@ module.exports = function(options)
   var id = extract("id", options);
   var status = extract("status", options);
   var message = extract("message", options);
+  var link = extract("link", options);
 
   steps = $.map(steps, function(x){
     if(x.id == id)
     {
       x.status = status;
       x.message = message || "";
+      x.link = link || "";
     }
     return x;
   })
@@ -1636,34 +1863,38 @@ module.exports = function(options)
   return steps;
 };
 
-},{}],65:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports = function(options)
 {
   var element = extract("element", options);
   var step = extract("step", options);
 
+  var heading = extract("config.bootloader.ui.heading", geodash, "h5");
+  var fontSize = extract("config.bootloader.ui.fontSize", geodash, "2rem");
+  var padding = extract("config.bootloader.ui.padding", geodash, "8px");
+
   var html_margin = "<div class=\"col-md-2\"></div>";
-  var html_label = "<div class=\"col-md-4\"><h4>"+step.label+"</h4></div>";
+  var html_label = "<div class=\"col-md-4\"><"+heading+">"+step.label+"</"+heading+"></div>";
   var html_status = "";
 
   if(step.status == "complete")
   {
-    html_status = "<div class=\"col-md-4 geodash-bootloader-status\"><i class=\"fa fa-check\" style=\"font-size: 3rem;\"></i></div>";
+    html_status = "<div class=\"col-md-4 geodash-bootloader-status\"><a><i class=\"fa fa-check\" style=\"font-size: "+fontSize+";\"></i></a></div>";
   }
   else if(step.status == "pending")
   {
-    html_status = "<div class=\"col-md-4 geodash-bootloader-status\"><i class=\"fa fa-refresh fa-spin\" style=\"font-size: 3rem;\"></i></div>";
+    html_status = "<div class=\"col-md-4 geodash-bootloader-status\"><a><i class=\"fa fa-refresh fa-spin\" style=\"font-size: "+fontSize+";\"></i></a></div>";
   }
   else if(step.status == "waiting")
   {
-    html_status = "<div class=\"col-md-4 geodash-bootloader-status\"><i class=\"fa fa-minus\" style=\"font-size: 3rem;\"></i></div>";
+    html_status = "<div class=\"col-md-4 geodash-bootloader-status\"><a><i class=\"fa fa-minus\" style=\"font-size: "+fontSize+";\"></i></a></div>";
   }
 
-  var html = "<div class=\"row geodash-bootloader-step geodash-bootloader-step-"+step.id+"\" style=\"padding:10px;\">"+html_margin+html_label+html_status+html_margin+"</div>";
+  var html = "<div class=\"row geodash-bootloader-step geodash-bootloader-step-"+step.id+"\" style=\"padding:"+padding+";\">"+html_margin+html_label+html_status+html_margin+"</div>";
   element.append(html);
 };
 
-},{}],66:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1678,7 +1909,7 @@ module.exports = {
   updateRow: require("./updateRow")
 };
 
-},{"./addRow":65,"./update":67,"./updateRow":68}],67:[function(require,module,exports){
+},{"./addRow":72,"./update":74,"./updateRow":75}],74:[function(require,module,exports){
 module.exports = function(options)
 {
   var element = extract("element", options);
@@ -1702,7 +1933,7 @@ module.exports = function(options)
   }
 };
 
-},{}],68:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 module.exports = function(options)
 {
   var row = extract("row", options);
@@ -1752,9 +1983,23 @@ module.exports = function(options)
       .removeAttr("data-placement")
       .removeAttr("title");
   }
+
+  if(angular.isString(step.link) && step.link.length > 0)
+  {
+    $(".geodash-bootloader-status a", row).attr({
+        "href": step.link,
+        "target": "_blank"
+    })
+  }
+  else
+  {
+    $(".geodash-bootloader-status a", row)
+      .removeAttr("href")
+      .removeAttr("target")
+  }
 };
 
-},{}],69:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 module.exports = function(path, obj, fallback)
 {
   var result = fallback || '';
@@ -1772,7 +2017,7 @@ module.exports = function(path, obj, fallback)
   return result;
 };
 
-},{}],70:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 module.exports = function(x)
 {
   if(angular.isDefined(x))
@@ -1797,7 +2042,31 @@ module.exports = function(x)
   }
 };
 
-},{}],71:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
+module.exports = function(value, type, delimiter)
+{
+  if(value != undefined && value !== "")
+  {
+    if(type == "delimited")
+    {
+      delimiter = delimiter || ',';
+      var str = Math.round(value).toString(); // Round in case value is a float
+      var pattern = new RegExp('(\\d+)(\\d{3})','gi');
+      while(pattern.test(str)){str=str.replace(pattern,'$1'+ delimiter +'$2');}
+      return str;
+    }
+    else
+    {
+      return Math.round(value).toString();
+    }
+  }
+  else
+  {
+      return "";
+  }
+};
+
+},{}],79:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1809,13 +2078,59 @@ module.exports = function(x)
 module.exports = {
   formatArray: require("./formatArray"),
   formatCSS: require("./formatCSS"),
+  formatInteger: require("./formatInteger"),
+  md2html: require("./md2html"),
   parseAttributes: require("./parseAttributes"),
   parseFeatures: require("./parseFeatures"),
   parseGeometry: require("./parseGeometry"),
   parseURL: require("./parseURL")
 };
 
-},{"./formatArray":69,"./formatCSS":70,"./parseAttributes":72,"./parseFeatures":73,"./parseGeometry":74,"./parseURL":75}],72:[function(require,module,exports){
+},{"./formatArray":76,"./formatCSS":77,"./formatInteger":78,"./md2html":80,"./parseAttributes":81,"./parseFeatures":82,"./parseGeometry":83,"./parseURL":84}],80:[function(require,module,exports){
+module.exports = function(text)
+{
+  if(text != undefined)
+  {
+    var converter = new showdown.Converter();
+    html = converter.makeHtml(text);
+
+    // Open Links in New Windows
+    html = html.replace(new RegExp("(<a .*?)>(.*?)</a>", "gi"), '$1 target="_blank">$2</a>');
+
+    // Replace New Line characters with Line Breaks
+    html = html.replace(new RegExp('\n', 'gi'),'<br>');
+
+    // Replace extra new lines before heading tags, which add their own margin by default
+    html = html.replace(new RegExp("<br><br><(h\\d.*?)>", "gi"),'<br><$1>');
+
+    // Replace extra new lines before paragraph tags, which add their own margin by default
+    html = html.replace(new RegExp("<br><br><p>", "gi"),'<p>');
+
+    // Replace extra new lines before unordered list tags, which add their own margin by default
+    html = html.replace(new RegExp("<br><br><ul>", "gi"),'<ul>');
+
+    // Replace extra new lines before unordered list tags, which add their own margin by default
+    html = html.replace(new RegExp("<br><br><li>", "gi"),'<li>');
+
+    // If one enclosing paragraph element, then flatten it.
+    var matches = html.match(new RegExp("^<p(.*?)>(.*?)</p>", "gi"));
+    if(Array.isArray(matches) && matches.length == 1)  // If only 1 match
+    {
+      if(matches[0] == html) // Fully enclosing
+      {
+        html = html.substring("<p>".length, html.length - "</p>".length);
+      }
+    }
+
+    return html;
+  }
+  else
+  {
+    return "";
+  }
+};
+
+},{}],81:[function(require,module,exports){
 module.exports = function(element, fields)
 {
   var attributes = {};
@@ -1845,7 +2160,7 @@ module.exports = function(element, fields)
   return attributes;
 };
 
-},{}],73:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 module.exports = function(response, fields_by_featuretype)
 {
   var features = [];
@@ -1866,7 +2181,7 @@ module.exports = function(response, fields_by_featuretype)
   return features;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = function(element)
 {
   var geom = undefined;
@@ -1925,7 +2240,7 @@ module.exports = function(element)
   return geom;
 };
 
-},{}],75:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 module.exports = function(url, serverType)
 {
   if(angular.isString(url))
@@ -1972,7 +2287,7 @@ module.exports = function(url, serverType)
   }
 };
 
-},{}],76:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1985,7 +2300,7 @@ module.exports = {
   test: require("./test")
 };
 
-},{"./test":77}],77:[function(require,module,exports){
+},{"./test":86}],86:[function(require,module,exports){
 module.exports = function(f, state, dashboard, options)
 {
   var idx = parseInt(f.id_.split(".")[1], 10);
@@ -2004,7 +2319,161 @@ module.exports = function(f, state, dashboard, options)
   return delta;
 };
 
-},{}],78:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
+module.exports = function(name)
+{
+  var h = extract(["var", "history", name], geodash);
+  if(h.list.length == 0)
+  {
+    return undefined;
+  }
+  else
+  {
+    if(h.cursor > 0)
+    {
+      //h.detached_list = geodash.util.deepCopy(h.list);
+      //h.list = geodash.util.deepCopy(h.list.slice(0, h.cursor));
+      h.cursor = h.cursor - 1;
+      //h.detached_cursor = h.cursor;
+      return geodash.util.deepCopy(h.list[h.cursor]);
+    }
+    else
+    {
+      return undefined;
+    }
+  }
+};
+
+},{}],88:[function(require,module,exports){
+module.exports = function(name)
+{
+  var h = extract(["var", "history", name], geodash);
+  if(h.list.length > 0)
+  {
+    h.detached_cursor = h.cursor;
+    h.detached_list = geodash.util.deepCopy(h.list.slice(h.cursor));
+    h.list = geodash.util.deepCopy(h.list.slice(0, h.cursor));
+  }
+};
+
+},{}],89:[function(require,module,exports){
+module.exports = function(h, cursor, x)
+{
+  var dirty = false;
+  if(Array.isArray(h))
+  {
+    if(h.length == 0)
+    {
+      dirty = true;
+    }
+    else
+    {
+      if(JSON.stringify(x) != JSON.stringify(h[cursor]))
+      {
+        dirty = true;
+      }
+    }
+  }
+  else
+  {
+    dirty = true;
+  }
+  return dirty;
+};
+
+},{}],90:[function(require,module,exports){
+module.exports = function(name)
+{
+  var h = extract(["var", "history", name], geodash);
+  if(h.list.length == 0)
+  {
+    return undefined;
+  }
+  else
+  {
+    if(h.cursor < h.list.length - 1)
+    {
+      h.cursor = h.cursor + 1;
+      return geodash.util.deepCopy(h.list[h.cursor]);
+    }
+    else
+    {
+      return undefined;
+    }
+  }
+};
+
+},{}],91:[function(require,module,exports){
+'use strict';
+
+/**
+ * Functions to manage state history
+ * @namespace history
+ * @memberof geodash
+ */
+
+module.exports = {
+  back: require("./back"),
+  detach: require("./detach"),
+  dirty: require("./dirty"),
+  forward: require("./forward"),
+  pushState: require("./pushState")
+};
+
+},{"./back":87,"./detach":88,"./dirty":89,"./forward":90,"./pushState":92}],92:[function(require,module,exports){
+module.exports = function($interpolate, $scope)
+{
+  geodash.var.history = geodash.var.history || {};
+  var h = geodash.var.history;
+  //
+  h.state = h.state || {"list": [], cursor: 0};
+  //h.extent = h.extent || {"list": [], cursor: 0, reattach: undefined, detached_cursor: 0, detached_list: []};
+  h.extent = h.extent || {"list": [], cursor: 0};
+
+  if(geodash.history.dirty(h.state.list, h.state.cursor, $scope.state))
+  {
+    h.state.list.push(geodash.util.deepCopy($scope.state));
+    h.state.cursor = h.state.list.length -1;
+
+    var newExtent = geodash.util.deepCopy(extract("state.view.extent", $scope));
+    if(newExtent != undefined)
+    {
+      // Need to not reset the cursor to the newest extent if it matches the current extent at the cursor
+      if(geodash.history.dirty(h.extent.list, h.extent.cursor, newExtent))
+      {
+        if(h.extent.cursor != h.extent.list.length -1)
+        {
+          h.extent.list = h.extent.list.slice(0, h.extent.cursor);
+        }
+        h.extent.list.push(newExtent);
+        h.extent.cursor = h.extent.list.length -1;
+      }
+
+      /* Reattach future.  If user interrupted, then don't reattach.
+      if(angular.isDefined(h.extent.reattach) && Array.isArray(h.extent.detached_list))
+      {
+        if(h.extent.reattach(newExtent))
+        {
+          h.extent.list = geodash.util.deepCopy(h.extent.detached_list);
+          h.extent.cursor = h.extent.detached_cursor;
+
+          h.extent.reattach = undefined;
+          h.extent.detached_cursor = undefined;
+          h.extent.detached_list = undefined;
+        }
+      }*/
+    }
+
+    var url = buildPageURL($interpolate, $scope.dashboard, $scope.state);
+    if(url != undefined)
+    {
+      history.replaceState($scope.state, "", url);
+    }
+  }
+
+};
+
+},{}],93:[function(require,module,exports){
 
 module.exports = function(responses, fields_by_featuretype)
 {
@@ -2021,7 +2490,7 @@ module.exports = function(responses, fields_by_featuretype)
   return features;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /**
  * Create Angular promises from a set of urls
  *
@@ -2049,7 +2518,7 @@ module.exports = function($http, urls)
   return promises;
 };
 
-},{}],80:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2063,7 +2532,7 @@ module.exports = {
   build_features: require("./build_features")
 };
 
-},{"./build_features":78,"./build_promises":79}],81:[function(require,module,exports){
+},{"./build_features":93,"./build_promises":94}],96:[function(require,module,exports){
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
 
@@ -2087,6 +2556,7 @@ module.exports = {
   directives: {},
   filters: {},
   handlers: {},
+  history: require("./history"),
   init: require("./init"),
   layers: require("./layers"),
   listeners: require("./listeners"),
@@ -2101,16 +2571,18 @@ module.exports = {
   vecmath: require("./vecmath"),
   var: {
     apps: {},
-    logs: {},
     baselayers: {},
-    featurelayers: {},
     cache: {
-        styles: {}
-    }
+      styles: {}
+    },
+    endpoints: {},
+    logs: {},
+    featurelayers: {},
+    pages: {}
   }
 };
 
-},{"./animations":4,"./api":19,"./assert":35,"./bloodhound":43,"./bootloader":58,"./codec":71,"./dynamicStyleFn":76,"./http":80,"./init":88,"./layers":103,"./listeners":118,"./log":124,"./normalize":131,"./popup":138,"./style":140,"./tilemath":150,"./typeahead":167,"./ui":185,"./util":205,"./vecmath":214}],82:[function(require,module,exports){
+},{"./animations":8,"./api":23,"./assert":39,"./bloodhound":47,"./bootloader":62,"./codec":79,"./dynamicStyleFn":85,"./history":91,"./http":95,"./init":103,"./layers":118,"./listeners":133,"./log":139,"./normalize":147,"./popup":155,"./style":157,"./tilemath":167,"./typeahead":184,"./ui":202,"./util":220,"./vecmath":230}],97:[function(require,module,exports){
 module.exports = function()
 {
   $("[data-geodash-dashboard-name]").each(function(){
@@ -2120,7 +2592,7 @@ module.exports = function()
   });
 };
 
-},{}],83:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 module.exports = function(options)
 {
   var app = extract("app", options);
@@ -2146,7 +2618,7 @@ module.exports = function(options)
   });
 };
 
-},{}],84:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 module.exports = function(appName, mainElement, loaders)
 {
   var app = angular.module(appName, ['ngRoute', 'ngSanitize', 'ngCookies']);
@@ -2276,7 +2748,7 @@ module.exports = function(appName, mainElement, loaders)
 
 };
 
-},{}],85:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 /**
  * Injects GeoDash directives into the Angular application.  Run before `bootstrap`.
  *
@@ -2301,7 +2773,7 @@ module.exports = function(options)
   }
 };
 
-},{}],86:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 /**
  * Injects GeoDash factory variables into the Angular application.  Run before `bootstrap`.
  *
@@ -2329,7 +2801,7 @@ module.exports = function(options)
 
 };
 
-},{}],87:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 /**
  * Injects GeoDash filters into the Angular application.  Run before `bootstrap`.
  *
@@ -2354,7 +2826,7 @@ module.exports = function(options)
   }
 };
 
-},{}],88:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2378,7 +2850,7 @@ module.exports = {
   typeahead: require("./typeahead")
 };
 
-},{"./all":82,"./controllers":83,"./dashboard":84,"./directives":85,"./factory":86,"./filters":87,"./listeners":89,"./map_leaflet":90,"./map_ol3":91,"./state":92,"./templates":93,"./typeahead":94}],89:[function(require,module,exports){
+},{"./all":97,"./controllers":98,"./dashboard":99,"./directives":100,"./factory":101,"./filters":102,"./listeners":104,"./map_leaflet":105,"./map_ol3":106,"./state":107,"./templates":108,"./typeahead":109}],104:[function(require,module,exports){
 module.exports = function()
 {
   $('body').on('click', '.btn-clear, .geodash-clear', function(event) {
@@ -2499,7 +2971,7 @@ module.exports = function()
   });
 };
 
-},{}],90:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 module.exports = function(opts)
 {
   var map = L.map('map',
@@ -2521,7 +2993,7 @@ module.exports = function(opts)
   return map;
 };
 
-},{}],91:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = function(options)
 {
   var id = extract("id", options, "map");
@@ -2566,7 +3038,7 @@ module.exports = function(options)
   return map;
 };
 
-},{}],92:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 /**
  * init_state will overwrite the default state from the server with params in the url.
  * @param {Object} state - Initial state from server
@@ -2634,7 +3106,7 @@ module.exports = function(options)
   return newState;
 };
 
-},{}],93:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 /**
  * Injects GeoDash templates into the Angular application.  Run before `bootstrap`.
  *
@@ -2673,7 +3145,7 @@ module.exports = function(options)
   });
 };
 
-},{}],94:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = function($element, featurelayers, baselayers, servers, datasetOptions, codecOptions)
 {
   datasetOptions = datasetOptions || extract("config.search.datasets", geodash) || [geodash.typeahead.datasets];
@@ -2755,7 +3227,7 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
 
 };
 
-},{}],95:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = function(featureLayer)
 {
   var fields = [];
@@ -2770,7 +3242,7 @@ module.exports = function(featureLayer)
   return fields;
 };
 
-},{}],96:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 module.exports = function(options)
 {
   var dashboard = extract("dashboard", options) || geodash.api.getDashboardConfig();
@@ -2844,7 +3316,7 @@ module.exports = function(options)
   }
 };
 
-},{}],97:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 module.exports = function(options)
 {
   var dashboard = extract("dashboard", options) || geodash.api.getDashboardConfig();
@@ -2908,7 +3380,7 @@ module.exports = function(options)
   }  
 };
 
-},{}],98:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2926,7 +3398,7 @@ module.exports = {
   wmts: require("./wmts")
 };
 
-},{"./geojson":96,"./heatmap":97,"./mapzen":99,"./tegola":100,"./wms":101,"./wmts":102}],99:[function(require,module,exports){
+},{"./geojson":111,"./heatmap":112,"./mapzen":114,"./tegola":115,"./wms":116,"./wmts":117}],114:[function(require,module,exports){
 module.exports = function(options)
 {
   var dashboard = extract("dashboard", options) || geodash.api.getDashboardConfig();
@@ -2971,9 +3443,9 @@ module.exports = function(options)
   }
 };
 
-},{}],100:[function(require,module,exports){
-arguments[4][99][0].apply(exports,arguments)
-},{"dup":99}],101:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
+arguments[4][114][0].apply(exports,arguments)
+},{"dup":114}],116:[function(require,module,exports){
 module.exports = function(options)
 {
   var dashboard = extract("dashboard", options) || geodash.api.getDashboardConfig();
@@ -3044,7 +3516,7 @@ module.exports = function(options)
   }
 };
 
-},{}],102:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function($scope, live, dashboard, id, layerConfig)
 {
   var w = layerConfig.wmts;
@@ -3100,7 +3572,7 @@ module.exports = function($scope, live, dashboard, id, layerConfig)
   }
 };
 
-},{}],103:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3122,7 +3594,7 @@ module.exports = {
   translate: require("./translate")
 };
 
-},{"./aggregate_fields":95,"./featurelayer":98,"./init_baselayers_leaflet":104,"./init_baselayers_ol3":105,"./init_featurelayer":106,"./init_featurelayer_post":107,"./init_featurelayer_post_ol3":108,"./init_featurelayers":109,"./source":111,"./translate":115}],104:[function(require,module,exports){
+},{"./aggregate_fields":110,"./featurelayer":113,"./init_baselayers_leaflet":119,"./init_baselayers_ol3":120,"./init_featurelayer":121,"./init_featurelayer_post":122,"./init_featurelayer_post_ol3":123,"./init_featurelayers":124,"./source":126,"./translate":130}],119:[function(require,module,exports){
 module.exports = function(map, baselayers)
 {
   var layers = {};
@@ -3173,7 +3645,7 @@ module.exports = function(map, baselayers)
   return layers;
 };
 
-},{}],105:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 module.exports = function(map, baselayers)
 {
   var layers = {};
@@ -3199,7 +3671,7 @@ module.exports = function(map, baselayers)
   return layers;
 };
 
-},{}],106:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 module.exports = function(options)
 {
   if(extract("fl.enabled", options, true))
@@ -3233,7 +3705,7 @@ module.exports = function(options)
   }
 };
 
-},{}],107:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 module.exports = function($scope, live, id, fl, visible)
 {
   if(fl != undefined)
@@ -3250,7 +3722,7 @@ module.exports = function($scope, live, id, fl, visible)
   }
 };
 
-},{}],108:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 module.exports = function(options)
 {
   if(geodash.api.isVisible(options))
@@ -3264,7 +3736,7 @@ module.exports = function(options)
   }
 };
 
-},{}],109:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 module.exports = function(featureLayers, $scope, live, dashboard, state)
 {
   $.each(featureLayers, function(i, layerConfig){
@@ -3272,20 +3744,24 @@ module.exports = function(featureLayers, $scope, live, dashboard, state)
   });
 };
 
-},{}],110:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 module.exports = function(options)
 {
   var source = undefined;
 
-  var projection = "EPSG:4326";
   var local = extract("local", options);
   var url = extract("url", options);
+  var projection = extract("projection", options, "EPSG:4326");
 
   if(angular.isDefined(local))
   {
+    // For discussion on handling projections, see
+    // http://stackoverflow.com/questions/32455040/how-to-specify-the-projection-for-geojson-in-openlayers3
     source = new ol.source.Vector({
-      features: (new ol.format.GeoJSON()).readFeatures(local),
-      projection: projection,
+      features: (new ol.format.GeoJSON()).readFeatures(local, {
+        dataProjection: projection,
+        featureProjection: "EPSG:3857"
+      })
     });
   }
   else if(angular.isDefined(url))
@@ -3300,7 +3776,7 @@ module.exports = function(options)
   return source;
 };
 
-},{}],111:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3316,7 +3792,7 @@ module.exports = {
   xyz: require("./xyz")
 };
 
-},{"./geojson":110,"./vectortile":112,"./wms":113,"./xyz":114}],112:[function(require,module,exports){
+},{"./geojson":125,"./vectortile":127,"./wms":128,"./xyz":129}],127:[function(require,module,exports){
 module.exports = function(options)
 {
   var source = undefined;
@@ -3358,7 +3834,7 @@ module.exports = function(options)
   return source;
 };
 
-},{}],113:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 module.exports = function(options)
 {
   var source = undefined;
@@ -3395,14 +3871,14 @@ module.exports = function(options)
   return source;
 };
 
-},{}],114:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 module.exports = function(options)
 {
   var source = undefined;
 
   var mapbox = extract("bl.mapbox", options);
   var gwc = extract("bl.gwc", options);
-  var tile = extract("bl.tile", options) || extract("bl.tiles", options);
+  var tile = extract("bl.tile", options) || extract("bl.tiles", options) || extract("bl.source.tile", options);
 
   var url = undefined;
 
@@ -3452,7 +3928,7 @@ module.exports = function(options)
   return source;
 };
 
-},{}],115:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3465,7 +3941,7 @@ module.exports = {
   wfs_to_geojson: require("./wfs_to_geojson")
 };
 
-},{"./wfs_to_geojson":116}],116:[function(require,module,exports){
+},{"./wfs_to_geojson":131}],131:[function(require,module,exports){
 module.exports = function(options)
 {
   var fl = extract("fl", options);
@@ -3489,7 +3965,7 @@ module.exports = function(options)
   return url;
 };
 
-},{}],117:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 module.exports = function(event, args)
 {
   var id = args["id_hide"] || args["id"];
@@ -3509,7 +3985,7 @@ module.exports = function(event, args)
   catch(err){};
 };
 
-},{}],118:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3526,7 +4002,7 @@ module.exports = {
   toggleModal: require("./toggleModal")
 };
 
-},{"./hideModal":117,"./saveAndHide":119,"./showModal":120,"./switchModal":121,"./toggleModal":122}],119:[function(require,module,exports){
+},{"./hideModal":132,"./saveAndHide":134,"./showModal":135,"./switchModal":136,"./toggleModal":137}],134:[function(require,module,exports){
 module.exports = function(event, args)
 {
   geodash.listeners.hideModal(event, args);
@@ -3555,7 +4031,7 @@ geodash.listeners.saveAndSwitch = function(event, args)
   });
 };*/
 
-},{}],120:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 module.exports = function(event, args)
 {
     console.log('event', event);
@@ -3618,20 +4094,20 @@ module.exports = function(event, args)
     });
 };
 
-},{}],121:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 module.exports = function(event, args)
 {
   geodash.listeners.hideModal(event, args);
   geodash.listeners.showModal(event, args);
 };
 
-},{}],122:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 module.exports = function(event, args)
 {
   geodash.listeners.showModal(event, args);
 };
 
-},{}],123:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 module.exports = function(name, messages)
 {
   if(!Array.isArray(geodash.var.logs[name]))
@@ -3652,7 +4128,7 @@ module.exports = function(name, messages)
 
 };
 
-},{}],124:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3667,7 +4143,7 @@ module.exports = {
   print: require("./print")
 };
 
-},{"./error":123,"./info":125,"./print":126}],125:[function(require,module,exports){
+},{"./error":138,"./info":140,"./print":141}],140:[function(require,module,exports){
 /**
  * Adds one or messages to the log identified by name.
  *
@@ -3703,7 +4179,7 @@ module.exports = function(name, messages)
 
 };
 
-},{}],126:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 module.exports = function(name)
 {
   if(angular.isDefined(name))
@@ -3748,7 +4224,7 @@ module.exports = function(name)
   }
 };
 
-},{}],127:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 /**
  * Normalizes a representation of a color to a RGBA array of numbers.
  *
@@ -3794,7 +4270,43 @@ module.exports = function(color)
   return color;
 };
 
-},{}],128:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
+module.exports = function(extent, options)
+{
+  var newExtent = undefined;
+  if(angular.isDefined(extent))
+  {
+    if(angular.isString(extent))
+    {
+      newExtent = extent.split(",").map(parseFloat);
+    }
+    else
+    {
+      newExtent = geodash.util.deepCopy(extent);
+    }
+  }
+  else
+  {
+    newExtent = geodash.util.deepCopy(extent);
+  }
+
+  var sourceProjection = extract("sourceProjection", options);
+  var targetProjection = extract("targetProjection", options);
+  if(angular.isDefined(sourceProjection) && angular.isDefined(targetProjection))
+  {
+    if(sourceProjection != targetProjection)
+    {
+      newExtent = ol.proj.transformExtent(newExtent, sourceProjection, targetProjection);
+    }
+  }
+  else
+  {
+    return newExtent;
+  }
+
+};
+
+},{}],144:[function(require,module,exports){
 /**
  * Normalizes an OpenLayers 3 or Leaflet feature to internal GeoDash Representation
  *
@@ -3818,7 +4330,7 @@ module.exports = function(feature, options)
   };
 };
 
-},{}],129:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 /**
  * Normalizes a representation of a float to a {float}.
  *
@@ -3857,7 +4369,7 @@ module.exports = function(x, fallback)
   }
 };
 
-},{}],130:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 module.exports = function(geometry, options)
 {
   var geometryType = undefined;
@@ -3879,7 +4391,7 @@ module.exports = function(geometry, options)
   }
 };
 
-},{}],131:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3890,14 +4402,55 @@ module.exports = function(geometry, options)
 
 module.exports = {
   color: require("./color"),
+  extent: require("./extent"),
   feature: require("./feature"),
   float: require("./float"),
+  integer: require("./integer"),
   geometry: require("./geometry"),
   point: require("./point"),
   polygon: require("./polygon")
 };
 
-},{"./color":127,"./feature":128,"./float":129,"./geometry":130,"./point":132,"./polygon":133}],132:[function(require,module,exports){
+},{"./color":142,"./extent":143,"./feature":144,"./float":145,"./geometry":146,"./integer":148,"./point":149,"./polygon":150}],148:[function(require,module,exports){
+/**
+ * Normalizes a representation of an integer to a {integer}.
+ *
+ * @function integer
+ * @param {(string|integer)} x - The original values_
+ * @param {Object} fallback - If not a {integer} or {string}, return this value.
+ * @return {float} The value as a {integer} object.
+ * @memberof geodash.normalize
+ *
+ * @example
+ * var x = "51";
+ * var y = geodash.normalize.integer(51);
+ * y == 51
+ */
+
+module.exports = function(x, fallback)
+{
+  if(angular.isNumber(x))
+  {
+    return x;
+  }
+  else if(angular.isString(x))
+  {
+    if(x.length > 0)
+    {
+      return parseInt(x, 10);
+    }
+    else
+    {
+      return fallback;
+    }
+  }
+  else
+  {
+    return fallback;
+  }
+};
+
+},{}],149:[function(require,module,exports){
 /**
  * Normalizes a representation of an OpenLayers 3 or Leaflet point to a GeoDash point.
  *
@@ -3946,7 +4499,7 @@ module.exports = function(point, options)
   }
 };
 
-},{}],133:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 module.exports = function(geometry)
 {
   return {
@@ -3954,16 +4507,17 @@ module.exports = function(geometry)
   };
 };
 
-},{}],134:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 module.exports = function(chart, layer, feature, state)
 {
+  var title = geodash.codec.md2html(chart.title) || chart.id;
   var html = "";
-  html += "<div style=\"text-align:center;\"><b>"+chart.label+"</b></div><br>";
+  html += "<div style=\"text-align:center;\">"+title+"</div><br>";
   html += "<div id=\""+chart.id+"\" class=\"geodash-popup-chart\"></div>";
   return html;
 };
 
-},{}],135:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 module.exports = function(field, layer, feature, state)
 {
   var output = field["output"] || field["attribute"];
@@ -4039,7 +4593,7 @@ module.exports = function(field, layer, feature, state)
   return html;
 };
 
-},{}],136:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 module.exports = function($interpolate, featureLayer, feature, state)
 {
   var popupTemplate = geodash.popup.buildPopupTemplate(featureLayer.popup, featureLayer, feature, state);
@@ -4057,7 +4611,7 @@ module.exports = function($interpolate, featureLayer, feature, state)
   return { 'content': content, 'title': title }
 };
 
-},{}],137:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 module.exports = function(popup, layer, feature, state)
 {
   var panes = popup.panes;
@@ -4139,7 +4693,7 @@ module.exports = function(popup, layer, feature, state)
   return popupTemplate;
 };
 
-},{}],138:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4156,7 +4710,7 @@ module.exports = {
   openPopup: require("./openPopup")
 };
 
-},{"./buildChart":134,"./buildField":135,"./buildPopupContentAndTitle":136,"./buildPopupTemplate":137,"./openPopup":139}],139:[function(require,module,exports){
+},{"./buildChart":151,"./buildField":152,"./buildPopupContentAndTitle":153,"./buildPopupTemplate":154,"./openPopup":156}],156:[function(require,module,exports){
 module.exports = function($interpolate, featureLayer, feature, location, map, state)
 {
   var popupContentAndTitle = geodash.popup.buildPopupContentAndTitle($interpolate, featureLayer, feature, state);
@@ -4236,7 +4790,7 @@ module.exports = function($interpolate, featureLayer, feature, location, map, st
   }
 };
 
-},{}],140:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
 
@@ -4253,7 +4807,7 @@ module.exports = {
   translate: require("./translate")
 };
 
-},{"./leaflet":141,"./ol3":142,"./symbolizer":144,"./translate":148}],141:[function(require,module,exports){
+},{"./leaflet":158,"./ol3":159,"./symbolizer":161,"./translate":165}],158:[function(require,module,exports){
 module.exports = function(f, layer)
 {
   //
@@ -4279,7 +4833,7 @@ module.exports = function(f, layer)
   return style;
 };
 
-},{}],142:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 module.exports = function(options)
 {
   var feature = extract("feature", options);
@@ -4337,7 +4891,7 @@ module.exports = function(options)
   return styles;
 };
 
-},{}],143:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 module.exports = function(options)
 {
   var symbolizer = options.symbolizer;
@@ -4369,7 +4923,7 @@ module.exports = function(options)
   return style;
 };
 
-},{}],144:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
 
@@ -4386,24 +4940,24 @@ module.exports = {
   polygon: require("./polygon")
 };
 
-},{"./default":143,"./line":145,"./point":146,"./polygon":147}],145:[function(require,module,exports){
+},{"./default":160,"./line":162,"./point":163,"./polygon":164}],162:[function(require,module,exports){
 module.exports = function(options)
 {
   return geodash.style.symbolizer.default(options);
 };
 
-},{}],146:[function(require,module,exports){
-arguments[4][145][0].apply(exports,arguments)
-},{"dup":145}],147:[function(require,module,exports){
-arguments[4][145][0].apply(exports,arguments)
-},{"dup":145}],148:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
+arguments[4][162][0].apply(exports,arguments)
+},{"dup":162}],164:[function(require,module,exports){
+arguments[4][162][0].apply(exports,arguments)
+},{"dup":162}],165:[function(require,module,exports){
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
 module.exports = {
   ol3: require("./ol3")
 };
 
-},{"./ol3":149}],149:[function(require,module,exports){
+},{"./ol3":166}],166:[function(require,module,exports){
 //module.exports = function(f, style_static, style_dynamic_fn, style_dynamic_options)
 module.exports = function(options)
 {
@@ -4518,7 +5072,7 @@ module.exports = function(options)
   return style;
 };
 
-},{}],150:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4537,7 +5091,7 @@ module.exports = {
   tms_to_bbox: require("./tms_to_bbox")
 };
 
-},{"./point_to_bbox":151,"./point_to_radius":152,"./tile_to_lat":153,"./tile_to_lon":154,"./tms_to_bbox":155}],151:[function(require,module,exports){
+},{"./point_to_bbox":168,"./point_to_radius":169,"./tile_to_lat":170,"./tile_to_lon":171,"./tms_to_bbox":172}],168:[function(require,module,exports){
 /**
  * Converts a point to it's corresponding lat lon bounding box.
  *
@@ -4563,7 +5117,7 @@ module.exports = function(x, y, z, digits)
   return [w, s, e, n];
 };
 
-},{}],152:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 /**
  * Gets the click radius for a given point for web mercator maps
  *
@@ -4581,7 +5135,7 @@ module.exports = function(z)
   return (geodash.config.click_radius || 4.0) / z;
 };
 
-},{}],153:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 /**
  * Converts a tile y-coordinate to its corresponding latitude value.
  *
@@ -4601,7 +5155,7 @@ module.exports = function(y, z)
   return ( R2D * Math.atan(0.5 * ( Math.exp(n) - Math.exp(-n))));
 };
 
-},{}],154:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 /**
  * Converts a tile x-coordinate to its corresponding longitude value.
  *
@@ -4620,7 +5174,7 @@ module.exports = function(x, z)
   return x / Math.pow(2, z) * 360-180;
 };
 
-},{}],155:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 /**
  * Converts a tile tms coordinate into its corresponding latitude longitude bounding box.
  *
@@ -4644,7 +5198,7 @@ module.exports = function(x, y, z)
   return [w, s, e, n];
 };
 
-},{}],156:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 module.exports = function(element, featurelayers, baselayers, servers, codecs)
 {
   var datasets = [];
@@ -4683,7 +5237,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
   return datasets;
 };
 
-},{}],157:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 module.exports = function(element, featurelayers, baselayers, servers, codecs)
 {
   var datasets = [];
@@ -4722,7 +5276,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
   return datasets;
 };
 
-},{}],158:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 module.exports = function(element, featurelayers, baselayers, servers, codecs)
 {
   var datasets = [];
@@ -4775,7 +5329,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
   return datasets;
 };
 
-},{}],159:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 module.exports = function(element, featurelayers, baselayers, servers, codecs)
 {
   var datasets = [];
@@ -4814,7 +5368,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
   return datasets;
 };
 
-},{}],160:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 module.exports = function(element, featurelayers, baselayers, servers, codecs)
 {
   var datasets = [];
@@ -4873,7 +5427,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
   return datasets;
 };
 
-},{}],161:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 module.exports = function(element, featurelayers, baselayers, servers, codecs)
 {
   var datasets = [];
@@ -4932,7 +5486,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecs)
   return datasets;
 };
 
-},{}],162:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 module.exports = function(element, featurelayers, baselayers, servers, codecOptions)
 {
   var datasets = [];
@@ -4993,7 +5547,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecOpti
   return datasets;
 };
 
-},{}],163:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5012,13 +5566,13 @@ module.exports = {
   WMSServers: require("./WMSServers")
 };
 
-},{"./FeatureLayers":156,"./FeatureLayersWithFilters":157,"./GeoDashDashboards":158,"./Images":159,"./TegolaServers":160,"./WMSServers":161,"./default":162}],164:[function(require,module,exports){
+},{"./FeatureLayers":173,"./FeatureLayersWithFilters":174,"./GeoDashDashboards":175,"./Images":176,"./TegolaServers":177,"./WMSServers":178,"./default":179}],181:[function(require,module,exports){
 module.exports = function(data)
 {
   return angular.isString(data) ? data : (data.text || data.id);  // Order is critically important to have dataset.engine.get work
 };
 
-},{}],165:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 module.exports = function (data)
 {
   if(! angular.isDefined(data.query))
@@ -5035,7 +5589,7 @@ module.exports = function (data)
   }
 };
 
-},{}],166:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 module.exports = function(datasets, value)
 {
   var results = [];
@@ -5050,7 +5604,7 @@ module.exports = function(datasets, value)
   return results;
 };
 
-},{}],167:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5068,7 +5622,7 @@ module.exports = {
   getResultsFromDatasets: require("./getResultsFromDatasets")
 };
 
-},{"./datasets":163,"./displayFn":164,"./footer":165,"./getResultsFromDatasets":166,"./listeners":170,"./templates":174}],168:[function(require,module,exports){
+},{"./datasets":180,"./displayFn":181,"./footer":182,"./getResultsFromDatasets":183,"./listeners":187,"./templates":191}],185:[function(require,module,exports){
 module.exports = function(event)
 {
   console.log("Blur Event: ", event);
@@ -5087,7 +5641,7 @@ module.exports = function(event)
   }
 };
 
-},{}],169:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 module.exports = function(event, value)
 {
   console.log("Change Event: ", event, value);
@@ -5105,7 +5659,7 @@ module.exports = function(event, value)
   }
 };
 
-},{}],170:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 'use strict';
 module.exports = {
   blur: require("./blur"),
@@ -5115,7 +5669,7 @@ module.exports = {
   select: require("./select")
 };
 
-},{"./blur":168,"./change":169,"./keydown":171,"./keyup":172,"./select":173}],171:[function(require,module,exports){
+},{"./blur":185,"./change":186,"./keydown":188,"./keyup":189,"./select":190}],188:[function(require,module,exports){
 module.exports = function(event, value)
 {
   console.log("Keydown Event: ", event, value);
@@ -5130,7 +5684,7 @@ module.exports = function(event, value)
   }
 };
 
-},{}],172:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 module.exports = function(event, value)
 {
   console.log("Keyup Event: ", event, value);
@@ -5141,7 +5695,7 @@ module.exports = function(event, value)
   return true;
 };
 
-},{}],173:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 module.exports = function(event, obj) {
   console.log("Select Event: ", event, obj);
   //
@@ -5153,13 +5707,13 @@ module.exports = function(event, obj) {
   geodash.ui.changeTab(this, newValue);
 };
 
-},{}],174:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 'use strict';
 module.exports = {
   suggestion: require("./suggestion")
 };
 
-},{"./suggestion":179}],175:[function(require,module,exports){
+},{"./suggestion":196}],192:[function(require,module,exports){
 module.exports = function(data)
 {
   if(extract('obj.type', data) == "geojson")
@@ -5180,7 +5734,7 @@ module.exports = function(data)
   }
 };
 
-},{}],176:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 module.exports = function(data)
 {
   //"background-image": "linear-gradient(rgba(47, 39, 39, 0.2) 50%, rgba(183, 54, 54, 0) 50%, rgba(0, 0, 0, 0)), linear-gradient(90deg, rgba(47, 39, 39, 0.2) 50%, rgba(183, 54, 54, 0) 50%, rgba(0, 0, 0, 0))"
@@ -5225,13 +5779,13 @@ module.exports = function(data)
   }
 };
 
-},{}],177:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 module.exports = function(data)
 {
   return '<p><img src="'+data.extra.thumbnail+'" width="40" height="40" style="margin-right: 4px;"><strong>' + data.text + '</strong></p>';
 };
 
-},{}],178:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 module.exports = function(data)
 {
   if(data.text == data.id)
@@ -5251,7 +5805,7 @@ module.exports = function(data)
   }
 };
 
-},{}],179:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 'use strict';
 module.exports = {
   "default": require("./default"),
@@ -5260,7 +5814,7 @@ module.exports = {
   "WMSLayer": require("./WMSLayer")
 };
 
-},{"./GeoDashLayer":175,"./Image":176,"./WMSLayer":177,"./default":178}],180:[function(require,module,exports){
+},{"./GeoDashLayer":192,"./Image":193,"./WMSLayer":194,"./default":195}],197:[function(require,module,exports){
 module.exports = function(element, newValue)
 {
   if(angular.isDefined(element))
@@ -5280,7 +5834,7 @@ module.exports = function(element, newValue)
   }
 };
 
-},{}],181:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
 /**
  * Deletes the value from an Angular scope
  *
@@ -5371,7 +5925,7 @@ module.exports = function(element)
   }
 };
 
-},{}],182:[function(require,module,exports){
+},{}],199:[function(require,module,exports){
 module.exports = function()
 {
   var styleMap = {
@@ -5383,7 +5937,7 @@ module.exports = function()
   return styleMap;
 }
 
-},{}],183:[function(require,module,exports){
+},{}],200:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5397,7 +5951,7 @@ module.exports = {
   tiledBackground: require("./tiledBackground")
 };
 
-},{"./ellipsis":182,"./tiledBackground":184}],184:[function(require,module,exports){
+},{"./ellipsis":199,"./tiledBackground":201}],201:[function(require,module,exports){
 module.exports = function(tileSize, backgroundColor)
 {
   tileSize = tileSize || 10;
@@ -5423,7 +5977,7 @@ module.exports = function(tileSize, backgroundColor)
   return styleMap;
 };
 
-},{}],185:[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5447,7 +6001,7 @@ module.exports = {
   saveToScope: require("./saveToScope")
 };
 
-},{"./changeTab":180,"./clearFromScope":181,"./css":183,"./init_slider_label":186,"./init_slider_slider":187,"./saveToInput":188,"./saveToScope":189,"./showOptions":190,"./toggleOptions":191,"./update":192,"./update_slider_label":193,"./update_tab":194}],186:[function(require,module,exports){
+},{"./changeTab":197,"./clearFromScope":198,"./css":200,"./init_slider_label":203,"./init_slider_slider":204,"./saveToInput":205,"./saveToScope":206,"./showOptions":207,"./toggleOptions":208,"./update":209,"./update_slider_label":210,"./update_tab":211}],203:[function(require,module,exports){
 module.exports = function($interpolate, that, type, range, value)
 {
   if(type=="ordinal")
@@ -5470,7 +6024,7 @@ module.exports = function($interpolate, that, type, range, value)
   }
 };
 
-},{}],187:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 module.exports = function($interpolate, $scope, that, type, range, value, minValue, maxValue, step)
 {
   if(type=="ordinal")
@@ -5535,7 +6089,7 @@ module.exports = function($interpolate, $scope, that, type, range, value, minVal
   }
 };
 
-},{}],188:[function(require,module,exports){
+},{}],205:[function(require,module,exports){
 module.exports = function(element, newValue)
 {
   if(angular.isDefined(element))
@@ -5587,7 +6141,7 @@ module.exports = function(element, newValue)
   }
 };
 
-},{}],189:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 /**
  * Saves the typeahead value to an Angular Scope
  *
@@ -5691,7 +6245,7 @@ module.exports = function(element, newValue)
   }
 };
 
-},{}],190:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 module.exports = function(selector)
 {
   try{
@@ -5715,7 +6269,7 @@ module.exports = function(selector)
   }catch(err){};
 };
 
-},{}],191:[function(require,module,exports){
+},{}],208:[function(require,module,exports){
 module.exports = function($event, selector)
 {
   //var selector = $(event.currentTarget).attr('data-target');
@@ -5723,7 +6277,7 @@ module.exports = function($event, selector)
   return geodash.ui.showOptions($event, selector);
 };
 
-},{}],192:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 /**
  * Updates the elements user interface
  *
@@ -5759,7 +6313,7 @@ module.exports = function(element, tab)
   pane_element.addClass("in active");
 };
 
-},{}],193:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 module.exports = function($interpolate, event, ui)
 {
   var that = $(this);
@@ -5786,7 +6340,7 @@ module.exports = function($interpolate, event, ui)
   }
 };
 
-},{}],194:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 module.exports = function(e)
 {
   var targetSelector = $(this).attr("href");
@@ -5804,7 +6358,7 @@ module.exports = function(e)
   }
 };
 
-},{}],195:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 /**
  * Takes an array of objects with values name and value and creates and object.
  *
@@ -5869,7 +6423,7 @@ module.exports = function(x, options)
   return y;
 }
 
-},{}],196:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 /**
  * Deletes the property in target at the given location given by keyChain.
  *
@@ -5908,7 +6462,7 @@ module.exports = function(keyChain, target)
   }
 };
 
-},{}],197:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 /**
  * Returns a deep copy of an object or primitive using jQuery extend when needed.
  *
@@ -5934,86 +6488,7 @@ module.exports = function(x)
   }
 };
 
-},{}],198:[function(require,module,exports){
-module.exports = function(paths, a, b)
-{
-  var diff = [];
-  if(angular.isDefined(a) && angular.isDefined(b))
-  {
-    for(var i = 0; i < paths.length; i++)
-    {
-      var path = paths[i];
-      var text_a = JSON.stringify(extract(path, a, ""));
-      var text_b = JSON.stringify(extract(path, b, ""));
-      if(text_a != text_b)
-      {
-        diff.push(path);
-      }
-    }
-  }
-  else if(angular.isDefined(a) && (! angular.isDefined(b)))
-  {
-    diff = paths;
-  }
-  else if((! angular.isDefined(a)) && angular.isDefined(b))
-  {
-    diff = paths;
-  }
-  else
-  {
-    diff = [];
-  }
-  return diff;
-};
-
-},{}],199:[function(require,module,exports){
-/**
- * Flattens an object.
- *
- * @function flatten
- * @param {Object} obj - The original object
- * @param {string|undefined} prefix - A prefix, if any, to add to the new object's keys.
- * @return {Object} object - the flattened version of the object
- * @memberof geodash.api
- *
- * @example
- * var a = {'x': {'y': 'z' }}
- * var b = geodash.api.fatten(a);
- * b == {'x__y': 'z'}
- */
-
-module.exports = function(obj, prefix)
-{
-  var newObject = {};
-  $.each(obj, function(key, value){
-    var newKey = prefix != undefined ? prefix+"__"+key : key;
-    if(
-      (value === undefined) ||
-      (value === null) ||
-      angular.isString(value) ||
-      angular.isNumber(value) ||
-      (typeof value == "boolean")
-    )
-    {
-      newObject[newKey] = value;
-    }
-    else if(angular.isArray(value))
-    {
-      $.each(geodash.util.flatten(value, newKey), function(key2, value2){
-        newObject[""+key2] = value2;
-      });
-    }
-    else
-    {
-      $.each(geodash.util.flatten(value, newKey), function(key2, value2){
-        newObject[key2] = value2;
-      });
-    }
-  });
-  return newObject;
-};
-
-},{}],200:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 module.exports = function(id, arr)
 {
   var result = undefined;
@@ -6025,7 +6500,7 @@ module.exports = function(id, arr)
   return result;
 };
 
-},{}],201:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
 module.exports = function(keys, type)
 {
     var value = undefined;
@@ -6102,7 +6577,7 @@ module.exports = function(keys, type)
     return value;
 };
 
-},{}],202:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
 module.exports = function(name, url)
 {
     if (!url) url = window.location.href;
@@ -6114,7 +6589,7 @@ module.exports = function(name, url)
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
-},{}],203:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 /**
  * Gets an [AngularJS](https://angularjs.org/) [scope](https://docs.angularjs.org/guide/scope) for a given element
  *
@@ -6135,14 +6610,14 @@ module.exports = function(id)
   return angular.element("#"+id).isolateScope() || angular.element("#"+id).scope();
 };
 
-},{}],204:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 module.exports = function(keys)
 {
     var value = geodash.util.getHashValue(keys);
     return value != undefined && value != null && value != "";
 };
 
-},{}],205:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
 
@@ -6156,8 +6631,8 @@ module.exports = {
   arrayToObject: require("./arrayToObject"),
   clearValue: require("./clearValue"),
   deepCopy: require("./deepCopy"),
-  diff: require("./diff"),
-  flatten: require("./flatten"),
+  diff: require("geodash-diff"),
+  flatten: require("geodash-flatten"),
   getByID: require("./getByID"),
   getHashValue: require("./getHashValue"),
   getParameterByName: require("./getParameterByName"),
@@ -6165,12 +6640,13 @@ module.exports = {
   hasHashValue: require("./hasHashValue"),
   objectToArray: require("./objectToArray"),
   parseTrue: require("./parseTrue"),
+  repeat: require("./repeat"),
   setValue: require("./setValue"),
   unpack: require("./unpack"),
   updateValue: require("./updateValue")
 };
 
-},{"./arrayToObject":195,"./clearValue":196,"./deepCopy":197,"./diff":198,"./flatten":199,"./getByID":200,"./getHashValue":201,"./getParameterByName":202,"./getScope":203,"./hasHashValue":204,"./objectToArray":206,"./parseTrue":207,"./setValue":208,"./unpack":209,"./updateValue":210}],206:[function(require,module,exports){
+},{"./arrayToObject":212,"./clearValue":213,"./deepCopy":214,"./getByID":215,"./getHashValue":216,"./getParameterByName":217,"./getScope":218,"./hasHashValue":219,"./objectToArray":221,"./parseTrue":222,"./repeat":223,"./setValue":224,"./unpack":225,"./updateValue":226,"geodash-diff":1,"geodash-flatten":4}],221:[function(require,module,exports){
 /**
  * Takes an object and creates an array of keys and values.
  *
@@ -6199,7 +6675,7 @@ module.exports = function(x)
   return y;
 }
 
-},{}],207:[function(require,module,exports){
+},{}],222:[function(require,module,exports){
 /**
  * Checks if a value "means" true.
  *
@@ -6222,7 +6698,32 @@ module.exports = function(value)
   return ['on', 'true', 't', '1', 1, true].indexOf(value) != -1;
 };
 
-},{}],208:[function(require,module,exports){
+},{}],223:[function(require,module,exports){
+/**
+ * Repeats a string a given number of times
+ *
+ * @function repeat
+ * @param {string} input - The string to repeat
+ * @param {string} count - The number of times to repeat
+ * @return {Object} the new string
+ * @memberof geodash.util
+ *
+ * @example
+ * var a = {'x': 'y', 'q': 'r'};
+ * var b = geodash.util.repeat("#", 4);
+ */
+
+module.exports = function(input, count)
+{
+  var output = "";
+  for(var i = 0; i < count; i++)
+  {
+    output += input;
+  }
+  return output;
+};
+
+},{}],224:[function(require,module,exports){
 module.exports = function(keyChain, value, target)
 {
   // Update dashboard
@@ -6272,7 +6773,7 @@ module.exports = function(keyChain, value, target)
   }
 };
 
-},{}],209:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 module.exports = function(obj)
 {
   var newObject = {};
@@ -6300,7 +6801,7 @@ module.exports = function(obj)
   return newObject;
 };
 
-},{}],210:[function(require,module,exports){
+},{}],226:[function(require,module,exports){
 module.exports = function(field_flat, source, target)
 {
   if(field_flat.indexOf("__") == -1)
@@ -6345,7 +6846,7 @@ module.exports = function(field_flat, source, target)
   }
 };
 
-},{}],211:[function(require,module,exports){
+},{}],227:[function(require,module,exports){
 /**
  * Find the closest location in b to a
  *
@@ -6432,7 +6933,7 @@ module.exports = function(a, b)
   }
 };
 
-},{}],212:[function(require,module,exports){
+},{}],228:[function(require,module,exports){
 module.exports = function(a, b)
 {
   var minDistance = undefined;
@@ -6500,7 +7001,7 @@ module.exports = function(a, b)
   return minDistance;
 };
 
-},{}],213:[function(require,module,exports){
+},{}],229:[function(require,module,exports){
 module.exports = function(nearbyFeatures, target)
 {
   var closestFeature = undefined;
@@ -6528,7 +7029,7 @@ module.exports = function(nearbyFeatures, target)
   return {'feature': closestFeature, 'location': closestLocation};
 };
 
-},{}],214:[function(require,module,exports){
+},{}],230:[function(require,module,exports){
 'use strict';
 
 /**
@@ -6543,7 +7044,7 @@ module.exports = {
   getClosestFeatureAndLocation: require("./getClosestFeatureAndLocation")
 };
 
-},{"./closestLocation":211,"./distance":212,"./getClosestFeatureAndLocation":213}],215:[function(require,module,exports){
+},{"./closestLocation":227,"./distance":228,"./getClosestFeatureAndLocation":229}],231:[function(require,module,exports){
 'use strict';
 /*global require, window, console, jQuery, $, angular, Bloodhound, location */
 
@@ -6657,4 +7158,4 @@ window.updateRenderOrder = updateRenderOrder;
 window.layersAsArray = layersAsArray;
 window.geodash = require("./geodash");
 
-},{"./geodash":81,"geodash-expand":1,"geodash-extract":2}]},{},[215]);
+},{"./geodash":96,"geodash-expand":2,"geodash-extract":3}]},{},[231]);

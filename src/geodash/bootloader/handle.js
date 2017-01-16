@@ -3,18 +3,36 @@ module.exports = function(options)
   var request = extract("request", options);
   var response = extract("response", options);
   var app = extract("app", options);
-  var loaders = extract("loaders", options);
+  var loaders = extract("loaders", options) || extract("config.bootloader.loaders", geodash);
 
   if(response.status == 200)
   {
-    if(angular.isDefined(request.loader))
+    if(angular.isString(request.loader))
     {
-      var loaderFn = extract(request.loader, loaders);
-      if(angular.isDefined(loaderFn))
+      var success = false;
+      for(var i = 0; i < loaders.length; i++)
       {
-        loaderFn(response);
+        var loaderCollection = loaders[i];
+        if(angular.isDefined(loaderCollection))
+        {
+          var loaderFn = extract(request.loader, loaderCollection);
+          if(angular.isDefined(loaderFn))
+          {
+            loaderFn(response);
+            success = true;
+          }
+        }
       }
-      return { "success": true };
+
+      if(success)
+      {
+        return { "success": true };
+      }
+      else
+      {
+        var message = "Could not find loader with name \""+request.loader+"\" for \"" + response.config.url + "\".";
+        return { "success": false, "message": message };
+      }
     }
     else
     {
