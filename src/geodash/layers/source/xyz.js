@@ -4,7 +4,7 @@ module.exports = function(options)
 
   var mapbox = extract("bl.mapbox", options);
   var gwc = extract("bl.gwc", options);
-  var tile = extract("bl.tile", options) || extract("bl.tiles", options);
+  var tile = extract("bl.tile", options) || extract("bl.tiles", options) || extract("bl.source.tile", options);
 
   var url = undefined;
 

@@ -11,8 +11,8 @@ module.exports = {
   arrayToObject: require("./arrayToObject"),
   clearValue: require("./clearValue"),
   deepCopy: require("./deepCopy"),
-  diff: require("./diff"),
-  flatten: require("./flatten"),
+  diff: require("geodash-diff"),
+  flatten: require("geodash-flatten"),
   getByID: require("./getByID"),
   getHashValue: require("./getHashValue"),
   getParameterByName: require("./getParameterByName"),
@@ -20,6 +20,7 @@ module.exports = {
   hasHashValue: require("./hasHashValue"),
   objectToArray: require("./objectToArray"),
   parseTrue: require("./parseTrue"),
+  repeat: require("./repeat"),
   setValue: require("./setValue"),
   unpack: require("./unpack"),
   updateValue: require("./updateValue")
