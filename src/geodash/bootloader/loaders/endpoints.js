@@ -17,7 +17,7 @@ module.exports = function(response)
   if(contentType == "application/json")
   {
     var endpoints = response.data;
-    if(angular.isDefined(endpoints))
+    if(geodash.util.isDefined(endpoints))
     {
       angular.extend(geodash.var.endpoints, endpoints);
     }

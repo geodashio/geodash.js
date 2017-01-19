@@ -6,7 +6,7 @@ module.exports = function(options)
   for(var i = 0; i < steps.length; i++)
   {
     var step = steps[i];
-    if(angular.isDefined(step.status))
+    if(geodash.util.isDefined(step.status))
     {
       var row = $(".geodash-bootloader-step-"+step.id, element);
       if(row.length > 0)

@@ -27,6 +27,7 @@ module.exports = {
   listeners: require("./listeners"),
   log: require("./log"),
   normalize: require("./normalize"),
+  navigate: require("./navigate"),
   popup: require("./popup"),
   style: require("./style"),
   tilemath: require("./tilemath"),

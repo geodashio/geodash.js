@@ -49,10 +49,16 @@ npm run build:docs # or gulp docs since run the same thing
 
 # Tests
 
-Only [jshint](http://jshint.com/about/) is supported right now.  Run tests with the following command.
+This repo includes syntax tests via [jshint](http://jshint.com/about/) and unit tests via [Karma](https://karma-runner.github.io/) - [Browserify](http://browserify.org/) - [Mocha](http://mochajs.org/).  Run all tests with:
 
 ```
 npm run tests
+```
+
+You can run the unit tests only via:
+
+```
+gulp tests
 ```
 
 # Contributing

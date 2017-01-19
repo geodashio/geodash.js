@@ -6,7 +6,7 @@ module.exports = function(options)
   var fl = extract("fl", options);
   var layerID = extract("id", options) || extract("layerID", options);
 
-  if(angular.isDefined(fl))
+  if(geodash.util.isDefined(fl))
   {
     if($.inArray(layerID, visibleFeatureLayers) != -1)
     {

@@ -43,7 +43,7 @@ module.exports = function(localData, featurelayers, baselayers, servers)
   else
   {
     var localDataFnName = extract("name", localData);
-    if(angular.isDefined(localDataFnName))
+    if(geodash.util.isDefined(localDataFnName))
     {
       var localFn = extract(localDataFnName, geodash.bloodhound.local);
       if(angular.isFunction(localFn))
@@ -59,7 +59,7 @@ module.exports = function(localData, featurelayers, baselayers, servers)
     }
   }
 
-  if(angular.isDefined(bloodhoundData))
+  if(geodash.util.isDefined(bloodhoundData))
   {
     bloodhoundData.sort(function(a, b){
       var textA = a.text.toLowerCase();

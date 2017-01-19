@@ -3,7 +3,7 @@ module.exports = function(options)
   var bloodhoundData = [];
 
   var featurelayers = options.featurelayers || geodash.api.listFeatureLayers();
-  if(angular.isDefined(featurelayers))
+  if(geodash.util.isDefined(featurelayers))
   {
     featurelayers = $.grep(featurelayers, function(x, i){
       var filters = extract("filters", x);

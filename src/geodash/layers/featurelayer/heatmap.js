@@ -8,10 +8,10 @@ module.exports = function(options)
   var url = extract("geojson.url", layerConfig);
 
   var source = undefined;
-  if(angular.isDefined(local))
+  if(geodash.util.isDefined(local))
   {
     var localData = extract(local, geodash.initial_data);
-    if(angular.isDefined(localData))
+    if(geodash.util.isDefined(localData))
     {
       source = geodash.layers.source.geojson({ "local": localData });
     }
@@ -20,24 +20,24 @@ module.exports = function(options)
       geodash.log.error("layers", ["Could not initialize GeoJSON layer "+id+" because local data at "+local+" was not found."]);
     }
   }
-  else if(angular.isDefined(url))
+  else if(geodash.util.isDefined(url))
   {
     source = geodash.layers.source.geojson({ "url": url });
   }
   else
   {
-    if(angular.isDefined(extract("wfs.url", layerConfig)))
+    if(geodash.util.isDefined(extract("wfs.url", layerConfig)))
     {
       url = geodash.layers.translate.wfs_to_geojson({ "fl": layerConfig });
     }
 
-    if(angular.isDefined(url))
+    if(geodash.util.isDefined(url))
     {
       source = geodash.layers.source.geojson({ "url": url });
     }
   }
 
-  if(angular.isDefined(source))
+  if(geodash.util.isDefined(source))
   {
     var fl = new ol.layer.Heatmap({
       source: source,
@@ -49,7 +49,7 @@ module.exports = function(options)
     geodash.api.addFeatureLayer(layerID, fl);
 
     var cb = extract("cb.success", options);
-    if(angular.isDefined(cb))
+    if(geodash.util.isDefined(cb))
     {
       cb({
         "$scope": extract("$scope", options) || extract("scope", options),

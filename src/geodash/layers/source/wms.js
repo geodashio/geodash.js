@@ -2,7 +2,7 @@ module.exports = function(options)
 {
   var source = undefined;
   var w = extract("wms", options);
-  if(angular.isDefined(w))
+  if(geodash.util.isDefined(w))
   {
     var params = {
       "LAYERS": geodash.codec.formatArray('layers', w, ''),
@@ -14,7 +14,7 @@ module.exports = function(options)
     };
 
     var cql_filter = extract('cql_filter', w, undefined);
-    if(angular.isDefined(cql_filter))
+    if(geodash.util.isDefined(cql_filter))
     {
       params["CQL_FILTER"] = cql_filter;
     }

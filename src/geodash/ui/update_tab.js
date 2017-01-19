@@ -1,7 +1,7 @@
 module.exports = function(e)
 {
   var targetSelector = $(this).attr("href");
-  if(angular.isDefined(targetSelector))
+  if(geodash.util.isDefined(targetSelector))
   {
     var targetElement = $(targetSelector);
     if(targetElement.length > 0)

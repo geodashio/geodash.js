@@ -16,14 +16,14 @@ module.exports = function(options)
   geodash.meta.templates = [];
 
   geodash.templates.merged = {};
-  if(angular.isDefined(extract("templates.static", geodash)))
+  if(geodash.util.isDefined(extract("templates.static", geodash)))
   {
     $.each(geodash.templates.static, function(name, template){
       geodash.templates.merged[name] = template;
     });
   }
 
-  if(angular.isDefined(extract("templates.server", geodash)))
+  if(geodash.util.isDefined(extract("templates.server", geodash)))
   {
     $.each(geodash.templates.server, function(name, template){
       geodash.templates.merged[name] = template;

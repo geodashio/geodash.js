@@ -6,7 +6,7 @@ module.exports = function(options)
   var url = extract("url", options);
   var projection = extract("projection", options, "EPSG:4326");
 
-  if(angular.isDefined(local))
+  if(geodash.util.isDefined(local))
   {
     // For discussion on handling projections, see
     // http://stackoverflow.com/questions/32455040/how-to-specify-the-projection-for-geojson-in-openlayers3
@@ -17,7 +17,7 @@ module.exports = function(options)
       })
     });
   }
-  else if(angular.isDefined(url))
+  else if(geodash.util.isDefined(url))
   {
     source = new ol.source.Vector({
       url: url,

@@ -9,7 +9,7 @@ module.exports = function(options)
   //var layerID = this.layerID;
   var mainScope = geodash.util.getScope("geodash-main");
   var fl = geodash.api.getFeatureLayer(layerID);
-  if(angular.isDefined(fl))
+  if(geodash.util.isDefined(fl))
   {
     var currentStyle = 0;
 
@@ -20,7 +20,7 @@ module.exports = function(options)
       styles_cached = extract(["var", "cache", "styles", layerID], geodash);
     }
 
-    if(angular.isDefined(styles_cached))
+    if(geodash.util.isDefined(styles_cached))
     {
       styles = styles_cached;
     }
@@ -41,7 +41,7 @@ module.exports = function(options)
           "state": extract("state", mainScope),
           "dashboard": extract("dashboard", mainScope)
         });
-        if(angular.isDefined(style))
+        if(geodash.util.isDefined(style))
         {
           styles.push(new ol.style.Style(style))
         }

@@ -6,7 +6,7 @@ module.exports = function($interpolate, featureLayer, feature, state)
     'feature': feature,
     'state': state
   };
-  if(angular.isDefined(extract("config.popup.context", geodash)))
+  if(geodash.util.isDefined(extract("config.popup.context", geodash)))
   {
     angular.extend(ctx, extract("config.popup.context", geodash));
   }

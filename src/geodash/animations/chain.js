@@ -1,41 +1,87 @@
-module.exports = function(m, v, targetExtent)
+module.exports = function(m, v, options)
 {
   var chain = [];
 
-  var current_res = v.getResolution();
-  var target_res = v.constrainResolution(v.getResolutionForExtent(targetExtent, m.getSize()));
-  var target_center = ol.extent.getCenter(targetExtent);
+  var extent = extract("extent", options);
+  var lat = extract("lat", options);
+  var lon = extract("lon", options);
+  var zoom = extract("zoom", options);
 
-  if(current_res == target_res)
+  var current_res = v.getResolution();
+  var target_center = undefined;
+  var target_res = undefined;
+
+  if(geodash.util.isDefined(extent))
   {
-    if(! ol.array.equals(v.getCenter(), target_center))
+    target_center = ol.extent.getCenter(extent);
+    target_res = v.constrainResolution(v.getResolutionForExtent(extent, m.getSize()));
+  }
+  else
+  {
+    if(geodash.util.isDefined(lon) && geodash.util.isDefined(lat))
     {
-      chain = [{center: target_center}]
+      target_center = ol.proj.transform(
+        [geodash.normalize.float(lon), geodash.normalize.float(lat)],
+        "EPSG:4326",
+        v.getProjection()
+      );
+    }
+
+    if(geodash.util.isDefined(zoom))
+    {
+      target_res = v.getMaxResolution() / Math.pow(2, geodash.normalize.integer(zoom));
     }
   }
-  else if(current_res < target_res)
+
+  if(target_center != undefined)
   {
-    if(ol.array.equals(v.getCenter(), target_center))
+    if(target_res != undefined)
     {
-      chain = [{resolution: target_res}]
+      if(current_res == target_res)
+      {
+        if(! ol.array.equals(v.getCenter(), target_center))
+        {
+          chain = [{center: target_center}];
+        }
+      }
+      else if(current_res < target_res)
+      {
+        if(ol.array.equals(v.getCenter(), target_center))
+        {
+          chain = [{resolution: target_res}];
+        }
+        else
+        {
+          //chain = [{resolution: target_res}, {center: target_center}]
+          chain = [{resolution: target_res, center: target_center}];
+        }
+      }
+      else if(current_res > target_res)
+      {
+        if(ol.array.equals(v.getCenter(), target_center))
+        {
+          chain = [{resolution: target_res}];
+        }
+        else
+        {
+          //chain = [{center: target_center}, {resolution: target_res}]
+          chain = [{center: target_center, resolution: target_res}];
+        }
+      }
     }
     else
     {
-      //chain = [{resolution: target_res}, {center: target_center}]
-      chain = [{resolution: target_res, center: target_center}]
+      if(! ol.array.equals(v.getCenter(), target_center))
+      {
+        chain = [{center: target_center}];
+      }
     }
   }
-  else if(current_res > target_res)
+  else if(target_res != undefined)
   {
-    if(ol.array.equals(v.getCenter(), target_center))
-    {
-      chain = [{resolution: target_res}]
-    }
-    else
-    {
-      //chain = [{center: target_center}, {resolution: target_res}]
-      chain = [{center: target_center, resolution: target_res}]
-    }
+    chain = [{resolution: target_res}];
   }
+
   return chain;
+  //return [{resolution: v.getMaxResolution()/8, duration: 10000}].concat(chain);
 };

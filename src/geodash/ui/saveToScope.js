@@ -9,13 +9,13 @@
 
 module.exports = function(element, newValue)
 {
-  if(angular.isDefined(element))
+  if(geodash.util.isDefined(element))
   {
     var scope_id = $(element).attr('data-target-scope-id');
     if(angular.isString(scope_id))
     {
       var $scope = geodash.util.getScope(scope_id);
-      if(angular.isDefined($scope))
+      if(geodash.util.isDefined($scope))
       {
         if(angular.isString($(element).attr('data-target-scope-path')))
         {
@@ -49,7 +49,7 @@ module.exports = function(element, newValue)
                 $scope[key] = undefined;
               }
             });
-            if(angular.isDefined(newValue) && newValue != null)
+            if(geodash.util.isDefined(newValue) && newValue != null)
             {
               if(! angular.isString(newValue))
               {
@@ -79,7 +79,7 @@ module.exports = function(element, newValue)
                 $scope.workspace_flat[key] = $scope.stack.head.workspace_flat[key] = undefined;
               }
             });
-            if(angular.isDefined(newValue) && newValue != null)
+            if(geodash.util.isDefined(newValue) && newValue != null)
             {
               $.each(geodash.util.flatten(newValue), function(i, x){
                 $scope.workspace_flat[$scope.path_flat+"__"+i] = $scope.stack.head.workspace_flat[$scope.path_flat+"__"+i] = x;

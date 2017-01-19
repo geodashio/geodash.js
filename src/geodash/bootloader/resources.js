@@ -23,7 +23,7 @@ module.exports = function(options)
 
     if(result.success == true)
     {
-      if(angular.isDefined(extract("request", result)))
+      if(geodash.util.isDefined(extract("request", result)))
       {
         requests.push(result.request);
         steps = geodash.bootloader.step.status({
@@ -59,7 +59,7 @@ module.exports = function(options)
     }
   }
 
-  if(angular.isDefined(element.attr("data-geodash-dashboard-resources")))
+  if(geodash.util.isDefined(element.attr("data-geodash-dashboard-resources")))
   {
     var dashboard_resources = undefined;
     try { dashboard_resources = JSON.parse(element.attr("data-geodash-dashboard-resources")); }catch(err){ dashboard_resources = undefined; };

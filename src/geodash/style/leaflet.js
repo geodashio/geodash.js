@@ -8,7 +8,7 @@ module.exports = function(f, layer)
   //
   var style = {};
   var popatrisk = geodash.api.getFeatureLayer("popatrisk", {"$scope": $scope});
-  if(angular.isDefined(popatrisk))
+  if(geodash.util.isDefined(popatrisk))
   {
     var style_static = extract(["cartography", 0, "styles", "default", "static"], popatrisk);
     $.extend(style, style_static);

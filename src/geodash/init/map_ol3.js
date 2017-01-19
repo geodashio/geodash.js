@@ -28,12 +28,12 @@ module.exports = function(options)
   });
 
 
-  if(angular.isDefined(extract("listeners.map", options)))
+  if(geodash.util.isDefined(extract("listeners.map", options)))
   {
     $.each(extract("listeners.map", options), function(e, f){ map.on(e, f); });
   }
 
-  if(angular.isDefined(extract("listeners.view", options)))
+  if(geodash.util.isDefined(extract("listeners.view", options)))
   {
     var v = map.getView();
     $.each(extract("listeners.view", options), function(e, f){ v.on(e, f); });

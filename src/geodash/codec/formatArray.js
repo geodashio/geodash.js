@@ -2,7 +2,7 @@ module.exports = function(path, obj, fallback)
 {
   var result = fallback || '';
 
-  var x = angular.isDefined(obj) ? extract(path, obj) : path;
+  var x = geodash.util.isDefined(obj) ? extract(path, obj) : path;
 
   if(Array.isArray(x))
   {

@@ -15,7 +15,7 @@
 module.exports = function(x)
 {
   var y = [];
-  if(angular.isDefined(x))
+  if(geodash.util.isDefined(x))
   {
     var keys = Object.keys(x);
     for(var i = 0; i < keys.length; i++)

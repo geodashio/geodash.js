@@ -17,7 +17,7 @@ module.exports = function(x)
   {
     return x;
   }
-  else if(angular.isDefined(x))
+  else if(geodash.util.isDefined(x))
   {
     return $.extend(true, {}, x);
   }

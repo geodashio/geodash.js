@@ -23,7 +23,7 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
       for(var i = 0; i < datasetOptions.length; i++)
       {
         datasetsFn = extract(datasetsName, datasetOptions[i]);
-        if(angular.isDefined(datasetsFn))
+        if(geodash.util.isDefined(datasetsFn))
         {
           break;
         }
@@ -55,7 +55,7 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
         initialValue = matches[0];
       }
 
-      if(angular.isDefined(initialValue))
+      if(geodash.util.isDefined(initialValue))
       {
         that.typeahead('val', geodash.typeahead.displayFn(initialValue));
         var newValue = extract(that.attr('data-search-output') || 'id', initialValue);

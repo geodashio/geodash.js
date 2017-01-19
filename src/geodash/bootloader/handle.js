@@ -13,10 +13,10 @@ module.exports = function(options)
       for(var i = 0; i < loaders.length; i++)
       {
         var loaderCollection = loaders[i];
-        if(angular.isDefined(loaderCollection))
+        if(geodash.util.isDefined(loaderCollection))
         {
           var loaderFn = extract(request.loader, loaderCollection);
-          if(angular.isDefined(loaderFn))
+          if(geodash.util.isDefined(loaderFn))
           {
             loaderFn(response);
             success = true;

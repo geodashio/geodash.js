@@ -5,7 +5,7 @@ module.exports = function(options)
   var app = extract("app", options);
   var appName = extract("appName", options);
 
-  if(angular.isDefined(resource))
+  if(geodash.util.isDefined(resource))
   {
     var request = undefined;
     if(angular.isString(element.attr(resource.local)))

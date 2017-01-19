@@ -1,6 +1,6 @@
 module.exports = function (data)
 {
-  if(! angular.isDefined(data.query))
+  if(! geodash.util.isDefined(data.query))
   {
     return "";
   }

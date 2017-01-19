@@ -1,6 +1,6 @@
 module.exports = function(x)
 {
-  if(angular.isDefined(x))
+  if(geodash.util.isDefined(x))
   {
     if(Array.isArray(x))
     {
@@ -8,7 +8,7 @@ module.exports = function(x)
     }
     if(Object.keys(x).length > 0)
     {
-      return $.map(x, function(value, style){ return style+": "+value }).join(";") +";";
+      return $.map(x, function(value, style){ return style+": "+value }).join("; ") +";";
     }
     else
     {

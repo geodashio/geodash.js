@@ -21,7 +21,7 @@ module.exports = function(options)
       success: function(){},
       complete: function(response){
         var source = geodash.layers.source.wms({ "wms": w });
-        if(angular.isDefined(source))
+        if(geodash.util.isDefined(source))
         {
           var fl = new ol.layer.Image({
             source: source,
@@ -30,7 +30,7 @@ module.exports = function(options)
           geodash.api.addFeatureLayer(layerID, fl);
 
           var cb = extract("cb.success", options);
-          if(angular.isDefined(cb))
+          if(geodash.util.isDefined(cb))
           {
             cb({
               "$scope": extract("$scope", options) || extract("scope", options),
@@ -46,7 +46,7 @@ module.exports = function(options)
   else
   {
     var source = geodash.layers.source.wms({ "wms": w });
-    if(angular.isDefined(source))
+    if(geodash.util.isDefined(source))
     {
       var fl = new ol.layer.Image({
         source: source,
@@ -55,7 +55,7 @@ module.exports = function(options)
       geodash.api.addFeatureLayer(layerID, fl);
 
       var cb = extract("cb.success", options);
-      if(angular.isDefined(cb))
+      if(geodash.util.isDefined(cb))
       {
         cb({
           "$scope": extract("$scope", options) || extract("scope", options),

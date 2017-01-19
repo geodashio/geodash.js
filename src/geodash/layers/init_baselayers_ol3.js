@@ -9,7 +9,7 @@ module.exports = function(map, baselayers)
       var attribution = extract("source.attribution", bl, undefined);
 
       var source = geodash.layers.source.xyz({ "bl": bl });
-      if(angular.isDefined(source))
+      if(geodash.util.isDefined(source))
       {
         try{
           layers[bl.id] = new ol.layer.Tile({ source: source });

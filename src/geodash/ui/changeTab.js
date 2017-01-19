@@ -1,6 +1,6 @@
 module.exports = function(element, newValue)
 {
-  if(angular.isDefined(element))
+  if(geodash.util.isDefined(element))
   {
     var tab_id_template = $(element).attr('data-target-tab-id')
     if(angular.isString(tab_id_template))

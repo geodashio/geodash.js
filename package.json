@@ -13,9 +13,9 @@
     "build:js": "browserify src/index.js --outfile dist/geodash.js",
     "uglify": "cat dist/geodash.js | uglifyjs > dist/geodash.min.js",
     "build:code": "mkdir dist; npm run build:js && npm run uglify",
-    "build": "npm run build:docs; npm run build:code",
+    "build": "npm run build:docs; npm run build:code; gulp tests",
     "jshint": "jshint src",
-    "tests": "npm run jshint"
+    "tests": "npm run jshint; gulp tests"
   },
   "main": "dist/geodash.min.js",
   "repository": {
@@ -38,7 +38,25 @@
     "browserify-shim": "*",
     "gulp": "*",
     "gulp-jsdoc3": "^0.3.0",
+    "jasmine-core": "^2.5.2",
     "jshint": "*",
-    "uglify-js": "*"
+    "karma": "*",
+    "karma-chrome-launcher": "*",
+    "karma-jasmine": "*",
+    "karma-phantomjs-launcher": "*",
+    "karma-spec-reporter": "*",
+    "karma-commonjs": "*",
+    "karma-requirejs": "*",
+    "karma-browserify": "*",
+    "karma-mocha": "*",
+    "karma-commonjs-preprocessor": "*",
+    "uglify-js": "*",
+    "requirejs": "*",
+    "watchify": "*",
+    "mocha": "*",
+    "browser-stdout": "*",
+    "angular": "*",
+    "angular-mocks": "*",
+    "jquery": "1.9.1"
   }
 }

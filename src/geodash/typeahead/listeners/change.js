@@ -1,7 +1,7 @@
 module.exports = function(event, value)
 {
   console.log("Change Event: ", event, value);
-  if(angular.isDefined($(this).data('datasets')))
+  if(geodash.util.isDefined($(this).data('datasets')))
   {
     var datasets = $(this).data('datasets');
     //

@@ -3,7 +3,7 @@ module.exports = function(options)
   var bloodhoundData = [];
 
   var servers = options.servers || geodash.api.listServers();
-  if(angular.isDefined(servers))
+  if(geodash.util.isDefined(servers))
   {
     servers = $.grep(servers, function(x, i){
       return extract("type", x, undefined) == "wms";

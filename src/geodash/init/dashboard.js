@@ -62,7 +62,7 @@ module.exports = function(appName, mainElement, loaders)
   var $q = initInjector.get("$q");
   var $http = initInjector.get("$http");
 
-  if(angular.isDefined(extract("request", result_dashboard)))
+  if(geodash.util.isDefined(extract("request", result_dashboard)))
   {
     $http.get(result_dashboard.request.url, {}).then(
       function(response)

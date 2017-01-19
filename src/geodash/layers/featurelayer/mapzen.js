@@ -6,7 +6,7 @@ module.exports = function(options)
 
   var source = geodash.layers.source.vectortile({ "fl": layerConfig });
 
-  if(angular.isDefined(source))
+  if(geodash.util.isDefined(source))
   {
     var ws = extract("config.dynamicStyleFunctionWorkspaces", geodash) || [geodash.dynamicStyleFn];
     var styleFn = (function(_layerID, styleFnWorkspaces){
@@ -23,14 +23,14 @@ module.exports = function(options)
       source: source,
       zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true })
     });
-    if(angular.isDefined(styleFn))
+    if(geodash.util.isDefined(styleFn))
     {
       fl.setStyle(styleFn);
     }
     geodash.api.addFeatureLayer(layerID, fl);
 
     var cb = extract("cb.success", options);
-    if(angular.isDefined(cb))
+    if(geodash.util.isDefined(cb))
     {
       cb({
         "$scope": extract("$scope", options) || extract("scope", options),

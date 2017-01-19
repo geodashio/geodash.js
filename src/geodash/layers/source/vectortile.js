@@ -10,7 +10,7 @@ module.exports = function(options)
 
   var url = undefined;
 
-  if(angular.isDefined(tegola))
+  if(geodash.util.isDefined(tegola))
   {
     url = tegola.url+"/maps/"+tegola.map+"/{z}/{x}/{y}.vector.pbf";
     if(extract("debug", tegola, false))
@@ -19,13 +19,13 @@ module.exports = function(options)
     }
   }
 
-  if(angular.isDefined(mapzen))
+  if(geodash.util.isDefined(mapzen))
   {
     url = "http://tile.mapzen.com/mapzen/vector/"+extract("version", mapzen, "v1")+"/"+extract("layers", mapzen, []).join(",")+"/{z}/{x}/{y}."+extract("format", mapzen, "mvt");
     url += "?api_key="+extract("api_key", mapzen, "");
   }
 
-  if(angular.isDefined(url))
+  if(geodash.util.isDefined(url))
   {
     source = new ol.source.VectorTile({
       attributions: '',

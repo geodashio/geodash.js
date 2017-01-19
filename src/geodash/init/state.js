@@ -6,7 +6,7 @@
 module.exports = function(options)
 {
   var newState = {};
-  if(angular.isDefined(extract("state", options)))
+  if(geodash.util.isDefined(extract("state", options)))
   {
     angular.extend(newState, extract("state", options));
   }
@@ -33,7 +33,7 @@ module.exports = function(options)
   newState["view"] = newView;
 
   // Update Filters
-  if(angular.isDefined(extract("filters", newState)) && angular.isDefined(extract("stateschema", options)))
+  if(geodash.util.isDefined(extract("filters", newState)) && geodash.util.isDefined(extract("stateschema", options)))
   {
     var stateschema = extract("stateschema", options);
     $.each(newState["filters"], function(layer_id, layer_filters){

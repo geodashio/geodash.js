@@ -1,15 +1,26 @@
 module.exports = function(extent, options)
 {
   var newExtent = undefined;
-  if(angular.isDefined(extent))
+  if(geodash.util.isDefined(extent))
   {
     if(angular.isString(extent))
     {
-      newExtent = extent.split(",").map(parseFloat);
+      if(extent.length > 0 )
+      {
+        newExtent = extent.split(",").map(parseFloat);
+      }
+      else
+      {
+        return undefined;
+      }
+    }
+    else if(Array.isArray(extent))
+    {
+      newExtent = geodash.util.deepCopy(extent);
     }
     else
     {
-      newExtent = geodash.util.deepCopy(extent);
+      return undefined;
     }
   }
   else
@@ -19,7 +30,7 @@ module.exports = function(extent, options)
 
   var sourceProjection = extract("sourceProjection", options);
   var targetProjection = extract("targetProjection", options);
-  if(angular.isDefined(sourceProjection) && angular.isDefined(targetProjection))
+  if(geodash.util.isDefined(sourceProjection) && geodash.util.isDefined(targetProjection))
   {
     if(sourceProjection != targetProjection)
     {

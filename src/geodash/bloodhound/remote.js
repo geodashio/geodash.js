@@ -1,6 +1,6 @@
 module.exports = function(options)
 {
-  if(angular.isDefined(options))
+  if(geodash.util.isDefined(options))
   {
     if(angular.isString(options))
     {
@@ -18,7 +18,7 @@ module.exports = function(options)
       for(var i = 0; i < codecs.length; i++)
       {
         codec = extract(options.codec, codecs[i], undefined);
-        if(angular.isDefined(codec))
+        if(geodash.util.isDefined(codec))
         {
           break;
         }

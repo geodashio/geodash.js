@@ -14,7 +14,7 @@ module.exports = function(options)
   if(angular.isFunction(style_dynamic_fn))
   {
     var delta = style_dynamic_fn(f, state, config, style_dynamic_options);
-    if(angular.isDefined(delta))
+    if(geodash.util.isDefined(delta))
     {
       angular.extend(styleStaticAndDynamic, delta);
     }
@@ -24,9 +24,9 @@ module.exports = function(options)
 
   var textContent = extract("textContent", styleStaticAndDynamic);
   var textCode = extract("textCode", styleStaticAndDynamic);
-  if(angular.isDefined(textContent) || angular.isDefined(textCode))
+  if(geodash.util.isDefined(textContent) || geodash.util.isDefined(textCode))
   {
-    if(! angular.isDefined(textContent))
+    if(! geodash.util.isDefined(textContent))
     {
       textContent = String.fromCharCode(parseInt(textCode, 16));
     }
@@ -48,7 +48,7 @@ module.exports = function(options)
     var circleOptions = {
         radius: extractFloat("radius", styleStaticAndDynamic, 5.0)
     };
-    if(angular.isDefined(extract("strokeColor", styleStaticAndDynamic)))
+    if(geodash.util.isDefined(extract("strokeColor", styleStaticAndDynamic)))
     {
       var strokeWidth = extractFloat("strokeWidth", styleStaticAndDynamic, 1.0);
       if(strokeWidth > 0)
@@ -59,11 +59,11 @@ module.exports = function(options)
         });
       }
     }
-    if(angular.isDefined(extract("fillColor", styleStaticAndDynamic)))
+    if(geodash.util.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
       var fillColor = geodash.normalize.color(extract("fillColor", styleStaticAndDynamic));
       var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic)
-      if(angular.isDefined(fillOpacity))
+      if(geodash.util.isDefined(fillOpacity))
       {
         try{
           var fillColorAsArray = ol.color.asArray(fillColor).slice();
@@ -78,7 +78,7 @@ module.exports = function(options)
 
   if(geometryType == "Polygon" || geometryType == "MultiLineString" || geometryType == "MultiPolygon")
   {
-    if(angular.isDefined(extract("strokeColor", styleStaticAndDynamic)))
+    if(geodash.util.isDefined(extract("strokeColor", styleStaticAndDynamic)))
     {
       var strokeWidth = extractFloat("strokeWidth", styleStaticAndDynamic, 1.0);
       if(strokeWidth > 0)
@@ -93,11 +93,11 @@ module.exports = function(options)
 
   if(geometryType == "Polygon" || geometryType == "MultiPolygon")
   {
-    if(angular.isDefined(extract("fillColor", styleStaticAndDynamic)))
+    if(geodash.util.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
       var fillColor = geodash.normalize.color(extract("fillColor", styleStaticAndDynamic));
       var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic)
-      if(angular.isDefined(fillOpacity))
+      if(geodash.util.isDefined(fillOpacity))
       {
         try{
           var fillColorAsArray = ol.color.asArray(fillColor).slice();

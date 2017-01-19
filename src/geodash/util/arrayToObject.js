@@ -9,7 +9,7 @@
  * @memberof geodash.api
  *
  * @example
- * var a = [{'name': 'x', 'value': 'y'}, {'name': 'q', 'value': 'r'}]
+ * var a = [{'name': 'x', 'value': 'y'}, {'name': 'q', 'value': 'r'}];
  * var b = geodash.util.arrayToObject(a);
  * b == {'x': 'y', 'q': 'r'}
  */
@@ -21,7 +21,7 @@ module.exports = function(x, options)
   {
     var $interpolate = extract("$interpolate", options) || extract("interpolate", options);
     var ctx = extract("context", options) || extract("ctx", options) || {};
-    if(angular.isDefined($interpolate))
+    if(geodash.util.isDefined($interpolate))
     {
       for(var i = 0; i < x.length; i++)
       {

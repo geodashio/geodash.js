@@ -6,7 +6,7 @@ module.exports = function(options)
   var style_static = extract(["static", "properties"], symbolizer);
   var style_dynamic_fn_name = extract(["dynamic", "func"], symbolizer);
   var style_dynamic_fn = undefined;
-  if(angular.isDefined(style_dynamic_fn_name))
+  if(geodash.util.isDefined(style_dynamic_fn_name))
   {
     for(var j = 0; j < styleFnWorkspaces.length; j++)
     {

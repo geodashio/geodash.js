@@ -17,7 +17,7 @@ module.exports = function(response)
   if(contentType == "application/json")
   {
     var pages = response.data;
-    if(angular.isDefined(pages))
+    if(geodash.util.isDefined(pages))
     {
       angular.extend(geodash.var.pages, pages);
     }

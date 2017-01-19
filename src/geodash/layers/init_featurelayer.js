@@ -6,7 +6,7 @@ module.exports = function(options)
 
     var initFn = undefined;
 
-    if((t == "geojson" || t == "wms") && angular.isDefined(extract("fl.heatmap", options, undefined)))
+    if((t == "geojson" || t == "wms") && geodash.util.isDefined(extract("fl.heatmap", options, undefined)))
     {
       initFn = extract("heatmap", geodash.layers.featurelayer)
     }

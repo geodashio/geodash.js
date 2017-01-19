@@ -21,7 +21,7 @@ module.exports = function(element, featurelayers, baselayers, servers, codecOpti
     servers,
     codecOptions);
 
-  if((angular.isDefined(local) && local.length > 0) || angular.isDefined(prefetch) || angular.isDefined(remote))
+  if((geodash.util.isDefined(local) && local.length > 0) || geodash.util.isDefined(prefetch) || geodash.util.isDefined(remote))
   {
     // Twitter Typeahead with
     //https://github.com/bassjobsen/typeahead.js-bootstrap-css

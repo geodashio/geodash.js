@@ -10,13 +10,13 @@
 
 module.exports = function(element)
 {
-  if(angular.isDefined(element))
+  if(geodash.util.isDefined(element))
   {
     var scope_id = $(element).attr('data-target-scope-id');
     if(angular.isString(scope_id))
     {
       var $scope = geodash.util.getScope(scope_id);
-      if(angular.isDefined($scope))
+      if(geodash.util.isDefined($scope))
       {
         if(angular.isString($(element).attr('data-target-scope-path')))
         {

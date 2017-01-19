@@ -20,7 +20,7 @@ module.exports = function(event, args)
     "state": mainScope.state,
     "meta": geodash.meta
   };
-  if(angular.isDefined(args))
+  if(geodash.util.isDefined(args))
   {
     if("static" in args)
     {

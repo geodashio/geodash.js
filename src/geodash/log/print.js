@@ -1,6 +1,6 @@
 module.exports = function(name)
 {
-  if(angular.isDefined(name))
+  if(geodash.util.isDefined(name))
   {
     var log = extract('var.logs.'+name, geodash);
     if(Array.isArray(log))

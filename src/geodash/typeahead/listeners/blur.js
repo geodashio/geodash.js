@@ -1,7 +1,7 @@
 module.exports = function(event)
 {
   console.log("Blur Event: ", event);
-  if(angular.isDefined($(this).data('datasets')))
+  if(geodash.util.isDefined($(this).data('datasets')))
   {
     var valueFromInput = $(this).val();
     var datasets = $(this).data('datasets');

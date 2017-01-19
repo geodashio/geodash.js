@@ -2,7 +2,7 @@ module.exports = function(selector)
 {
   try{
     var input = $(selector);
-    if(angular.isDefined(extract("ttTypeahead", input.data())))
+    if(geodash.util.isDefined(extract("ttTypeahead", input.data())))
     {
       if(! input.data('ttTypeahead').isOpen())
       {

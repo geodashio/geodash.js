@@ -8,19 +8,29 @@ module.exports = function(options)
 
   var url = undefined;
 
-  if(angular.isDefined(mapbox))
+  if(geodash.util.isDefined(mapbox))
   {
     var layers = extract("layers", mapbox) || extract("layer", mapbox);
+    var styles = extract("styles", mapbox) || extract("style", mapbox);
+    var account = extract("account", mapbox) || extract("username", mapbox);
     var access_token = extract("access_token", mapbox, undefined);
 
     if(angular.isString(layers)){ layers = layers.split(","); }
+    if(angular.isString(styles)){ styles = styles.split(","); }
 
-    if(Array.isArray(layers) && layers.length > 0 && angular.isDefined(access_token))
+    if(angular.isString(access_token) && access_token.length > 0)
     {
-      url = "http://{a-c}.tiles.mapbox.com/v4/"+layers+"/{z}/{x}/{y}.png?access_token="+access_token;
+      if(Array.isArray(layers) && layers.length > 0)
+      {
+        url = "http://{a-c}.tiles.mapbox.com/v4/"+layers.join(",")+"/{z}/{x}/{y}.png?access_token="+access_token;
+      }
+      else if(angular.isArray(styles) && styles.length > 0)
+      {
+        url = "https://api.mapbox.com/styles/v1/"+account+"/"+styles[0]+"/tiles/256/{z}/{x}/{y}?access_token="+access_token
+      }
     }
   }
-  else if(angular.isDefined(gwc))
+  else if(geodash.util.isDefined(gwc))
   {
     var baseurl = extract("url", gwc, undefined);
     var layers = extract("layers", gwc, undefined);
@@ -29,17 +39,17 @@ module.exports = function(options)
 
     if(angular.isString(layers)){ layers = layers.split(","); }
 
-    if(Array.isArray(layers) && layers.length > 0 && angular.isDefined(access_token))
+    if(Array.isArray(layers) && layers.length > 0 && geodash.util.isDefined(access_token))
     {
       url = baseurl+(baseurl.endsWith("/")?'':'/')+"service/tms/1.0.0/"+layers.join(",")+"@"+projection+"@"+format+"/{z}/{x}/{y}."+format;
     }
   }
-  else if(angular.isDefined(tile))
+  else if(geodash.util.isDefined(tile))
   {
     url = extract("url", tile, undefined);
   }
 
-  if(angular.isDefined(url))
+  if(geodash.util.isDefined(url))
   {
     source = new ol.source.XYZ({
       url: url,

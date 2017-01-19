@@ -15,7 +15,7 @@ module.exports = function(options)
     if(angular.isString(controllerName) && controllerName.length > 0)
     {
       var controller = extract(controllerName, geodash.controllers);
-      if(angular.isDefined(controller))
+      if(geodash.util.isDefined(controller))
       {
         app.controller(controllerName, controller);
       }

@@ -18,6 +18,7 @@ module.exports = {
   getParameterByName: require("./getParameterByName"),
   getScope: require("./getScope"),
   hasHashValue: require("./hasHashValue"),
+  isDefined: require("./isDefined"),
   objectToArray: require("./objectToArray"),
   parseTrue: require("./parseTrue"),
   repeat: require("./repeat"),

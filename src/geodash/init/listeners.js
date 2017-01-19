@@ -68,17 +68,17 @@ module.exports = function()
           siblings.addClass(that.data("intent-class-off"));
         }
 
-        if(angular.isDefined(that.attr('data-intents')) && Array.isArray(JSON.parse(that.attr('data-intents'))))
+        if(geodash.util.isDefined(that.attr('data-intents')) && Array.isArray(JSON.parse(that.attr('data-intents'))))
         {
           intents = intents.concat(JSON.parse(that.attr('data-intents')));
         }
         else
         {
           var intentName = that.attr('data-intent-name');
-          if(angular.isDefined(intentName))
+          if(geodash.util.isDefined(intentName))
           {
             var intentData = that.attr('data-intent-data');
-            if(angular.isDefined(intentData))
+            if(geodash.util.isDefined(intentData))
             {
               intentData = JSON.parse(intentData);
               angular.extend(intentData, {'element': this});
@@ -91,17 +91,17 @@ module.exports = function()
     }
     else
     {
-      if(angular.isDefined(that.attr('data-intents')) && Array.isArray(JSON.parse(that.attr('data-intents'))))
+      if(geodash.util.isDefined(that.attr('data-intents')) && Array.isArray(JSON.parse(that.attr('data-intents'))))
       {
         intents = intents.concat(JSON.parse(that.attr('data-intents')));
       }
       else
       {
         var intentName = that.attr('data-intent-name');
-        if(angular.isDefined(intentName))
+        if(geodash.util.isDefined(intentName))
         {
           var intentData = that.attr('data-intent-data');
-          if(angular.isDefined(intentData))
+          if(geodash.util.isDefined(intentData))
           {
             intentData = JSON.parse(intentData);
             angular.extend(intentData, {'element': this});
