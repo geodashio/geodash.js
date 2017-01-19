@@ -15,7 +15,7 @@
     "build:code": "mkdir dist; npm run build:js && npm run uglify",
     "build": "npm run build:docs; npm run build:code; gulp tests",
     "jshint": "jshint src",
-    "tests": "npm run jshint; gulp tests"
+    "test": "gulp tests"
   },
   "main": "dist/geodash.min.js",
   "repository": {
@@ -38,11 +38,9 @@
     "browserify-shim": "*",
     "gulp": "*",
     "gulp-jsdoc3": "^0.3.0",
-    "jasmine-core": "^2.5.2",
     "jshint": "*",
     "karma": "*",
     "karma-chrome-launcher": "*",
-    "karma-jasmine": "*",
     "karma-phantomjs-launcher": "*",
     "karma-spec-reporter": "*",
     "karma-commonjs": "*",

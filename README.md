@@ -49,17 +49,11 @@ npm run build:docs # or gulp docs since run the same thing
 
 # Tests
 
-This repo includes syntax tests via [jshint](http://jshint.com/about/) and unit tests via [Karma](https://karma-runner.github.io/) - [Browserify](http://browserify.org/) - [Mocha](http://mochajs.org/).  Run all tests with:
+This repo includes syntax tests via [jshint](http://jshint.com/about/) and unit tests via [Karma](https://karma-runner.github.io/) - [Browserify](http://browserify.org/) - [Mocha](http://mochajs.org/).
 
-```
-npm run tests
-```
+Run syntax tests with `npm run jshint`.
 
-You can run the unit tests only via:
-
-```
-gulp tests
-```
+Run the unit tests with `gulp tests` or `npm run test`.
 
 # Contributing
 
