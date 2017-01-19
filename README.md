@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/geodashio/geodash.js.svg?branch=master)](https://travis-ci.org/geodashio/geodash.js)
+
 # GeoDashJS (geodash.js)
 
 Low-level Javascript API for [GeoDash](http://geodash.io).  This API includes a variety of low-level functions used throughout the GeoDash framework.  GeoDashJS is added at [/lib/geodashjs/0.0.1/](https://github.com/geodashio/geodash-base/tree/master/lib/geodashjs/0.0.1) to the [geodash-base](https://github.com/geodashio/geodash-base) project.
