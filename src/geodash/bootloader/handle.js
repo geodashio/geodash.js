@@ -36,6 +36,7 @@ module.exports = function(options)
     }
     else
     {
+      var success = true;
       var value = undefined;
       var contentType = response.headers("content-type");
       if(contentType == "application/json")
@@ -44,10 +45,18 @@ module.exports = function(options)
       }
       else
       {
-        try { value = YAML.parse(response.data); }catch(err){ value = undefined; };
+        try {
+          value = YAML.parse(response.data);
+        }catch(err){
+          value = undefined;
+          success = false;
+        };
       }
-      app.value(request.name, value);
-      return { "success": true };
+      if(success)
+      {
+        app.value(request.name, value);
+      }
+      return { "success": success };
     }
   }
   else if(response.status == 500)
