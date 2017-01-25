@@ -39,23 +39,26 @@ module.exports = function(options)
 
   if(geodash.util.isDefined(source))
   {
-    var ws = extract("config.dynamicStyleFunctionWorkspaces", geodash) || [geodash.dynamicStyleFn];
-    var styleFn = (function(_layerID, styleFnWorkspaces){
-      return function(feature, resolution) {
-        return geodash.style.ol3({
-          "feature": feature,
-          "resolution": resolution,
-          "layerID": _layerID,
-          "styleFnWorkspaces": styleFnWorkspaces
-        }) || [];
-      };
-    })(layerID, extract('dynamicStyleFunctionWorkspaces', geodash.config, ws));
     var fl = new ol.layer.Vector({
       id: layerID,
       source: source,
       zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true })
     });
-    fl.setStyle(styleFn);
+    if(angular.isDefined(extract(["carto", "styles", 0, "symbolizers", 0], layerConfig)))
+    {
+      var ws = extract("config.dynamicStyleFunctionWorkspaces", geodash) || [geodash.dynamicStyleFn];
+      var styleFn = (function(_layerID, styleFnWorkspaces){
+        return function(feature, resolution) {
+          return geodash.style.ol3({
+            "feature": feature,
+            "resolution": resolution,
+            "layerID": _layerID,
+            "styleFnWorkspaces": styleFnWorkspaces
+          }) || [];
+        };
+      })(layerID, extract('dynamicStyleFunctionWorkspaces', geodash.config, ws));
+      fl.setStyle(styleFn);
+    } // else uses default style
     geodash.api.addFeatureLayer(layerID, fl);
 
     var cb = extract("cb.success", options);
