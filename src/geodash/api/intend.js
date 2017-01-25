@@ -6,5 +6,6 @@
 */
 module.exports = function(name, data, scope)
 {
+  scope = scope || geodash.util.getScope("geodash-main");
   scope.$emit(name, data);
 };

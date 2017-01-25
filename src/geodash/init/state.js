@@ -24,9 +24,28 @@ module.exports = function(options)
   }
   else
   {
-    var lat = getHashValueAsFloat(["latitude", "lat", "y"]) || extract("state.lat", options, 0.0);
-    var lon = getHashValueAsFloat(["longitude", "lon", "long", "lng", "x"]) || extract("state.lon", options, 0.0);
-    var z = getHashValueAsInteger(["zoom", "z"]) || extract("state.z", options, 3);
+    var lat = geodash.util.coalesce([
+      geodash.util.getHashValue(["latitude", "lat", "y"], "float"),
+      geodash.util.getQueryStringValue(["latitude", "lat", "y"], "float"),
+      extract("state.view.lat", options),
+      extract("state.view.latitude", options),
+      extract("dashboard.view.lat", options),
+      extract('dashboard.view.latitude', options, 0)
+    ]);
+    var lon = geodash.util.coalesce([
+      geodash.util.getHashValue(["longitude", "lon", "long", "lng", "x"], "float"),
+      geodash.util.getQueryStringValue(["longitude", "lon", "long", "lng", "x"], "float"),
+      extract("state.view.lon", options),
+      extract("state.view.longitude", options),
+      extract("dashboard.view.lon", options),
+      extract('dashboard.view.longitude', options, 0)
+    ]);
+    var z = geodash.util.coalesce([
+      geodash.util.getHashValue(["zoom", "z"], "integer"),
+      extract("state.view.z", options),
+      extract("dashboard.view.zoom", options),
+      extract('dashboard.view.z', options, 3)
+    ]);
     var delta = {'lat': lat, 'lon': lon, 'z': z};
     angular.extend(newView, delta);
   }

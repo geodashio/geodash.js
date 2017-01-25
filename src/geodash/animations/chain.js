@@ -6,6 +6,7 @@ module.exports = function(m, v, options)
   var lat = extract("lat", options);
   var lon = extract("lon", options);
   var zoom = extract("zoom", options);
+  var duration = extract("duration", options, 1000);
 
   var current_res = v.getResolution();
   var target_center = undefined;
@@ -41,31 +42,31 @@ module.exports = function(m, v, options)
       {
         if(! ol.array.equals(v.getCenter(), target_center))
         {
-          chain = [{center: target_center}];
+          chain = [{center: target_center, duration: duration}];
         }
       }
       else if(current_res < target_res)
       {
         if(ol.array.equals(v.getCenter(), target_center))
         {
-          chain = [{resolution: target_res}];
+          chain = [{resolution: target_res, duration: duration}];
         }
         else
         {
           //chain = [{resolution: target_res}, {center: target_center}]
-          chain = [{resolution: target_res, center: target_center}];
+          chain = [{resolution: target_res, center: target_center, duration: duration}];
         }
       }
       else if(current_res > target_res)
       {
         if(ol.array.equals(v.getCenter(), target_center))
         {
-          chain = [{resolution: target_res}];
+          chain = [{resolution: target_res, duration: duration}];
         }
         else
         {
           //chain = [{center: target_center}, {resolution: target_res}]
-          chain = [{center: target_center, resolution: target_res}];
+          chain = [{center: target_center, resolution: target_res, duration: duration}];
         }
       }
     }
@@ -73,13 +74,13 @@ module.exports = function(m, v, options)
     {
       if(! ol.array.equals(v.getCenter(), target_center))
       {
-        chain = [{center: target_center}];
+        chain = [{center: target_center, duration: duration}];
       }
     }
   }
   else if(target_res != undefined)
   {
-    chain = [{resolution: target_res}];
+    chain = [{resolution: target_res, duration: duration}];
   }
 
   return chain;

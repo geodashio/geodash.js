@@ -28,7 +28,8 @@ module.exports = function(keys, type)
     {
         if(type == "integer")
         {
-          value = (value != undefined && value != null && value != "") ? parseInt(value, 10) : undefined;
+          //value = (value != undefined && value != null && value != "") ? parseInt(value, 10) : undefined;
+          value = geodash.normalize.integer(value, undefined);
         }
         else if(type == "stringarray")
         {
@@ -54,7 +55,8 @@ module.exports = function(keys, type)
         }
         else if(type == "float")
         {
-          value = (value != undefined && value != null && value != "") ? parseFloat(value) : undefined;
+          value = geodash.normalize.float(value, undefined);
+          //value = (value != undefined && value != null && value != "") ? parseFloat(value) : undefined;
         }
         else if(type == "floatarray")
         {

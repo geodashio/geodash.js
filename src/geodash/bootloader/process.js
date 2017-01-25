@@ -33,13 +33,13 @@ module.exports = function(options)
         }
       };
     }
-    else if(geodash.util.getParameterByName(appName+":"+resource.hash) != null)
+    else if(geodash.util.getQueryStringValue(appName+":"+resource.hash) != null)
     {
       return {
         "success": true,
         "request": {
           'name': resource.name,
-          'url': geodash.util.getParameterByName(appName+":"+resource.hash)
+          'url': geodash.util.getQueryStringValue(appName+":"+resource.hash)
         }
       };
     }

@@ -53,22 +53,6 @@ var extractArrayLength = function(keyChain, node, fallback)
   var value = extract(keyChain, node, undefined);
   return Array.isArray(value) ? value.length : fallback;
 };
-var getHashValueAsStringArray = function(keys)
-{
-  return geodash.util.getHashValue(keys, "stringarray");
-};
-var getHashValueAsInteger = function(keys)
-{
-  return geodash.util.getHashValue(keys, "integer");
-};
-var getHashValueAsIntegerArray = function(keys)
-{
-  return geodash.util.getHashValue(keys, "integerarray");
-};
-var getHashValueAsFloat = function(keys)
-{
-  return geodash.util.getHashValue(keys, "float");
-};
 var sortLayers = function(layers, reverse)
 {
   var renderLayers = $.isArray(layers) ? layers : $.map(layers, function(layer){return layer;});
@@ -102,10 +86,6 @@ window.expand = expand;
 window.extract = extract;
 window.extractFloat = extractFloat;
 window.extractArrayLength = extractArrayLength;
-window.getHashValueAsStringArray = getHashValueAsStringArray;
-window.getHashValueAsInteger = getHashValueAsInteger;
-window.getHashValueAsIntegerArray = getHashValueAsIntegerArray;
-window.getHashValueAsFloat = getHashValueAsFloat;
 window.sortLayers = sortLayers;
 window.updateRenderOrder = updateRenderOrder;
 window.layersAsArray = layersAsArray;

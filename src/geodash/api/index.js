@@ -9,9 +9,11 @@
 module.exports = {
   addBaseLayer: require("./addBaseLayer"),
   addFeatureLayer: require("./addFeatureLayer"),
+  addHandler: require("./addHandler"),
   buildScope: require("./buildScope"),
   getAsset: require("./getAsset"),
   getBaseLayer: require("./getBaseLayer"),
+  getController: require("./getController"),
   getDashboardConfig: require("./getDashboardConfig"),
   getEndpoint: require("./getEndpoint"),
   getFeatureLayer: require("./getFeatureLayer"),

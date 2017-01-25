@@ -2,10 +2,10 @@ module.exports = function(options)
 {
   var id = extract("id", options, "map");
   var lonlat = [
-    extract("dashboard.view.lon", options) || extract('dashboard.view.longitude', options, 0),
-    extract("dashboard.view.lat", options) || extract('dashboard.view.latitude', options, 0),
+    extract("state.view.lon", options, 0),
+    extract("state.view.lat", options, 0)
   ];
-  var zoom = extract("dashboard.view.zoom", options) || extract('dashboard.view.z', options, 0);
+  var zoom = extract("state.view.z", options, 3);
 
   var controls = [];
   if(extract("dashboard.controls.zoom", options, true)) { controls.push(new ol.control.Zoom()); }
