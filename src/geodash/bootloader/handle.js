@@ -55,6 +55,7 @@ module.exports = function(options)
       if(success)
       {
         app.value(request.name, value);
+        geodash.var.resources[request.name] = value;
       }
       return { "success": success };
     }

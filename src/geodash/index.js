@@ -44,6 +44,7 @@ module.exports = {
     endpoints: {},
     logs: {},
     featurelayers: {},
-    pages: {}
+    pages: {},
+    resources: {}
   }
 };

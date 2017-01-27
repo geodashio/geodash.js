@@ -8,8 +8,9 @@ module.exports = function($interpolate, featureLayer, feature, location, map, st
     var newCenter = ol.proj.fromLonLat([location.lon, location.lat], view.getProjection());
     popup.setPosition(newCenter);
     var element = $("#popup");
-    element.popover('destroy');
+    element.popover('dispose');
     element.popover({
+      "container": "body",
       'placement': 'top',
       'animation': false,
       'html': true,
