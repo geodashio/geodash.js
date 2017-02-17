@@ -1,6 +1,7 @@
 module.exports = function(options)
 {
   var symbolizer = options.symbolizer;
+  var symbolizerType = extract("type", symbolizer, "");
   var styleFnWorkspaces = options.styleFnWorkspaces || extract('dynamicStyleFunctionWorkspaces', geodash.config, [geodash.dynamicStyleFn]);
   //
   var style_static = extract(["static", "properties"], symbolizer);
@@ -18,12 +19,14 @@ module.exports = function(options)
     }
   }
   var style = geodash.style.translate.ol3({
+    'symbolizerType': symbolizerType,
     'feature': options.feature,
     'state': options.state,
     'dashboard': options.dashboard,
     'style_static': style_static,
     'style_dynamic_fn': style_dynamic_fn,
-    'style_dynamic_options': extract(["dynamic", "options"], symbolizer)
+    'style_dynamic_options': extract(["dynamic", "options"], symbolizer),
+    'style_transform_operations': extract(["transform", "operations"], symbolizer)
   });
 
   return style;

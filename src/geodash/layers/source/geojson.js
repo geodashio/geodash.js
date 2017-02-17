@@ -25,6 +25,12 @@ module.exports = function(options)
       format: new ol.format.GeoJSON()
     });
   }
+  else
+  {
+    source = new ol.source.Vector({
+      features: []
+    });
+  }
 
   return source;
 };

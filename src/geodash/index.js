@@ -31,6 +31,7 @@ module.exports = {
   popup: require("./popup"),
   style: require("./style"),
   tilemath: require("./tilemath"),
+  transform: require("./transform"),
   typeahead: require("./typeahead"),
   ui: require("./ui"),
   util: require("./util"),
@@ -42,6 +43,10 @@ module.exports = {
       styles: {}
     },
     endpoints: {},
+    geolocation: {
+      watch: undefined,
+      lonlat: undefined
+    },
     logs: {},
     featurelayers: {},
     pages: {},

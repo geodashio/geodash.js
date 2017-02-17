@@ -35,6 +35,10 @@ module.exports = function(options)
     {
       source = geodash.layers.source.geojson({ "url": url });
     }
+    else
+    {
+      source = geodash.layers.source.geojson();  // Empty GeoJSON Source
+    }
   }
 
   if(geodash.util.isDefined(source))

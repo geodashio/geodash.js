@@ -2,12 +2,14 @@
 module.exports = function(options)
 {
   var style = {};
+  var symbolizerType = extract('symbolizerType', options).toLowerCase();
   var f = extract('feature', options) || extract('f', options);
   var state = extract('state', options);
   var config = extract('dashboard', options) || extract('config', options);
   var style_static = angular.isArray(extract('style_static', options)) ? geodash.util.arrayToObject(extract('style_static', options)) : extract('style_static', options);
   var style_dynamic_fn = extract('style_dynamic_fn', options);
   var style_dynamic_options = extract('style_dynamic_options', options);
+  var style_transform_operations = extract('style_transform_operations', options);
   ////
   var styleStaticAndDynamic = {};
   angular.extend(styleStaticAndDynamic, style_static);
@@ -43,7 +45,8 @@ module.exports = function(options)
     style["text"] = new ol.style.Text(textOptions);
   }
 
-  if(geometryType == "Point")
+  //if(geometryType == "Point")
+  if(symbolizerType == "point")
   {
     var circleOptions = {
         radius: extractFloat("radius", styleStaticAndDynamic, 5.0)
@@ -76,7 +79,8 @@ module.exports = function(options)
     style["image"] = new ol.style.Circle(circleOptions);
   }
 
-  if(geometryType == "Polygon" || geometryType == "MultiLineString" || geometryType == "MultiPolygon")
+  //if(geometryType == "Polygon" || geometryType == "MultiLineString" || geometryType == "MultiPolygon")
+  if(symbolizerType == "polygon" || symbolizerType == "line")
   {
     if(geodash.util.isDefined(extract("strokeColor", styleStaticAndDynamic)))
     {
@@ -91,7 +95,8 @@ module.exports = function(options)
     }
   }
 
-  if(geometryType == "Polygon" || geometryType == "MultiPolygon")
+  //if(geometryType == "Polygon" || geometryType == "MultiPolygon")
+  if(symbolizerType == "polygon")
   {
     if(geodash.util.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
@@ -106,6 +111,33 @@ module.exports = function(options)
         }catch(err){}
       }
       style["fill"] = new ol.style.Fill({ color: fillColor })
+    }
+  }
+
+  if(geodash.util.isDefined(style_transform_operations))
+  {
+    if(Array.isArray(style_transform_operations))
+    {
+      style["geometry"] = (function(operations){
+        return function(feature){
+          var geom = feature.getGeometry();
+          for(var i = 0; i < operations.length; i++)
+          {
+            var op = operations[i];
+            if(op.name == "buffer")
+            {
+              var fn = extract(op.name, geodash.transform);
+              if(geodash.util.isDefined(fn))
+              {
+                var properties = geodash.util.arrayToObject(op.properties);
+                properties["feature"] = feature;
+                geom = fn(geom, properties)
+              }
+            }
+          }
+          return geom;
+        }
+      })(style_transform_operations)
     }
   }
 

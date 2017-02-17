@@ -20,6 +20,7 @@ module.exports = {
   getScope: require("./getScope"),
   hasHashValue: require("./hasHashValue"),
   isDefined: require("./isDefined"),
+  isString: require("./isString"),
   objectToArray: require("./objectToArray"),
   parseTrue: require("./parseTrue"),
   repeat: require("./repeat"),
