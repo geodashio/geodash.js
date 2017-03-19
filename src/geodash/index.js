@@ -50,6 +50,7 @@ module.exports = {
     logs: {},
     featurelayers: {},
     pages: {},
-    resources: {}
+    resources: {},
+    timeouts: {}
   }
 };

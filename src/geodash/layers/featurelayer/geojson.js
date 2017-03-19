@@ -4,25 +4,31 @@ module.exports = function(options)
   var layerConfig = extract("layerConfig", options);
   var layerID = extract("id", layerConfig) || extract("layerID", layerConfig) || extract("id", options) || extract("layerID", options);
 
+  var features = extract("geojson.features", layerConfig);
   var local = extract("geojson.local", layerConfig);
   var url = extract("geojson.url", layerConfig);
+  var strategy = extract("geojson.strategy", layerConfig);
 
   var source = undefined;
-  if(geodash.util.isDefined(local))
+  if(geodash.util.isDefined(features))
   {
-    var localData = extract(local, geodash.initial_data);
-    if(geodash.util.isDefined(localData))
+    source = geodash.layers.source.geojson({ "features": features });
+  }
+  else if(geodash.util.isDefined(local))
+  {
+    features = extract(local, geodash.initial_data);
+    if(geodash.util.isDefined(features))
     {
-      source = geodash.layers.source.geojson({ "local": localData });
+      source = geodash.layers.source.geojson({ "features": features });
     }
     else
     {
-      geodash.log.error("layers", ["Could not initialize GeoJSON layer "+id+" because local data at "+local+" was not found."]);
+      geodash.log.error("layers", ["Could not initialize GeoJSON layer "+layerID+" because local data at "+local+" was not found."]);
     }
   }
   else if(geodash.util.isDefined(url))
   {
-    source = geodash.layers.source.geojson({ "url": url });
+    source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
   }
   else
   {
@@ -33,7 +39,7 @@ module.exports = function(options)
 
     if(geodash.util.isDefined(url))
     {
-      source = geodash.layers.source.geojson({ "url": url });
+      source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
     }
     else
     {

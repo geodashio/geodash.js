@@ -38,11 +38,12 @@ module.exports = function($interpolate, featureLayer, feature, location, map, st
 
             var target = $(this).attr("href");
 
-            $("li", tabs).removeClass("active");
-            $(this).parents("li:first").addClass("active");
+            $(".nav-link", tabs).removeClass("active");
+            //$(this).parents("li:first").addClass("active");
+            $(this).addClass("active");
 
-            $(".tab-pane", popoverElement).removeClass("in active");
-            $(target).addClass("in active");
+            $(".tab-pane", popoverElement).removeClass("in active show");
+            $(target).addClass("in active show");
 
             return false;
           });

@@ -1,6 +1,6 @@
 module.exports = function(url, serverType)
 {
-  if(angular.isString(url))
+  if(geodash.util.isString(url))
   {
     var data = undefined;
     if(serverType == "wms")

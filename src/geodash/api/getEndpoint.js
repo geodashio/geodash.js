@@ -1,5 +1,5 @@
 /**
- * Gets an API url ednpoint from a dashboard config by id
+ * Gets an API url endpoint from a dashboard config by id
  *
  * @function getEndpoint
  * @param {(string)} id - The API endpoint id

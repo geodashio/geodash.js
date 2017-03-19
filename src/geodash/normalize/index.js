@@ -8,6 +8,7 @@
 
 module.exports = {
   color: require("./color"),
+  date: require("./date"),
   extent: require("./extent"),
   feature: require("./feature"),
   float: require("./float"),

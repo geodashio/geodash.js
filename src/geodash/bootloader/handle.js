@@ -3,7 +3,7 @@ module.exports = function(options)
   var request = extract("request", options);
   var response = extract("response", options);
   var app = extract("app", options);
-  var loaders = extract("loaders", options) || extract("config.bootloader.loaders", geodash);
+  var loaders = extract("loaders", options) || extract("config.bootloader.loaders", geodash) || [geodash.bootloader.loaders];
 
   if(response.status == 200)
   {

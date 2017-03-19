@@ -9,11 +9,12 @@ module.exports = function(name, messages)
     for(var i = 0; i < messages.length; i++)
     {
       geodash.var.logs[name].push({level: 'error', message: messages[i]});
+      console.error(message[i]);
     }
   }
   else if(angular.isString(messages))
   {
     geodash.var.logs[name].push({level: 'error', message: messages});
+    console.error(messages);
   }
-
 };
