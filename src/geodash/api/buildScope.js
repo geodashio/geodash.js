@@ -29,7 +29,7 @@ module.exports = function(event, args)
     if("dynamic" in args)
     {
       $.each(args["dynamic"],function(key, value){
-        if(angular.isString(value))
+        if(geodash.util.isString(value))
         {
           if(value == "dashboard")
           {
@@ -40,7 +40,7 @@ module.exports = function(event, args)
             scope_new[key] = mainScope.state;
           }
         }
-        else if(angular.isArray(value))
+        else if(Array.isArray(value))
         {
           var value_0_lc = value[0].toLowerCase();
           if(value_0_lc == "source")

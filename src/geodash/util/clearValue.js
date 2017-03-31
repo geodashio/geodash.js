@@ -9,7 +9,7 @@
 
 module.exports = function(keyChain, target)
 {
-  if(angular.isString(keyChain))
+  if(geodash.util.isString(keyChain))
   {
     keyChain = keyChain.split("__");
   }

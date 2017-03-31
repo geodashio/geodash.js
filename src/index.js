@@ -40,7 +40,38 @@ var buildPageURL = function($interpolate, dashboard, state)
   }
 };
 
-var expand = require("geodash-expand");
+var expand = function(keyChain)
+{
+  var newArray = [];
+  if(Array.isArray(keyChain))
+  {
+    for(var i = 0; i < keyChain.length; i++)
+    {
+      var value = keyChain[i];
+      if(angular.isString(value))
+      {
+        if(value.indexOf(".") != -1)
+        {
+          newArray = newArray.concat(value.split("."));
+        }
+        else
+        {
+          newArray.push(value);
+        }
+      }
+      else
+      {
+        newArray.push(value);
+      }
+    }
+  }
+  else if(typeof keyChain === 'string')
+  {
+    newArray = keyChain.split(".");
+  }
+  return newArray;
+};
+
 var extract = require("geodash-extract");
 
 var extractFloat = function(keyChain, node, fallback)

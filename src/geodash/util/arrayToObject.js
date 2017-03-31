@@ -17,7 +17,7 @@
 module.exports = function(x, options)
 {
   var y = {};
-  if(angular.isArray(x))
+  if(Array.isArray(x))
   {
     var $interpolate = extract("$interpolate", options) || extract("interpolate", options);
     var ctx = extract("context", options) || extract("ctx", options) || {};
@@ -28,7 +28,7 @@ module.exports = function(x, options)
         if("value" in x[i])
         {
           var v = x[i].value;
-          if(angular.isString(v))
+          if(geodash.util.isString(v))
           {
             y[x[i].id || x[i].name] = $interpolate(v)(ctx);
           }

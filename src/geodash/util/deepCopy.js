@@ -13,7 +13,7 @@ module.exports = function(x)
   {
     return $.extend(true, [], x);
   }
-  else if(angular.isString(x) || angular.isNumber(x))
+  else if(geodash.util.isString(x) || geodash.util.isNumber(x))
   {
     return x;
   }

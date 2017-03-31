@@ -15,16 +15,16 @@ module.exports = function(options)
     var account = extract("account", mapbox) || extract("username", mapbox);
     var access_token = extract("access_token", mapbox, undefined);
 
-    if(angular.isString(layers)){ layers = layers.split(","); }
-    if(angular.isString(styles)){ styles = styles.split(","); }
+    if(geodash.util.isString(layers)){ layers = layers.split(","); }
+    if(geodash.util.isString(styles)){ styles = styles.split(","); }
 
-    if(angular.isString(access_token) && access_token.length > 0)
+    if(geodash.util.isString(access_token) && access_token.length > 0)
     {
       if(Array.isArray(layers) && layers.length > 0)
       {
         url = "http://{a-c}.tiles.mapbox.com/v4/"+layers.join(",")+"/{z}/{x}/{y}.png?access_token="+access_token;
       }
-      else if(angular.isArray(styles) && styles.length > 0)
+      else if(Array.isArray(styles) && styles.length > 0)
       {
         url = "https://api.mapbox.com/styles/v1/"+account+"/"+styles[0]+"/tiles/256/{z}/{x}/{y}?access_token="+access_token
       }
@@ -37,7 +37,7 @@ module.exports = function(options)
     var projection = extract("projection", gwc, "EPSG:900913");
     var format = extract("format", gwc, "png");
 
-    if(angular.isString(layers)){ layers = layers.split(","); }
+    if(geodash.util.isString(layers)){ layers = layers.split(","); }
 
     if(Array.isArray(layers) && layers.length > 0 && geodash.util.isDefined(access_token))
     {

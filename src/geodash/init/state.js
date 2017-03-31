@@ -14,7 +14,11 @@ module.exports = function(options)
   // Update View
   var newView = {
     "baselayer": (extract("view.baselayer", newState) || extract(["dashboard", "baselayers", 0, "id"], options)),
-    "featurelayers": (extract("view.featurelayers", newState) || $.map(extract(["dashboard", "featurelayers"], options, []), function(fl){ return fl.id; })),
+    "featurelayers": (
+      extract("view.featurelayers", newState) ||
+      extract(["dashboard", "view", "featurelayers"], options) ||
+      $.map(extract(["dashboard", "featurelayers"], options, []), function(fl){ return fl.id; })
+    ),
     "controls": extract("view.controls", newState) || extract("dashboard.view.controls", options) || []
   };
 

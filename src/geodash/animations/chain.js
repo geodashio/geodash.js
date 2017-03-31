@@ -40,14 +40,14 @@ module.exports = function(m, v, options)
     {
       if(current_res == target_res)
       {
-        if(! ol.array.equals(v.getCenter(), target_center))
+        if(! geodash.util.equals(v.getCenter(), target_center))
         {
           chain = [{center: target_center, duration: duration}];
         }
       }
       else if(current_res < target_res)
       {
-        if(ol.array.equals(v.getCenter(), target_center))
+        if(geodash.util.equals(v.getCenter(), target_center))
         {
           chain = [{resolution: target_res, duration: duration}];
         }
@@ -59,7 +59,7 @@ module.exports = function(m, v, options)
       }
       else if(current_res > target_res)
       {
-        if(ol.array.equals(v.getCenter(), target_center))
+        if(geodash.util.equals(v.getCenter(), target_center))
         {
           chain = [{resolution: target_res, duration: duration}];
         }
@@ -72,7 +72,7 @@ module.exports = function(m, v, options)
     }
     else
     {
-      if(! ol.array.equals(v.getCenter(), target_center))
+      if(! geodash.util.equals(v.getCenter(), target_center))
       {
         chain = [{center: target_center, duration: duration}];
       }

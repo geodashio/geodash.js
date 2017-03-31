@@ -1,16 +1,16 @@
 module.exports = function(popup, layer, feature, state)
 {
-  var panes = popup.panes;
   var popupTemplate = "";
-  //////////////////
-  if(geodash.mapping_library == "leaflet" && angular.isString(popup.title))
+  var panes = extract("panes", popup);
+  if(geodash.util.isDefined(panes) && Array.isArray(panes) && panes.length > 0)
   {
-    popupTemplate += "<h5 style=\"word-wrap:break-word;text-align:center;\">"+popup.title+"</h5>";
-  }
-  //////////////////
-  var paneContents = [];
-  if(Array.isArray(panes))
-  {
+    //////////////////
+    if(geodash.mapping_library == "leaflet" && angular.isString(popup.title))
+    {
+      popupTemplate += "<h5 style=\"word-wrap:break-word;text-align:center;\">"+popup.title+"</h5>";
+    }
+    //////////////////
+    var paneContents = [];
     for(var i = 0; i < panes.length; i++)
     {
       var pane = panes[i];

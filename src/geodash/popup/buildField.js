@@ -7,7 +7,7 @@ module.exports = function(field, layer, feature, state)
   {
     if(field.when.toLowerCase() == "defined")
     {
-      if(feature.attributes[output] != undefined)
+      if(feature.attributes[output] != undefined && feature.attributes[output] != "")
       {
         bInclude = true;
       }
@@ -32,7 +32,7 @@ module.exports = function(field, layer, feature, state)
       {
         html += "<b>"+ field.label +":</b> ";
       }
-      html = "<a target=\"_blank\" href=\""+field.url+"\">";
+      html += "<a target=\"_blank\" href=\""+field.url+"\">";
       html += value;
       html += "</a></span>";
     }

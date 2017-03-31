@@ -7,6 +7,9 @@ module.exports = function(options)
     var $scope = extract("$scope", options) || extract("scope", options);
 
     geodash.var.map.addLayer(fl);
-    geodash.api.intend("layerLoaded", {'type':'featurelayer', 'layer': layerID, 'visible': true}, $scope);
+    if(geodash.util.isDefined($scope))
+    {
+      geodash.api.intend("layerLoaded", {'type':'featurelayer', 'layer': layerID, 'visible': true}, $scope);  
+    }
   }
 };

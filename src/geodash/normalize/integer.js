@@ -15,11 +15,11 @@
 
 module.exports = function(x, fallback)
 {
-  if(angular.isNumber(x))
+  if(geodash.util.isNumber(x))
   {
     return x;
   }
-  else if(angular.isString(x))
+  else if(geodash.util.isString(x))
   {
     if(x.length > 0)
     {

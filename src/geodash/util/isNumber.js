@@ -1,4 +1,4 @@
 module.exports = function(value)
 {
-  return typeof value === 'string';
+  return typeof value === 'number';
 };

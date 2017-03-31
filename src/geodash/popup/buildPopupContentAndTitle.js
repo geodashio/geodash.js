@@ -10,7 +10,7 @@ module.exports = function($interpolate, featureLayer, feature, state)
   {
     angular.extend(ctx, extract("config.popup.context", geodash));
   }
-  var content = $interpolate(popupTemplate)(ctx);
+  var content = geodash.util.isDefined(popupTemplate) ? $interpolate(popupTemplate)(ctx) : undefined;
   var title = angular.isString(featureLayer.popup.title) ? $interpolate(featureLayer.popup.title)(ctx) : "";
   return { 'content': content, 'title': title }
 };

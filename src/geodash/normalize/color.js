@@ -23,12 +23,12 @@ module.exports = function(color)
   {
     if(color.length == 3){ color = [].concat(color, [1.0]); }
 
-    if(angular.isString(color[0])){ color[0] = parseInt(color[0], 10); }
-    if(angular.isString(color[1])){ color[1] =  parseInt(color[1], 10); }
-    if(angular.isString(color[2])){ color[2] =  parseInt(color[2], 10); }
-    if(angular.isString(color[3])){ color[3] =  parseFloat(color[3]); }
+    if(geodash.util.isString(color[0])){ color[0] = parseInt(color[0], 10); }
+    if(geodash.util.isString(color[1])){ color[1] =  parseInt(color[1], 10); }
+    if(geodash.util.isString(color[2])){ color[2] =  parseInt(color[2], 10); }
+    if(geodash.util.isString(color[3])){ color[3] =  parseFloat(color[3]); }
   }
-  else if(angular.isString(color))
+  else if(geodash.util.isString(color))
   {
     if(color.startsWith("#") || color.startsWith("rgb"))
     {

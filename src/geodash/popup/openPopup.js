@@ -14,7 +14,7 @@ module.exports = function($interpolate, featureLayer, feature, location, map, st
       'placement': 'top',
       'animation': false,
       'html': true,
-      'content': popupContentAndTitle.content,
+      'content': popupContentAndTitle.content || "",
       'title': popupContentAndTitle.title
     });
 
@@ -74,7 +74,7 @@ module.exports = function($interpolate, featureLayer, feature, location, map, st
   {
     var popup = new L.Popup({maxWidth: (featureLayer.popup.maxWidth || 400)}, undefined);
     popup.setLatLng(new L.LatLng(location.lat, location.lon));
-    popup.setContent(popupContentAndTitle.content);
+    popup.setContent(popupContentAndTitle.content || "");
     map.openPopup(popup);
   }
 };

@@ -54,7 +54,7 @@ module.exports = function(options)
       source: source,
       zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true })
     });
-    if(angular.isDefined(extract(["carto", "styles", 0, "symbolizers", 0], layerConfig)))
+    if(geodash.util.isDefined(extract(["carto", "styles", 0, "symbolizers", 0], layerConfig)))
     {
       var ws = extract("config.dynamicStyleFunctionWorkspaces", geodash) || [geodash.dynamicStyleFn];
       var styleFn = (function(_layerID, styleFnWorkspaces){

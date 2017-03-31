@@ -19,7 +19,7 @@ module.exports = function(field_flat, source, target)
       target = target[newKey];
     }
     var finalKey = keyChain[keyChain.length-1];
-    if(angular.isArray(target))
+    if(Array.isArray(target))
     {
       if(finalKey >= target.length)
       {

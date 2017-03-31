@@ -1,7 +1,7 @@
 module.exports = function(keyChain, value, target)
 {
   // Update dashboard
-  if(angular.isString(keyChain))
+  if(geodash.util.isString(keyChain))
   {
     keyChain = keyChain.split("__");
   }
@@ -24,7 +24,7 @@ module.exports = function(keyChain, value, target)
       target = target[newKey];
     }
     var finalKey = keyChain[keyChain.length-1];
-    if(angular.isArray(target))
+    if(Array.isArray(target))
     {
       if(finalKey >= target.length)
       {

@@ -3,7 +3,7 @@ module.exports = function(extent, options)
   var newExtent = undefined;
   if(geodash.util.isDefined(extent))
   {
-    if(angular.isString(extent))
+    if(geodash.util.isString(extent))
     {
       if(extent.length > 0 )
       {
