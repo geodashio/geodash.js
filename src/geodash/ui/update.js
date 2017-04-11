@@ -9,8 +9,8 @@
 
 module.exports = function(element, tab)
 {
-  var id = angular.isString(element) ? element : $(element).attr("id");
-  element = angular.isString(element) ? $("#"+id) : element;
+  var id = geodash.util.isString(element) ? element : $(element).attr("id");
+  element = geodash.util.isString(element) ? $("#"+id) : element;
 
   var $scope = geodash.util.getScope(id);
 

@@ -2,15 +2,15 @@ module.exports = function(options)
 {
   if(geodash.util.isDefined(options))
   {
-    if(angular.isString(options))
+    if(geodash.util.isString(options))
     {
       return undefined;
     }
-    else if(angular.isArray(options))
+    else if(geodash.util.isArray(options))
     {
       return undefined;
     }
-    else if(angular.isString(options.url))
+    else if(geodash.util.isString(options.url))
     {
       var url = options.url;
       var codecs = options.codecs || [geodash.bloodhound.codec];

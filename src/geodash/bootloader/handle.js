@@ -7,7 +7,7 @@ module.exports = function(options)
 
   if(response.status == 200)
   {
-    if(angular.isString(request.loader))
+    if(geodash.util.isString(request.loader))
     {
       var success = false;
       for(var i = 0; i < loaders.length; i++)

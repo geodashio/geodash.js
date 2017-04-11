@@ -4,7 +4,7 @@
 var buildPageURL = function($interpolate, dashboard, state)
 {
   var template = geodash.api.getPage(extract("page", state));
-  if(angular.isDefined(template))
+  if(geodash.util.isDefined(template))
   {
     //
     var url = $interpolate(template)(state);
@@ -38,38 +38,6 @@ var buildPageURL = function($interpolate, dashboard, state)
   {
     return undefined;
   }
-};
-
-var expand = function(keyChain)
-{
-  var newArray = [];
-  if(Array.isArray(keyChain))
-  {
-    for(var i = 0; i < keyChain.length; i++)
-    {
-      var value = keyChain[i];
-      if(angular.isString(value))
-      {
-        if(value.indexOf(".") != -1)
-        {
-          newArray = newArray.concat(value.split("."));
-        }
-        else
-        {
-          newArray.push(value);
-        }
-      }
-      else
-      {
-        newArray.push(value);
-      }
-    }
-  }
-  else if(typeof keyChain === 'string')
-  {
-    newArray = keyChain.split(".");
-  }
-  return newArray;
 };
 
 var extract = require("geodash-extract");
@@ -113,7 +81,6 @@ var layersAsArray = function(layers)
 
 
 window.buildPageURL = buildPageURL;
-window.expand = expand;
 window.extract = extract;
 window.extractFloat = extractFloat;
 window.extractArrayLength = extractArrayLength;

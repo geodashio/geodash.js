@@ -28,7 +28,7 @@ module.exports = function(field, layer, feature, state)
     {
       var value = field.value != undefined ? field.value : "{{ feature.attributes." + output + " }}";
       html = "<span>";
-      if(angular.isString(field.label) && field.label.length > 0)
+      if(geodash.util.isString(field.label) && field.label.length > 0)
       {
         html += "<b>"+ field.label +":</b> ";
       }
@@ -60,7 +60,7 @@ module.exports = function(field, layer, feature, state)
         }
         value = "{{ "+value +" }}";
       }
-      if(angular.isString(field.label) && field.label.length > 0)
+      if(geodash.util.isString(field.label) && field.label.length > 0)
       {
         html = "<span><b>"+ field.label +":</b> "+value+"</span>";
       }

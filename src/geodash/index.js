@@ -34,7 +34,8 @@ module.exports = {
   transform: require("./transform"),
   typeahead: require("./typeahead"),
   ui: require("./ui"),
-  util: require("./util"),
+  //util: require("./util"),
+  util: require("geodash-util"),
   vecmath: require("./vecmath"),
   var: {
     apps: {},
@@ -42,6 +43,7 @@ module.exports = {
     cache: {
       styles: {}
     },
+    components: {},
     endpoints: {},
     geolocation: {
       watch: undefined,

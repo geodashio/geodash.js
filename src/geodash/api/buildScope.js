@@ -10,9 +10,11 @@
  * @see https://docs.angularjs.org/guide/scope
  */
 
+var util = require("geodash-util");
+
 module.exports = function(event, args)
 {
-  var mainScope = geodash.util.getScope("geodash-main");
+  var mainScope = util.getScope("geodash-main");
   //
   var id = args["id_target"] || args["id_show"] || args["id"];
   var sourceScope = event.targetScope;
@@ -20,7 +22,7 @@ module.exports = function(event, args)
     "state": mainScope.state,
     "meta": geodash.meta
   };
-  if(geodash.util.isDefined(args))
+  if(util.isDefined(args))
   {
     if("static" in args)
     {
@@ -29,7 +31,7 @@ module.exports = function(event, args)
     if("dynamic" in args)
     {
       $.each(args["dynamic"],function(key, value){
-        if(geodash.util.isString(value))
+        if(util.isString(value))
         {
           if(value == "dashboard")
           {
@@ -45,7 +47,7 @@ module.exports = function(event, args)
           var value_0_lc = value[0].toLowerCase();
           if(value_0_lc == "source")
           {
-            scope_new[key] = extract(expand(value.slice(1)), event.targetScope);
+            scope_new[key] = extract(util.expand(value.slice(1)), event.targetScope);
           }
           else if(value_0_lc == "baselayer" || value_0_lc == "bl")
           {
@@ -59,11 +61,11 @@ module.exports = function(event, args)
           {
             if(value_0_lc == "dashboard")
             {
-              scope_new[key] = extract(expand(value.slice(1)), mainScope.dashboard);
+              scope_new[key] = extract(util.expand(value.slice(1)), mainScope.dashboard);
             }
             else if(value_0_lc == "state")
             {
-              scope_new[key] = extract(expand(value.slice(1)), mainScope.state);
+              scope_new[key] = extract(util.expand(value.slice(1)), mainScope.state);
             }
           }
         }

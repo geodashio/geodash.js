@@ -3,14 +3,14 @@ module.exports = function(element, newValue)
   if(geodash.util.isDefined(element))
   {
     var input_id = $(element).attr('data-target-input-id');
-    if(angular.isString(input_id))
+    if(geodash.util.isString(input_id))
     {
       var input_element = $('#'+input_id);
       if(input_element.length > 0)
       {
         if(geodash.util.isDefined(newValue) && newValue != null)
         {
-          if(angular.isString(newValue))
+          if(geodash.util.isString(newValue))
           {
             input_element.val(newValue)
               .trigger('input')

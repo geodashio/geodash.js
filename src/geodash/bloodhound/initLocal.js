@@ -2,10 +2,10 @@ module.exports = function(localData, featurelayers, baselayers, servers)
 {
   var bloodhoundData = undefined;
 
-  if(angular.isString(localData))
+  if(geodash.util.isString(localData))
   {
     var localFn = extract(localData, geodash.bloodhound.local);
-    if(angular.isFunction(localFn))
+    if(geodash.util.isFunction(localFn))
     {
       bloodhoundData = localFn({
         'featurelayers': featurelayers,
@@ -18,7 +18,7 @@ module.exports = function(localData, featurelayers, baselayers, servers)
       bloodhoundData = [].concat(geodash.initial_data["data"][localData]);
       for(var i = 0; i < bloodhoundData.length; i++)
       {
-        if(angular.isString(bloodhoundData[i]))
+        if(geodash.util.isString(bloodhoundData[i]))
         {
           bloodhoundData[i] = {'id': bloodhoundData[i], 'text': bloodhoundData[i]};
         }
@@ -34,7 +34,7 @@ module.exports = function(localData, featurelayers, baselayers, servers)
     bloodhoundData = [].concat(localData);
     for(var i = 0; i < bloodhoundData.length; i++)
     {
-      if(angular.isString(bloodhoundData[i]))
+      if(geodash.util.isString(bloodhoundData[i]))
       {
         bloodhoundData[i] = {'id': bloodhoundData[i], 'text': bloodhoundData[i]};
       }
@@ -46,14 +46,14 @@ module.exports = function(localData, featurelayers, baselayers, servers)
     if(geodash.util.isDefined(localDataFnName))
     {
       var localFn = extract(localDataFnName, geodash.bloodhound.local);
-      if(angular.isFunction(localFn))
+      if(geodash.util.isFunction(localFn))
       {
         var localFnOptions = {
           'featurelayers': featurelayers,
           'baselayers': baselayers,
           'servers': servers
         };
-        angular.extend(localFnOptions, extract("args", localData, {}));
+        geodash.util.extend(localFnOptions, extract("args", localData, {}));
         bloodhoundData = localFn(localFnOptions);
       }
     }

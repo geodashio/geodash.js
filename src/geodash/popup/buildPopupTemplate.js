@@ -5,7 +5,7 @@ module.exports = function(popup, layer, feature, state)
   if(geodash.util.isDefined(panes) && Array.isArray(panes) && panes.length > 0)
   {
     //////////////////
-    if(geodash.mapping_library == "leaflet" && angular.isString(popup.title))
+    if(geodash.mapping_library == "leaflet" && geodash.util.isString(popup.title))
     {
       popupTemplate += "<h5 style=\"word-wrap:break-word;text-align:center;\">"+popup.title+"</h5>";
     }

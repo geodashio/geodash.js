@@ -6,19 +6,19 @@ module.exports = function(options)
   var f = extract('feature', options) || extract('f', options);
   var state = extract('state', options);
   var config = extract('dashboard', options) || extract('config', options);
-  var style_static = angular.isArray(extract('style_static', options)) ? geodash.util.arrayToObject(extract('style_static', options)) : extract('style_static', options);
+  var style_static = Array.isArray(extract('style_static', options)) ? geodash.util.arrayToObject(extract('style_static', options)) : extract('style_static', options);
   var style_dynamic_fn = extract('style_dynamic_fn', options);
   var style_dynamic_options = extract('style_dynamic_options', options);
   var style_transform_operations = extract('style_transform_operations', options);
   ////
   var styleStaticAndDynamic = {};
-  angular.extend(styleStaticAndDynamic, style_static);
-  if(angular.isFunction(style_dynamic_fn))
+  geodash.util.extend(styleStaticAndDynamic, style_static);
+  if(geodash.util.isFunction(style_dynamic_fn))
   {
     var delta = style_dynamic_fn(f, state, config, style_dynamic_options);
     if(geodash.util.isDefined(delta))
     {
-      angular.extend(styleStaticAndDynamic, delta);
+      geodash.util.extend(styleStaticAndDynamic, delta);
     }
   }
 

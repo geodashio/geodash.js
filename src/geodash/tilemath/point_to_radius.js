@@ -12,5 +12,5 @@
 
 module.exports = function(z)
 {
-  return (geodash.config.click_radius || 4.0) / z;
+  return extract("config.click_radius", geodash, 4.0) / z;
 };

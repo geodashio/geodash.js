@@ -8,12 +8,12 @@ module.exports = function(options)
   if(geodash.util.isDefined(resource))
   {
     var request = undefined;
-    if(angular.isString(element.attr(resource.local)))
+    if(geodash.util.isString(element.attr(resource.local)))
     {
       app.value(resource.name, extract(element.attr(resource.local), geodash));
       return {"success": true};
     }
-    else if(angular.isString(element.attr(resource.remote)))
+    else if(geodash.util.isString(element.attr(resource.remote)))
     {
       return {
         "success": true,

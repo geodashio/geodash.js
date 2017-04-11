@@ -8,7 +8,7 @@ module.exports = function(options)
   var newState = {};
   if(geodash.util.isDefined(extract("state", options)))
   {
-    angular.extend(newState, extract("state", options));
+    geodash.util.extend(newState, extract("state", options));
   }
 
   // Update View
@@ -17,7 +17,7 @@ module.exports = function(options)
     "featurelayers": (
       extract("view.featurelayers", newState) ||
       extract(["dashboard", "view", "featurelayers"], options) ||
-      $.map(extract(["dashboard", "featurelayers"], options, []), function(fl){ return fl.id; })
+      extract(["dashboard", "featurelayers"], options, []).map(function(fl){return fl.id;})
     ),
     "controls": extract("view.controls", newState) || extract("dashboard.view.controls", options) || []
   };
@@ -51,7 +51,7 @@ module.exports = function(options)
       extract('dashboard.view.z', options, 3)
     ]);
     var delta = {'lat': lat, 'lon': lon, 'z': z};
-    angular.extend(newView, delta);
+    geodash.util.extend(newView, delta);
   }
   newState["view"] = newView;
 
@@ -59,6 +59,19 @@ module.exports = function(options)
   if(geodash.util.isDefined(extract("filters", newState)) && geodash.util.isDefined(extract("stateschema", options)))
   {
     var stateschema = extract("stateschema", options);
+
+    /*
+    geodash.util.objectToArray(newState["filters"]).forEach(x => {
+      geodash.util.objectToArray(x.value).forEach(y => {
+        var type = stateschema["filters"][x.name][y.name].toLowerCase();
+        var value = geodash.util.getHashValue(x.name+":"+y.name, type);
+        if(value != undefined && value != "")
+        {
+          newState["filters"][x.name][y.name] = value;
+        }
+      });
+    });*/
+
     $.each(newState["filters"], function(layer_id, layer_filters){
       $.each(layer_filters, function(filter_id, filer_value){
         var type = stateschema["filters"][layer_id][filter_id].toLowerCase();

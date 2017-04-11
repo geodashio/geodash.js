@@ -5,7 +5,7 @@ module.exports = function()
     // that's why need to use event.currentTarget
 
     var input_id = $(event.currentTarget).attr('data-target-input-id');
-    if(angular.isString(input_id))
+    if(geodash.util.isString(input_id))
     {
       try{ $("#"+input_id).typeahead('close'); }catch(err){};
       geodash.ui.saveToInput(event.currentTarget, null);
@@ -81,12 +81,12 @@ module.exports = function()
             if(geodash.util.isDefined(intentData))
             {
               intentData = JSON.parse(intentData);
-              angular.extend(intentData, {'element': this});
+              geodash.util.extend(intentData, {'element': this});
               intents.push({"name": intentName, "data": intentData});
             }
           }
         }
-        
+
       }
     }
     else
@@ -104,7 +104,7 @@ module.exports = function()
           if(geodash.util.isDefined(intentData))
           {
             intentData = JSON.parse(intentData);
-            angular.extend(intentData, {'element': this});
+            geodash.util.extend(intentData, {'element': this});
             intents.push({"name": intentName, "data": intentData});
           }
         }

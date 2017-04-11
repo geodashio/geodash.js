@@ -12,9 +12,9 @@
 module.exports = function(options)
 {
   var app = extract("app", options);
-  //app.factory('state', function(){return angular.extend({}, geodash.initial_state);});
-  app.factory('stateschema', function(){return angular.extend({}, geodash.state_schema);});
-  //app.factory('dashboard', function(){return angular.extend({}, geodash.dashboard);});
+  //app.factory('state', function(){return geodash.util.extend({}, geodash.initial_state);});
+  app.factory('stateschema', function(){return geodash.util.extend({}, geodash.state_schema);});
+  //app.factory('dashboard', function(){return geodash.util.extend({}, geodash.dashboard);});
   app.factory('live', function(){
     return {
       "map": undefined,

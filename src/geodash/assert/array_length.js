@@ -4,7 +4,7 @@ module.exports = function(x, length, fallback)
   {
     return fallback;
   }
-  else if(angular.isString(x))
+  else if(geodash.util.isString(x))
   {
     x = x.split(",");
     if(x.length == length)
@@ -16,7 +16,7 @@ module.exports = function(x, length, fallback)
       return fallback;
     }
   }
-  else if(angular.isArray(x))
+  else if(Array.isArray(x))
   {
     if(x.length == length)
     {

@@ -30,7 +30,7 @@ module.exports = function(options)
       .removeClass("fa-minus fa-refresh fa-spin");
   }
 
-  if(angular.isString(step.message) && step.message.length > 0)
+  if(geodash.util.isString(step.message) && step.message.length > 0)
   {
     $(".geodash-bootloader-status i", row)
       .attr({
@@ -48,7 +48,7 @@ module.exports = function(options)
       .removeAttr("title");
   }
 
-  if(angular.isString(step.link) && step.link.length > 0)
+  if(geodash.util.isString(step.link) && step.link.length > 0)
   {
     $(".geodash-bootloader-status a", row).attr({
         "href": step.link,

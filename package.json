@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Low-level Javascript API for GeoDash",
   "keywords": [
+    "gis",
     "map",
     "mapping",
     "geodash"
@@ -28,10 +29,8 @@
     "url": "https://github.com/geodashio/geodash.js/issues"
   },
   "dependencies": {
-    "geodash-diff": "*",
     "geodash-extract": "*",
-    "geodash-expand": "*",
-    "geodash-flatten": "*"
+    "geodash-util": "0.0.5"
   },
   "devDependencies": {
     "browserify": "*",

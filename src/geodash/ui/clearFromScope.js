@@ -13,12 +13,12 @@ module.exports = function(element)
   if(geodash.util.isDefined(element))
   {
     var scope_id = $(element).attr('data-target-scope-id');
-    if(angular.isString(scope_id))
+    if(geodash.util.isString(scope_id))
     {
       var $scope = geodash.util.getScope(scope_id);
       if(geodash.util.isDefined($scope))
       {
-        if(angular.isString($(element).attr('data-target-scope-path')))
+        if(geodash.util.isString($(element).attr('data-target-scope-path')))
         {
           var targetScopePath = $(element).attr('data-target-scope-path');
           try { targetScopePath = JSON.parse(targetScopePath); }catch(err){}
@@ -55,7 +55,7 @@ module.exports = function(element)
           if(Array.isArray(targetScopeChange))
           {
             var changeFn = extract(targetScopeChange[0], $scope);
-            if(angular.isFunction(changeFn))
+            if(geodash.util.isFunction(changeFn))
             {
               changeFn.apply(this, targetScopeChange.slice(1));
             }
@@ -77,7 +77,7 @@ module.exports = function(element)
           if(Array.isArray(targetScopeChange))
           {
             var changeFn = extract(targetScopeChange[0], $scope);
-            if(angular.isFunction(changeFn))
+            if(geodash.util.isFunction(changeFn))
             {
               changeFn.apply(this, targetScopeChange.slice(1));
             }

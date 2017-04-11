@@ -7,7 +7,18 @@ module.exports = function(options)
   //
   var styles = undefined;
   //var layerID = this.layerID;
-  var mainScope = geodash.util.getScope("geodash-main");
+  var dashboard = undefined;
+  var state = undefined;
+  if(typeof angular != "undefined")
+  {
+    dashboard = geodash.util.getScope("geodash-main").dashboard;
+    state = geodash.util.getScope("geodash-main").state;
+  }
+  else
+  {
+    dashboard = geodash.var.dashboard();
+    state = geodash.var.state();
+  }
   var fl = geodash.api.getFeatureLayer(layerID);
   if(geodash.util.isDefined(fl))
   {
@@ -38,8 +49,8 @@ module.exports = function(options)
           "feature": feature,
           "symbolizer": symbolizer,
           "styleFnWorkspaces": styleFnWorkspaces,
-          "state": extract("state", mainScope),
-          "dashboard": extract("dashboard", mainScope)
+          "state": state,
+          "dashboard": dashboard
         });
         if(geodash.util.isDefined(style))
         {

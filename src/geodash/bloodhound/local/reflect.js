@@ -3,15 +3,15 @@ module.exports = function(options)
   var bloodhoundData = [];
 
   var locations = options.locations;
-  if(angular.isArray(locations))
+  if(Array.isArray(locations))
   {
     for(var i = 0; i < locations.length; i++)
     {
       var target = extract(locations[i], geodash);
-      if(angular.isArray(target))
+      if(Array.isArray(target))
       {
         bloodhoundData = bloodhoundData.concat($.map(target, function(x, i){
-          if(angular.isString(x))
+          if(geodash.util.isString(x))
           {
             return {'id': x, 'text': x};
           }

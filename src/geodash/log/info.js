@@ -26,7 +26,7 @@ module.exports = function(name, messages)
       geodash.var.logs[name].push({level: 'info', message: messages[i]});
     }
   }
-  else if(angular.isString(messages))
+  else if(goedash.util.isString(messages))
   {
     geodash.var.logs[name].push({level: 'info', message: messages});
   }

@@ -15,13 +15,8 @@ module.exports = function(geom, options)
           distance = feature.get(distance.substring(1));
         }
       }
-      else
-      {
-        try{distance = parseFloat(distance);}catch(err){distance = 0.0;}
-      }
     }
-
-    return parser.write(parser.read(geom).buffer(geodash.normalize.float(distance)));
+    return parser.write(parser.read(geom).buffer(geodash.normalize.float(distance, 0.0)));
   }
   else
   {

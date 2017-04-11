@@ -19,7 +19,7 @@ module.exports = function(response)
     var pages = response.data;
     if(geodash.util.isDefined(pages))
     {
-      angular.extend(geodash.var.pages, pages);
+      geodash.util.extend(geodash.var.pages, pages);
     }
   }
 };

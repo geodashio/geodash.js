@@ -19,7 +19,7 @@ module.exports = function(response)
     var endpoints = response.data;
     if(geodash.util.isDefined(endpoints))
     {
-      angular.extend(geodash.var.endpoints, endpoints);
+      geodash.util.extend(geodash.var.endpoints, endpoints);
     }
   }
 };

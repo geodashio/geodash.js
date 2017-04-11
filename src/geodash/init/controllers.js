@@ -12,7 +12,7 @@ module.exports = function(options)
   */
   $("[data-geodash-controller], [data-geodash-controllers]", mainElement).each(function(){
     var controllerName = $(this).attr("data-geodash-controller") || $(this).attr("data-geodash-controllers");
-    if(angular.isString(controllerName) && controllerName.length > 0)
+    if(geodash.util.isString(controllerName) && controllerName.length > 0)
     {
       var controller = extract(controllerName, geodash.controllers);
       if(geodash.util.isDefined(controller))

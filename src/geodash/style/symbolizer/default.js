@@ -12,7 +12,7 @@ module.exports = function(options)
     for(var j = 0; j < styleFnWorkspaces.length; j++)
     {
       style_dynamic_fn = extract(style_dynamic_fn_name, styleFnWorkspaces[j]);
-      if(angular.isFunction(style_dynamic_fn))
+      if(geodash.util.isFunction(style_dynamic_fn))
       {
         break;
       }

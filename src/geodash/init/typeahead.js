@@ -16,7 +16,7 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
     var template_empty = that.data('template-empty');
     var initialValue = that.data('initial-value');
 
-    if(angular.isString(that.attr('data-typeahead-datasets')) && that.attr('data-typeahead-datasets').length > 0)
+    if(geodash.util.isString(that.attr('data-typeahead-datasets')) && that.attr('data-typeahead-datasets').length > 0)
     {
       var datasetsName = that.attr('data-typeahead-datasets');
       var datasetsFn = undefined;
@@ -41,7 +41,7 @@ module.exports = function($element, featurelayers, baselayers, servers, datasetO
       that.typeahead('destroy','NoCached');
       var typeahead = that.typeahead(null, datasets);
       that.data('datasets', datasets);
-      if(angular.isString(initialValue))
+      if(geodash.util.isString(initialValue))
       {
         var matches = undefined;
         for(var i = 0; i < datasets.length; i++)
