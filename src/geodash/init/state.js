@@ -26,6 +26,10 @@ module.exports = function(options)
   {
     newView["extent"] = extract("view.extent", newState);
   }
+  else if(Array.isArray(extract("dashboard.view.extent", options)))
+  {
+    newView["extent"] = extract("view.extent", newState);
+  }
   else
   {
     var lat = geodash.util.coalesce([

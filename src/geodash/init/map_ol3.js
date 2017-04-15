@@ -1,11 +1,23 @@
+var util = require("geodash-util");
+
 module.exports = function(options)
 {
   var id = extract("id", options, "map");
-  var lonlat = [
-    extract("state.view.lon", options, 0),
-    extract("state.view.lat", options, 0)
-  ];
-  var zoom = extract("state.view.z", options, 3);
+
+  var lonlat = [0, 0];
+  var zoom = 3;
+  if(util.isDefined(extract("state.view.extent", options)))
+  {
+    lonlat = ol.extent.getCenter(extract("state.view.extent", options));
+  }
+  else if(util.isDefined(extract("state.view.lon", options)) && util.isDefined(extract("state.view.lat", options)))
+  {
+    lonlat = [
+      extract("state.view.lon", options),
+      extract("state.view.lat", options)
+    ];
+    zoom = extract("state.view.z", options, 3);
+  }
 
   var controls = [];
   if(extract("dashboard.controls.zoom", options, true)) { controls.push(new ol.control.Zoom()); }
@@ -28,12 +40,12 @@ module.exports = function(options)
   });
 
 
-  if(geodash.util.isDefined(extract("listeners.map", options)))
+  if(util.isDefined(extract("listeners.map", options)))
   {
     $.each(extract("listeners.map", options), function(e, f){ map.on(e, f); });
   }
 
-  if(geodash.util.isDefined(extract("listeners.view", options)))
+  if(util.isDefined(extract("listeners.view", options)))
   {
     var v = map.getView();
     $.each(extract("listeners.view", options), function(e, f){ v.on(e, f); });

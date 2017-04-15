@@ -3781,14 +3781,26 @@ module.exports = function(opts)
 };
 
 },{}],134:[function(require,module,exports){
+var util = require("geodash-util");
+
 module.exports = function(options)
 {
   var id = extract("id", options, "map");
-  var lonlat = [
-    extract("state.view.lon", options, 0),
-    extract("state.view.lat", options, 0)
-  ];
-  var zoom = extract("state.view.z", options, 3);
+
+  var lonlat = [0, 0];
+  var zoom = 3;
+  if(util.isDefined(extract("state.view.extent", options)))
+  {
+    lonlat = ol.extent.getCenter(extract("state.view.extent", options));
+  }
+  else if(util.isDefined(extract("state.view.lon", options)) && util.isDefined(extract("state.view.lat", options)))
+  {
+    lonlat = [
+      extract("state.view.lon", options),
+      extract("state.view.lat", options)
+    ];
+    zoom = extract("state.view.z", options, 3);
+  }
 
   var controls = [];
   if(extract("dashboard.controls.zoom", options, true)) { controls.push(new ol.control.Zoom()); }
@@ -3811,12 +3823,12 @@ module.exports = function(options)
   });
 
 
-  if(geodash.util.isDefined(extract("listeners.map", options)))
+  if(util.isDefined(extract("listeners.map", options)))
   {
     $.each(extract("listeners.map", options), function(e, f){ map.on(e, f); });
   }
 
-  if(geodash.util.isDefined(extract("listeners.view", options)))
+  if(util.isDefined(extract("listeners.view", options)))
   {
     var v = map.getView();
     $.each(extract("listeners.view", options), function(e, f){ v.on(e, f); });
@@ -3825,7 +3837,7 @@ module.exports = function(options)
   return map;
 };
 
-},{}],135:[function(require,module,exports){
+},{"geodash-util":5}],135:[function(require,module,exports){
 /**
  * init_state will overwrite the default state from the server with params in the url.
  * @param {Object} state - Initial state from server
@@ -3851,6 +3863,10 @@ module.exports = function(options)
   };
 
   if(Array.isArray(extract("view.extent", newState)))
+  {
+    newView["extent"] = extract("view.extent", newState);
+  }
+  else if(Array.isArray(extract("dashboard.view.extent", options)))
   {
     newView["extent"] = extract("view.extent", newState);
   }
@@ -6123,7 +6139,7 @@ module.exports = function(options)
           fillColor = fillColorAsArray;
         }catch(err){}
       }
-      circleOptions["fill"] = new ol.style.Fill({ color: fillColor })
+      circleOptions["fill"] = new ol.style.Fill({ color: "rgba("+fillColor.join(",")+")" })
     }
     style["image"] = new ol.style.Circle(circleOptions);
   }
@@ -6159,7 +6175,7 @@ module.exports = function(options)
           fillColor = fillColorAsArray;
         }catch(err){}
       }
-      style["fill"] = new ol.style.Fill({ color: fillColor })
+      style["fill"] = new ol.style.Fill({ color: "rgba("+fillColor.join(",")+")" })
     }
   }
 

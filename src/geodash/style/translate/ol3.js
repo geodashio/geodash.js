@@ -74,7 +74,7 @@ module.exports = function(options)
           fillColor = fillColorAsArray;
         }catch(err){}
       }
-      circleOptions["fill"] = new ol.style.Fill({ color: fillColor })
+      circleOptions["fill"] = new ol.style.Fill({ color: "rgba("+fillColor.join(",")+")" })
     }
     style["image"] = new ol.style.Circle(circleOptions);
   }
@@ -110,7 +110,7 @@ module.exports = function(options)
           fillColor = fillColorAsArray;
         }catch(err){}
       }
-      style["fill"] = new ol.style.Fill({ color: fillColor })
+      style["fill"] = new ol.style.Fill({ color: "rgba("+fillColor.join(",")+")" })
     }
   }
 
