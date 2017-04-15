@@ -3868,7 +3868,7 @@ module.exports = function(options)
   }
   else if(Array.isArray(extract("dashboard.view.extent", options)))
   {
-    newView["extent"] = extract("view.extent", newState);
+    newView["extent"] = extract("dashboard.view.extent", options);
   }
   else
   {
