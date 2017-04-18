@@ -20,6 +20,7 @@ module.exports = {
   controllers: {},
   directives: {},
   filters: {},
+  graphs: require("./graphs"),
   handlers: {},
   history: require("./history"),
   init: require("./init"),

@@ -19,7 +19,12 @@ module.exports = function(options)
       extract(["dashboard", "view", "featurelayers"], options) ||
       extract(["dashboard", "featurelayers"], options, []).map(function(fl){return fl.id;})
     ),
-    "controls": extract("view.controls", newState) || extract("dashboard.view.controls", options) || []
+    "controls": (extract("view.controls", newState) || extract("dashboard.view.controls", options) || []),
+    "navbars": (
+      extract("view.navbars", newState) ||
+      extract("dashboard.view.navbars", options) ||
+      extract(["dashboard", "navbars"], options, []).map(function(nb){return nb.id;})
+    )
   };
 
   if(Array.isArray(extract("view.extent", newState)))
