@@ -13,27 +13,32 @@ module.exports = function(options)
 
   // Update View
   var newView = {
+    "maps": (
+      extract("view.maps", newState) ||
+      extract("dashboard.view.maps", options) ||
+      extract("dashboard.maps", options, []).map(function(nb){return nb.id;})
+    ),
     "baselayer": (extract("view.baselayer", newState) || extract(["dashboard", "baselayers", 0, "id"], options)),
     "featurelayers": (
       extract("view.featurelayers", newState) ||
-      extract(["dashboard", "view", "featurelayers"], options) ||
-      extract(["dashboard", "featurelayers"], options, []).map(function(fl){return fl.id;})
+      extract("dashboard.view.featurelayers", options) ||
+      extract("dashboard.featurelayers", options, []).map(function(fl){return fl.id;})
+    ),
+    "charts": (
+      extract("view.charts", newState) ||
+      extract("dashboard.view.charts", options) ||
+      extract("dashboard.charts", options, []).map(function(nb){return nb.id;})
+    ),
+    "groups": (
+      extract("view.groups", newState) ||
+      extract("dashboard.view.groups", options) ||
+      extract("dashboard.groups", options, []).map(function(g){return g.id;})
     ),
     "controls": (extract("view.controls", newState) || extract("dashboard.view.controls", options) || []),
     "navbars": (
       extract("view.navbars", newState) ||
       extract("dashboard.view.navbars", options) ||
-      extract(["dashboard", "navbars"], options, []).map(function(nb){return nb.id;})
-    ),
-    "charts": (
-      extract("view.charts", newState) ||
-      extract("dashboard.view.charts", options) ||
-      extract(["dashboard", "charts"], options, []).map(function(nb){return nb.id;})
-    ),
-    "groups": (
-      extract("view.groups", newState) ||
-      extract("dashboard.view.groups", options) ||
-      extract(["dashboard", "groups"], options, []).map(function(g){return g.id;})
+      extract("dashboard.navbars", options, []).map(function(nb){return nb.id;})
     )
   };
 
