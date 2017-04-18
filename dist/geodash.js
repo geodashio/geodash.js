@@ -1407,7 +1407,7 @@ module.exports = {
   addHandler: require("./addHandler"),
   buildScope: require("./buildScope"),
   getEntities: require("./getEntities"),
-  geEdges: require("./getEdges"),
+  getEdges: require("./getEdges"),
   getAsset: require("./getAsset"),
   getBaseLayer: require("./getBaseLayer"),
   getComponent: require("./getComponent"),
