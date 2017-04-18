@@ -2855,7 +2855,7 @@ module.exports = function(options)
 };
 
 },{}],110:[function(require,module,exports){
-module.exports = function()
+module.exports = function(options)
 {
 
   var width = extract("width", options);

@@ -1,4 +1,4 @@
-module.exports = function()
+module.exports = function(options)
 {
 
   var width = extract("width", options);
