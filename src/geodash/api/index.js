@@ -23,6 +23,7 @@ module.exports = {
   getPage: require("./getPage"),
   getRenderOrder: require("./getRenderOrder"),
   getTemplate: require("./getTemplate"),
+  getMap: require("./getMap"),
   hasBaseLayer: require("./hasBaseLayer"),
   hasFeatureLayer: require("./hasFeatureLayer"),
   hasLayer: require("./hasLayer"),
