@@ -15,6 +15,7 @@ module.exports = {
   bloodhound: require("./bloodhound"),
   bootloader: require("./bootloader"),
   codec: require("./codec"),
+  charts: require("./charts"),
   dynamicStyleFn: require("./dynamicStyleFn"),
   http: require("./http"),
   controllers: {},
