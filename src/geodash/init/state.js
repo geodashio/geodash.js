@@ -24,6 +24,11 @@ module.exports = function(options)
       extract("view.navbars", newState) ||
       extract("dashboard.view.navbars", options) ||
       extract(["dashboard", "navbars"], options, []).map(function(nb){return nb.id;})
+    ),
+    "charts": (
+      extract("view.charts", newState) ||
+      extract("dashboard.view.charts", options) ||
+      extract(["dashboard", "charts"], options, []).map(function(nb){return nb.id;})
     )
   };
 
