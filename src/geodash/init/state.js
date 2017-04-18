@@ -29,6 +29,11 @@ module.exports = function(options)
       extract("view.charts", newState) ||
       extract("dashboard.view.charts", options) ||
       extract(["dashboard", "charts"], options, []).map(function(nb){return nb.id;})
+    ),
+    "groups": (
+      extract("view.groups", newState) ||
+      extract("dashboard.view.groups", options) ||
+      extract(["dashboard", "groups"], options, []).map(function(g){return g.id;})
     )
   };
 
