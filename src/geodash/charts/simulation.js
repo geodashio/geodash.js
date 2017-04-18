@@ -5,11 +5,13 @@ module.exports = function(options)
   var height = extract("height", options);
   var link = extract("link", options) || geodash.charts.link(options);
   var charge = extract("charge", options) || geodash.charts.charge(options);
+  var alphaTarget = extract("alphaTarget", options, 1);
 
   var simulation = d3.forceSimulation()
       .force("link", link)
       .force("charge", charge)
-      .force("center", d3.forceCenter(width / 2, height / 2));
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .alphaTarget(1);
 
   return simulation;
 };

@@ -20,6 +20,7 @@ module.exports = {
   getDashboardConfig: require("./getDashboardConfig"),
   getEndpoint: require("./getEndpoint"),
   getFeatureLayer: require("./getFeatureLayer"),
+  getGroup: require("./getGroup"),
   getPage: require("./getPage"),
   getRenderOrder: require("./getRenderOrder"),
   getTemplate: require("./getTemplate"),
