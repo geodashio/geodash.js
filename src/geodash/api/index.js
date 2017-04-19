@@ -11,6 +11,7 @@ module.exports = {
   addFeatureLayer: require("./addFeatureLayer"),
   addHandler: require("./addHandler"),
   buildScope: require("./buildScope"),
+  getEntity: require("./getEntity"),
   getEntities: require("./getEntities"),
   getEdges: require("./getEdges"),
   getAsset: require("./getAsset"),
