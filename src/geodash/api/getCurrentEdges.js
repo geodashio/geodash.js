@@ -8,7 +8,7 @@ module.exports = function(graph_id)
   var graph_filters = extract(["filters", "charts", graph_id], state, {});
 
   var edges_current = edges_all.filter(function(edge){
-    if(currentGroups.indexOf(edge.source.group) != -1 && currentGroups.indexOf(edge.target.group) != -1)
+    if(groups_current.indexOf(edge.source.group) != -1 && groups_current.indexOf(edge.target.group) != -1)
     {
       var valid = true;
       var group_filters = extract(edge.source.group, graph_filters, []);
