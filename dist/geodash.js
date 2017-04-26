@@ -1333,7 +1333,7 @@ module.exports = function(graph_id)
 {
   var entities_current = undefined;
   var entities_all = getEntities(graph_id);
-  if(geodash.util.isDefined(edges_all) && edges_all.length > 0)
+  if(geodash.util.isDefined(entities_all) && entities_all.length > 0)
   {
     var state = geodash.var.state();
 
