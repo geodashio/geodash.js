@@ -18,6 +18,8 @@ module.exports = {
   getBaseLayer: require("./getBaseLayer"),
   getComponent: require("./getComponent"),
   getController: require("./getController"),
+  getCurrentEntities: require("./getCurrentEntities"),
+  getCurrentEdges: require("./getCurrentEdges"),
   getDashboardConfig: require("./getDashboardConfig"),
   getEndpoint: require("./getEndpoint"),
   getFeatureLayer: require("./getFeatureLayer"),
