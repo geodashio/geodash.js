@@ -5,7 +5,7 @@ module.exports = function(graph_id)
   var state = geodash.var.state();
   var entities_all = getEntities(graph_id);
   var groups_current = extract("view.groups", state);
-  var graph_filters = extract(["filters", "charts", chart.id], state, {});
+  var graph_filters = extract(["filters", "charts", graph_id], state, {});
 
   var entities_current = entities_all.filter(function(entity){
     if(groups_current.indexOf(entity.group) != -1)
