@@ -23,10 +23,22 @@ module.exports = function(graph_id)
             var f = group_filters[j];
             if(f["type"] == "property")
             {
-              if(property_values[f["name"]] != f["value"])
+              var property_value = property_values[f["name"]];
+              if(Array.isArray(property_value))
               {
-                valid = false;
-                break;
+                if(property_value.indexOf(f["value"]) == -1)
+                {
+                  valid = false;
+                  break;
+                }
+              }
+              else
+              {
+                if(propertyValue != f["value"])
+                {
+                  valid = false;
+                  break;
+                }
               }
             }
             else if(f["type"] == "attribute")
