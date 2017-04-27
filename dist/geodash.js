@@ -1228,7 +1228,7 @@ module.exports = function(graph_id)
 
       return function(edge){
         var source = geodash.util.isString(edge.source) ? geodash.api.getEntity("force", edge.source) : edge.source;
-        var target = geodash.util.isString(edge.target) ? geodash.api.getEntity("force", edge.source) : edge.targe;
+        var target = geodash.util.isString(edge.target) ? geodash.api.getEntity("force", edge.target) : edge.target;
         if(groups_current.indexOf(source.group) != -1 && groups_current.indexOf(target.group) != -1)
         {
           var valid = true;
