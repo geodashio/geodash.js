@@ -1252,7 +1252,7 @@ module.exports = function(graph_id)
               }
               else
               {
-                if(propertyValue != f["value"])
+                if(property_value != f["value"])
                 {
                   valid = false;
                   break;
@@ -1302,7 +1302,7 @@ module.exports = function(graph_id)
                 }
                 else
                 {
-                  if(propertyValue != f["value"])
+                  if(property_value != f["value"])
                   {
                     valid = false;
                     break;
@@ -1387,7 +1387,7 @@ module.exports = function(graph_id)
               }
               else
               {
-                if(propertyValue != f["value"])
+                if(property_value != f["value"])
                 {
                   valid = false;
                   break;
