@@ -7,5 +7,6 @@
  */
 
 module.exports = {
-  edge: require("./edge")
+  edge: require("./edge"),
+  validate: require("./validate")
 };

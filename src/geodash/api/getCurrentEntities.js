@@ -13,52 +13,7 @@ module.exports = function(graph_id)
       return function(entity){
         if(groups_current.indexOf(entity.group) != -1)
         {
-          var valid = true;
-          var group_filters = extract(entity.group, graph_filters, []);
-          var property_values = extract("obj", entity, {});
-          var address_values = geodash.util.arrayToObject(extract("obj.address", entity, {}));
-          var attribute_values = geodash.util.arrayToObject(extract("obj.attributes", entity, {}));
-          for(var j = 0; j < group_filters.length; j++)
-          {
-            var f = group_filters[j];
-            if(f["type"] == "property")
-            {
-              var property_value = property_values[f["name"]];
-              if(Array.isArray(property_value))
-              {
-                if(property_value.indexOf(f["value"]) == -1)
-                {
-                  valid = false;
-                  break;
-                }
-              }
-              else
-              {
-                if(property_value != f["value"])
-                {
-                  valid = false;
-                  break;
-                }
-              }
-            }
-            else if(f["type"] == "attribute")
-            {
-              if(attribute_values[f["name"]] != f["value"])
-              {
-                valid = false;
-                break;
-              }
-            }
-            else if(f["type"] == "address")
-            {
-              if(address_values[f["name"]] != f["value"])
-              {
-                valid = false;
-                break;
-              }
-            }
-          }
-          return valid;
+          return geodash.graphs.validate(extract(entity.group, graph_filters, []), entity);
         }
         else
         {
