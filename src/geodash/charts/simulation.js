@@ -3,8 +3,8 @@ module.exports = function(options)
 
   var width = extract("width", options);
   var height = extract("height", options);
-  var link = extract("link", options) || geodash.charts.link(options);
-  var charge = extract("charge", options) || geodash.charts.charge(options);
+  var link = extract("link", options) || geodash.charts.force.link(options);
+  var charge = extract("charge", options) || geodash.charts.force.charge(options);
   var alphaTarget = extract("alphaTarget", options, 1);
 
   var simulation = d3.forceSimulation()

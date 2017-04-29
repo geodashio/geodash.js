@@ -7,7 +7,8 @@
  */
 
 module.exports = {
-  charge: require("./charge"),
-  link: require("./link"),
+  force: require("./force"),
+  node: require("./node"),
+  rebind: require("./rebind"),
   simulation: require("./simulation")
 };
