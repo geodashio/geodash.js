@@ -3044,9 +3044,9 @@ module.exports = function(d)
 },{}],119:[function(require,module,exports){
 module.exports = function(c, data_entities, data_edges, sim, color)
 {
-  var node = extract(["var", "charts", chart.id,  "node"], geodash);
-  var link = extract(["var", "charts", chart.id,  "link"], geodash);
-  var onClick = extract(["var", "charts", chart.id,  "onClick"], geodash);
+  var node = extract(["var", "charts", c.id,  "node"], geodash);
+  var link = extract(["var", "charts", c.id,  "link"], geodash);
+  var onClick = extract(["var", "charts", c.id,  "onClick"], geodash);
 
   if(geodash.util.isDefined(node) && geodash.util.isDefined(link))
   {
@@ -3086,18 +3086,16 @@ module.exports = function(c, data_entities, data_edges, sim, color)
       )
       .merge(node);
     node.append("title").text(geodash.charts.node.label);
-    geodash.var.charts[chart.id]['node'] = node;
+    geodash.var.charts[c.id]['node'] = node;
 
-    link = link.data(data_edges, function(d) {
-      return d.group+"-"+d.source.id+"-"+d.target.id;
-    });
+    link = link.data(data_edges, function(d) { return d.group+"-"+d.source.id+"-"+d.target.id; });
     link.exit().remove();
     link = link
       .enter()
       .append("line")
       .attr("stroke-width", function(d) { return extract("style.edge.strokeWidth", c, 2); })
       .merge(link);
-    geodash.var.charts[chart.id]['link'] = link;
+    geodash.var.charts[c.id]['link'] = link;
 
     sim.nodes(data_entities);
     sim.force("link").links(data_edges);
