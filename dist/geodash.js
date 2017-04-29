@@ -3078,7 +3078,7 @@ module.exports = function(c, data_entities, data_edges, sim, color)
         })
         .on("end", function(d) {
           if (!d3.event.active) {
-            simulation.alphaTarget(0);
+            sim.alphaTarget(0);
           }
           d.fx = null;
           d.fy = null;
