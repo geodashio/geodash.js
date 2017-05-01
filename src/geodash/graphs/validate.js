@@ -29,7 +29,7 @@ module.exports = function(group_filters, entity)
     }
     else
     {
-      if(value == f["value"])
+      if(value != f["value"])
       {
         valid = false;
         break;

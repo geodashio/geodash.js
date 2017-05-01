@@ -41,6 +41,7 @@ module.exports = function(c, data_entities, data_edges, sim, color)
         })
       )
       .merge(node);
+
     node.append("title").text(geodash.charts.node.label);
     geodash.var.charts[c.id]['node'] = node;
 
