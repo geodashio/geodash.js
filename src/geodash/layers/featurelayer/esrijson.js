@@ -4,48 +4,32 @@ module.exports = function(options)
   var layerConfig = extract("layerConfig", options);
   var layerID = extract("id", layerConfig) || extract("layerID", layerConfig) || extract("id", options) || extract("layerID", options);
 
-  var fid = extract("geojson.fid", layerConfig);
-  var features = extract("geojson.features", layerConfig);
-  var local = extract("geojson.local", layerConfig);
-  var url = extract("geojson.url", layerConfig);
-  var strategy = extract("geojson.strategy", layerConfig);
+  var fid = extract("esrijson.fid", layerConfig);
+  var features = extract("esrijson.features", layerConfig);
+  var local = extract("esrijson.local", layerConfig);
+  var url = extract("esrijson.url", layerConfig);
+  var strategy = extract("esrijson.strategy", layerConfig);
 
   var source = undefined;
   if(geodash.util.isDefined(features))
   {
-    source = geodash.layers.source.geojson({ "features": features });
+    source = geodash.layers.source.esrijson({ "features": features });
   }
   else if(geodash.util.isDefined(local))
   {
     features = extract(local, geodash.initial_data);
     if(geodash.util.isDefined(features))
     {
-      source = geodash.layers.source.geojson({ "features": features });
+      source = geodash.layers.source.esrijson({ "features": features });
     }
     else
     {
-      geodash.log.error("layers", ["Could not initialize GeoJSON layer "+layerID+" because local data at "+local+" was not found."]);
+      geodash.log.error("layers", ["Could not initialize ESRIJSON layer "+layerID+" because local data at "+local+" was not found."]);
     }
   }
   else if(geodash.util.isDefined(url))
   {
-    source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
-  }
-  else
-  {
-    if(geodash.util.isDefined(extract("wfs.url", layerConfig)))
-    {
-      url = geodash.layers.translate.wfs_to_geojson({ "fl": layerConfig });
-    }
-
-    if(geodash.util.isDefined(url))
-    {
-      source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
-    }
-    else
-    {
-      source = geodash.layers.source.geojson();  // Empty GeoJSON Source
-    }
+    source = geodash.layers.source.esrijson({ "url": url, "strategy": strategy });
   }
 
   if(geodash.util.isDefined(source))

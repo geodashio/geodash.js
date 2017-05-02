@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+  esrijson: require("./esrijson"),
   geojson: require("./geojson"),
   heatmap: require("./heatmap"),
   mapzen: require("./mapzen"),

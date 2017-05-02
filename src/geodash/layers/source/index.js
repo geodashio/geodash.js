@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+  esrijson: require("./esrijson"),
   geojson: require("./geojson"),
   vectortile: require("./vectortile"),
   wms: require("./wms"),
