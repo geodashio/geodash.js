@@ -4618,14 +4618,14 @@ module.exports = function(options)
   var source = undefined;
   if(geodash.util.isDefined(features))
   {
-    source = geodash.layers.source.geojson({ "features": features });
+    source = geodash.layers.source.geojson({ "fid": fid, "features": features });
   }
   else if(geodash.util.isDefined(local))
   {
     features = extract(local, geodash.initial_data);
     if(geodash.util.isDefined(features))
     {
-      source = geodash.layers.source.geojson({ "features": features });
+      source = geodash.layers.source.geojson({ "fid": fid, "features": features });
     }
     else
     {
@@ -4634,7 +4634,7 @@ module.exports = function(options)
   }
   else if(geodash.util.isDefined(url))
   {
-    source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
+    source = geodash.layers.source.geojson({ "fid": fid, "url": url, "strategy": strategy });
   }
   else
   {
@@ -4645,11 +4645,11 @@ module.exports = function(options)
 
     if(geodash.util.isDefined(url))
     {
-      source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
+      source = geodash.layers.source.geojson({ "fid": fid, "url": url, "strategy": strategy });
     }
     else
     {
-      source = geodash.layers.source.geojson();  // Empty GeoJSON Source
+      source = geodash.layers.source.geojson({ "fid": fid });  // Empty GeoJSON Source
     }
   }
 
@@ -4657,7 +4657,6 @@ module.exports = function(options)
   {
     var fl = new ol.layer.Vector({
       id: layerID,
-      fid: fid,
       source: source,
       zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true })
     });
@@ -5180,6 +5179,7 @@ module.exports = function(options)
   // http://openlayers.org/en/latest/apidoc/ol.source.Vector.html
   var source = undefined;
 
+  var fid = extract("fid", options);
   var features = extract("features", options);
   var url = extract("url", options);
   var strategy_name = extract("strategy", options, "all");
@@ -5198,6 +5198,7 @@ module.exports = function(options)
       'features': features
     };
     source = new ol.source.Vector({
+      fid: fid,
       features: (new ol.format.GeoJSON()).readFeatures(geojsondata, {
         dataProjection: projection,
         featureProjection: "EPSG:3857"
@@ -5210,6 +5211,7 @@ module.exports = function(options)
     if(geodash.util.isDefined(strategy))
     {
       source = new ol.source.Vector({
+        fid: fid,
         url: (function(url){
           return function(extent, resolution, projection) {
             var bbox = "";
@@ -5243,6 +5245,7 @@ module.exports = function(options)
     else
     {
       source = new ol.source.Vector({
+        fid: fid,
         url: url,
         projection: projection,
         format: new ol.format.GeoJSON(),
@@ -5252,6 +5255,7 @@ module.exports = function(options)
   else
   {
     source = new ol.source.Vector({
+      fid: fid,
       features: []
     });
   }

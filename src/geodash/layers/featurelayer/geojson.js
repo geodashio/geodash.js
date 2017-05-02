@@ -13,14 +13,14 @@ module.exports = function(options)
   var source = undefined;
   if(geodash.util.isDefined(features))
   {
-    source = geodash.layers.source.geojson({ "features": features });
+    source = geodash.layers.source.geojson({ "fid": fid, "features": features });
   }
   else if(geodash.util.isDefined(local))
   {
     features = extract(local, geodash.initial_data);
     if(geodash.util.isDefined(features))
     {
-      source = geodash.layers.source.geojson({ "features": features });
+      source = geodash.layers.source.geojson({ "fid": fid, "features": features });
     }
     else
     {
@@ -29,7 +29,7 @@ module.exports = function(options)
   }
   else if(geodash.util.isDefined(url))
   {
-    source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
+    source = geodash.layers.source.geojson({ "fid": fid, "url": url, "strategy": strategy });
   }
   else
   {
@@ -40,11 +40,11 @@ module.exports = function(options)
 
     if(geodash.util.isDefined(url))
     {
-      source = geodash.layers.source.geojson({ "url": url, "strategy": strategy });
+      source = geodash.layers.source.geojson({ "fid": fid, "url": url, "strategy": strategy });
     }
     else
     {
-      source = geodash.layers.source.geojson();  // Empty GeoJSON Source
+      source = geodash.layers.source.geojson({ "fid": fid });  // Empty GeoJSON Source
     }
   }
 
@@ -52,7 +52,6 @@ module.exports = function(options)
   {
     var fl = new ol.layer.Vector({
       id: layerID,
-      fid: fid,
       source: source,
       zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true })
     });
