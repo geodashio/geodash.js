@@ -22,7 +22,6 @@ module.exports = function(options)
       'features': features
     };
     source = new ol.source.Vector({
-      fid: fid,
       features: (new ol.format.GeoJSON()).readFeatures(geojsondata, {
         dataProjection: projection,
         featureProjection: "EPSG:3857"
@@ -35,7 +34,6 @@ module.exports = function(options)
     if(geodash.util.isDefined(strategy))
     {
       source = new ol.source.Vector({
-        fid: fid,
         url: (function(url){
           return function(extent, resolution, projection) {
             var bbox = "";
@@ -69,7 +67,6 @@ module.exports = function(options)
     else
     {
       source = new ol.source.Vector({
-        fid: fid,
         url: url,
         projection: projection,
         format: new ol.format.GeoJSON(),
@@ -79,9 +76,13 @@ module.exports = function(options)
   else
   {
     source = new ol.source.Vector({
-      fid: fid,
       features: []
     });
+  }
+
+  if(geodash.util.isDefined(fid))
+  {
+    source.set("fid", fid);
   }
 
   return source;
