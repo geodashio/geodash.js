@@ -35,6 +35,11 @@ module.exports = function(options)
       extract("dashboard.groups", options, []).map(function(g){return g.id;})
     ),
     "controls": (extract("view.controls", newState) || extract("dashboard.view.controls", options) || []),
+    "overlays": (
+      extract("view.overlays", newState) ||
+      extract("dashboard.view.overlays", options) ||
+      extract("dashboard.overlays", options, []).map(function(nb){return nb.id;})
+    ),
     "navbars": (
       extract("view.navbars", newState) ||
       extract("dashboard.view.navbars", options) ||
