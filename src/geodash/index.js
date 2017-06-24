@@ -28,6 +28,7 @@ module.exports = {
   layers: require("./layers"),
   listeners: require("./listeners"),
   log: require("./log"),
+  mgrs: require("mgrs"),
   normalize: require("./normalize"),
   navigate: require("./navigate"),
   popup: require("./popup"),

@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "geodash-extract": "*",
-    "geodash-util": "0.0.5"
+    "geodash-util": "0.0.5",
+    "mgrs": "1.0.0"
   },
   "devDependencies": {
     "browserify": "*",
