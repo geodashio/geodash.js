@@ -6569,6 +6569,7 @@ module.exports = function(options)
     var v = m.getView();
 
     var zoom = extract("zoom", options);
+    var minZoom = extract("minZoom", options);
     if(geodash.util.isDefined(zoom))
     {
       v.setZoom(geodash.normalize.integer(zoom));
