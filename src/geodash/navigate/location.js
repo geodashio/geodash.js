@@ -10,6 +10,10 @@ module.exports = function(options)
     {
       v.setZoom(geodash.normalize.integer(zoom));
     }
+    else if(geodash.util.isDefined(minZoom))
+    {
+      v.setZoom(Math.max(v.getZoom(), geodash.normalize.integer(minZoom)));
+    }
 
     var lat = extract("lon", options);
     var lon = extract("lat", options);

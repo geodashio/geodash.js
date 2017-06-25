@@ -4,8 +4,10 @@ module.exports = function(args)
   {
     var layer = geodash.var.featurelayers[args["layer"]];
     var v = geodash.var.map.getView();
-    geodash.var.map.beforeRender(ol.animation.pan({ duration: 1000, source: v.getCenter() }));
-    v.fit(layer.getSource().getExtent(), geodash.var.map.getSize());
+    //geodash.var.map.beforeRender(ol.animation.pan({ duration: 1000, source: v.getCenter() }));
+    //v.animate({ duration: 1000, source: v.getCenter() })
+    //v.fit(layer.getSource().getExtent(), geodash.var.map.getSize());
+    v.fit(layer.getSource().getExtent(), {duration: 1000}); // v 4.x.x no longer requires size.
   }
   else if(geodash.mapping_library == "leaflet")
   {
