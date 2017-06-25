@@ -1692,6 +1692,7 @@ module.exports = function(m, v, options)
   var lat = extract("lat", options);
   var lon = extract("lon", options);
   var zoom = extract("zoom", options);
+  var minZoom = extract("minZoom", options);
   var duration = extract("duration", options, 1000);
 
   var current_res = v.getResolution();
@@ -1717,6 +1718,10 @@ module.exports = function(m, v, options)
     if(geodash.util.isDefined(zoom))
     {
       target_res = v.getMaxResolution() / Math.pow(2, geodash.normalize.integer(zoom));
+    }
+    else if(geodash.util.isDefined(minZoom))
+    {
+      target_res = v.getMaxResolution() / Math.pow(2, Math.max(v.getZoom(), geodash.normalize.integer(minZoom)));
     }
   }
 
