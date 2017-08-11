@@ -16,7 +16,7 @@ module.exports = function(m, v, options)
   if(geodash.util.isDefined(extent))
   {
     target_center = ol.extent.getCenter(extent);
-    target_res = v.constrainResolution(v.getResolutionForExtent(extent, m.getSize()));
+    target_res = v.getResolutionForExtent(extent);
   }
   else
   {
