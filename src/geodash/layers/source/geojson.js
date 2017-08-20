@@ -45,16 +45,17 @@ module.exports = function(options)
               });
               //bbox = ol.proj.transformExtent(extent, projection, "EPSG:4326");
               //return url + (url.indexOf("?") == -1 ? "?" : "&") + "bbox="+bbox.join(",");
-              url = url.replace("{bbox}", bbox.join(","));
+              url = url.replace(new RegExp("{bbox}", 'g'), bbox.join(","));
             }
             else
             {
-              url = url.replace("{bbox}", "");
+              //url = url.replace("{bbox}", "");
+              url = url.replace(new RegExp("{bbox}", 'g'), "");
             }
             // pageview_token is globally set in header
             if(typeof PAGEVIEW_TOKEN != "undefined")
             {
-              url = url.replace("{token}", PAGEVIEW_TOKEN);
+              url = url.replace(new RegExp("{token}", 'g'), PAGEVIEW_TOKEN);
             }
             return url;
           };
