@@ -5088,7 +5088,11 @@ module.exports = function(options)
       extract("dashboard.view.maps", options) ||
       extract("dashboard.maps", options, []).map(function(nb){return nb.id;})
     ),
-    "baselayer": (extract("view.baselayer", newState) || extract(["dashboard", "baselayers", 0, "id"], options)),
+    "baselayer": (
+      extract("view.baselayer", newState) ||
+      extract("dashboard.view.baselayer", options) ||
+      extract(["dashboard", "baselayers", 0, "id"], options)
+    ),
     "featurelayers": (
       extract("view.featurelayers", newState) ||
       extract("dashboard.view.featurelayers", options) ||
