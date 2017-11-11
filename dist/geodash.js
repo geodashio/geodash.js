@@ -6021,8 +6021,9 @@ module.exports = function(options)
     if(geodash.util.isDefined(strategy))
     {
       source = new ol.source.Vector({
-        url: (function(url){
+        url: (function(baseurl){
           return function(extent, resolution, projection) {
+            var url = ""+baseurl;
             var bbox = "";
             if(geodash.util.isDefined(extent) && geodash.util.isDefined(projection))
             {
@@ -6046,7 +6047,7 @@ module.exports = function(options)
             }
             return url;
           };
-        })(url),
+        })(baseurl),
         projection: projection,
         format: new ol.format.GeoJSON(),
         strategy: strategy
