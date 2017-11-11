@@ -6047,7 +6047,7 @@ module.exports = function(options)
             }
             return url;
           };
-        })(baseurl),
+        })(url),
         projection: projection,
         format: new ol.format.GeoJSON(),
         strategy: strategy
