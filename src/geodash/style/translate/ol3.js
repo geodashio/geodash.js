@@ -65,7 +65,7 @@ module.exports = function(options)
     if(geodash.util.isDefined(extract("fillColor", styleStaticAndDynamic)))
     {
       var fillColor = geodash.normalize.color(extract("fillColor", styleStaticAndDynamic));
-      var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic)
+      var fillOpacity = extractFloat("fillOpacity", styleStaticAndDynamic);
       if(geodash.util.isDefined(fillOpacity))
       {
         try{
@@ -87,8 +87,18 @@ module.exports = function(options)
       var strokeWidth = extractFloat("strokeWidth", styleStaticAndDynamic, 1.0);
       if(strokeWidth > 0)
       {
+        var strokeColor = geodash.normalize.color(extract("strokeColor", styleStaticAndDynamic));
+        var strokeOpacity = extractFloat("strokeOpacity", styleStaticAndDynamic);
+        if(geodash.util.isDefined(strokeOpacity))
+        {
+          try{
+            var strokeColorAsArray = ol.color.asArray(strokeColor).slice();
+            strokeColorAsArray[3] = strokeOpacity;
+            strokeColor = strokeColorAsArray;
+          }catch(err){}
+        }
         style["stroke"] = new ol.style.Stroke({
-          color: geodash.normalize.color(extract("strokeColor", styleStaticAndDynamic)),
+          color: strokeColor,
           width: strokeWidth
         });
       }
