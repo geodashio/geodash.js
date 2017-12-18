@@ -8,7 +8,7 @@ module.exports = function(map, baselayers)
       //var type_lc = type.toLowerCase();
       var attribution = extract("source.attribution", bl, undefined);
 
-      var source = geodash.layers.source.xyz({ "bl": bl });
+      var source = geodash.layers.source.xyz({ "layer": bl });
       if(geodash.util.isDefined(source))
       {
         try{

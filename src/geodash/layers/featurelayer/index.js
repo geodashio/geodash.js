@@ -13,5 +13,6 @@ module.exports = {
   mapzen: require("./mapzen"),
   tegola: require("./tegola"),
   wms: require("./wms"),
-  wmts: require("./wmts")
+  wmts: require("./wmts"),
+  xyz: require("./xyz")
 };

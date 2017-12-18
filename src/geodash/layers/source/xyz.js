@@ -2,9 +2,14 @@ module.exports = function(options)
 {
   var source = undefined;
 
-  var mapbox = extract("bl.mapbox", options);
-  var gwc = extract("bl.gwc", options);
-  var tile = extract("bl.tile", options) || extract("bl.tiles", options) || extract("bl.source.tile", options);
+  var mapbox = extract("layer.mapbox", options);
+  var gwc = extract("layer.gwc", options);
+  var tile = (
+    extract("layer.tile", options) ||
+    extract("layer.tiles", options) ||
+    extract("layer.source.tile", options) ||
+    extract("layer.xyz", options)
+  );
 
   var url = undefined;
 
@@ -53,7 +58,7 @@ module.exports = function(options)
   {
     source = new ol.source.XYZ({
       url: url,
-      maxZoom: extract("bl.maxZoom", options, 18)
+      maxZoom: extract("layer.maxZoom", options, 18)
     })
   }
   else
