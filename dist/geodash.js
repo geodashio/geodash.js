@@ -5466,10 +5466,18 @@ module.exports = function(options)
 
   if(geodash.util.isDefined(source))
   {
+    var snapToPower = ol.ResolutionConstraint.createSnapToPower(2, 156543.03392804097, 18);
+    var minZoom = extract("view.minZoom", layerConfig) || extract("source.minZoom", layerConfig);
+    var minResolution = geodash.util.isDefined(minZoom) ? snapToPower(156543.03392804097, minZoom, 0) : undefined;
+    var maxZoom = extract("view.maxZoom", layerConfig) || extract("source.maxZoom", layerConfig);
+    var maxResolution = geodash.util.isDefined(maxZoom) ? snapToPower(156543.03392804097, maxZoom, 0) : undefined;
+
     var fl = new ol.layer.Vector({
       id: layerID,
       source: source,
-      zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true })
+      zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true }),
+      minResolution: minResolution,
+      maxResolution: maxResolution
     });
     if(geodash.util.isDefined(extract(["carto", "styles", 0, "symbolizers", 0], layerConfig)))
     {
@@ -5770,9 +5778,17 @@ module.exports = function(options)
 
   if(geodash.util.isDefined(source))
   {
+    var snapToPower = ol.ResolutionConstraint.createSnapToPower(2, 156543.03392804097, 18);
+    var minZoom = extract("view.minZoom", layerConfig) || extract("source.minZoom", layerConfig);
+    var minResolution = geodash.util.isDefined(minZoom) ? snapToPower(156543.03392804097, minZoom, 0) : undefined;
+    var maxZoom = extract("view.maxZoom", layerConfig) || extract("source.maxZoom", layerConfig);
+    var maxResolution = geodash.util.isDefined(maxZoom) ? snapToPower(156543.03392804097, maxZoom, 0) : undefined;
+
     var fl = new ol.layer.Tile({
       source: source,
-      zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true })
+      zIndex: geodash.api.getRenderOrder({ "dashboard": dashboard, "id": layerID, "reverse": true }),
+      minResolution: minResolution,
+      maxResolution: maxResolution
     });
     geodash.api.addFeatureLayer(layerID, fl);
 
@@ -5951,7 +5967,7 @@ module.exports = function(options)
     geodash.var.map.addLayer(fl);
     if(geodash.util.isDefined($scope))
     {
-      geodash.api.intend("layerLoaded", {'type':'featurelayer', 'layer': layerID, 'visible': true}, $scope);  
+      geodash.api.intend("layerLoaded", {'type':'featurelayer', 'layer': layerID, 'visible': true}, $scope);
     }
   }
 };
