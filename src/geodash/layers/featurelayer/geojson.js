@@ -52,9 +52,9 @@ module.exports = function(options)
   {
     var snapToPower = ol.ResolutionConstraint.createSnapToPower(2, 156543.03392804097, 18);
     var minZoom = extract("view.minZoom", layerConfig) || extract("source.minZoom", layerConfig);
-    var minResolution = geodash.util.isDefined(minZoom) ? snapToPower(156543.03392804097, minZoom, 0) : undefined;
+    var maxResolution = geodash.util.isDefined(minZoom) ? snapToPower(156543.03392804097, minZoom, 0) : undefined;
     var maxZoom = extract("view.maxZoom", layerConfig) || extract("source.maxZoom", layerConfig);
-    var maxResolution = geodash.util.isDefined(maxZoom) ? snapToPower(156543.03392804097, maxZoom, 0) : undefined;
+    var minResolution = geodash.util.isDefined(maxZoom) ? snapToPower(156543.03392804097, maxZoom, 0) : undefined;
 
     var fl = new ol.layer.Vector({
       id: layerID,
